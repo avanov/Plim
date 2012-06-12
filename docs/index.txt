@@ -8,9 +8,13 @@
 =========================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
 
    en/index.txt
+   en/license.txt
+   en/authors.txt
+   en/related.txt
+   en/changes.txt
 
 
 Indices and tables

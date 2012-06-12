@@ -1,0 +1,9 @@
+Authors
+=======
+
+Plim was created by Maxim Avanov
+
+- `GitHub profile <https://github.com/2nd>`_
+- `Google+ profile <https://plus.google.com/115368694954760261084/posts>`_
+
+See also `a list of Slim authors <https://github.com/stonean/slim#authors>`_.

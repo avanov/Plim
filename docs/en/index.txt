@@ -4,6 +4,8 @@
 
 Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
 built on top of the `Mako Templates <http://www.makotemplates.org/>`_.
+It exploits `Mako's preprocessor feature <http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor#api-reference>`_
+to translate its syntax to valid HTML/Mako markup.
 
 
 Installation
@@ -14,11 +16,411 @@ Installation
    pip install Plim
 
 
+Tests
+=======
+
+Plim provides an extensive test suite based on `nosetests <http://nose.readthedocs.org/en/latest/>`_.
+You can run the tests with the following command
+
+.. code-block:: bash
+
+    python setup.py nosetests
+
+
+
 Syntax
 =======
 
+Plim is not the *exact* port of Slim. Some parts of syntax were changed in order to
+simplify it. However, most syntax constructs had remained intact. Here is the full syntax
+example:
+
+.. code-block:: slim
+
+    doctype html
+    html
+      head
+        title Plim Example
+        meta name="keywords" content="template language"
+
+      body
+        h1 Markup examples
+        #content.example1
+          p Nest by indentation
+
+        #content-${dynamic.id}.class-${dynamic.cls}.example-${example.idx}
+          p As you can see, id and class shortcuts support dynamic content.
+
+        - if items.any()
+          table
+            - for item in items
+              tr
+                td = item.name
+                td = item.price
+        - else
+          p No items found
+
+        #footer
+          Copyright &copy; 2010 Andrew Stone.
+          Literal blocks can be implicitly specified by uppercase starting letter.
+          Moreover, any non-ASCII starting letter indicates implicit literal block, too.
+
+        = render('tracking_code')
+
+        script
+          /* "script" and "style" blocks do not require explicit literal indicator "|"  */
+          $(content).do_something();
+
+
+Syntax highlighters
+-------------------
+
+At this moment, Plim doesn't have syntax highlighters.
+
+But, at a starting point, you can use `Slim syntax highlighters <https://github.com/stonean/slim#syntax-highlighters>`_.
+Most of the Plim syntax is the same as of Slim.
+
+
+Line indicators
+~~~~~~~~~~~~~~~
+
+``|``
+  The pipe tells Plim to just copy the line. It essentially escapes any processing.
+
+``,``
+  The comma tells Plim to copy the line (similar to ``|``), but makes sure that a single trailing space is appended.
+
+  Please note, that Slim syntax instead has the single quote ( ``'`` ) line indicator.
+
+``-``
+  The dash denotes control code. Examples of control code are loops, conditionals,
+  mako tags, and extensions.
+
+``=``
+  The equal sign tells Plim it's a Python call that produces output to add to the buffer.
+
+``=,``
+  Same as the single equal sign ( ``=`` ), except that it adds a trailing whitespace.
+
+``==``
+  Same as the single equal sign ( ``=`` ), but adds `the "n" filter <http://docs.makotemplates.org/en/latest/filtering.html>`_
+  to mako expression.
+
+  .. code-block:: plim
+
+     == python_expression                       =>      ${python_expression|n}
+
+     == python_expression | custom_filter       =>      ${python_expression |n,custom_filter}
+
+
+``==,``
+  Same as the double equal sign ( ``==`` ), except that it adds a trailing whitespace.
+
+``/``
+  Use the forward slash for code comments - anything after it won't get displayed in the final mako markup.
+
+
+  Please note, that **there is no an equivalent syntax for Slim's ``/!`` html comment**.
+  This construct has been considered redundant since Plim supports raw HTML tags:
+
+  .. code-block:: plim
+
+      / You can use raw HTML comment tags, as well as all other tags
+      <!-- HTML comment -->
+      <div>
+
+        / You can use Plim markup inside the raw HTML
+        a href="#" = link.title
+
+      / If you use raw HTML, you have to close all tags manually
+      </div>
+
+
+Things to know
+==============
+
+
+Indentation matters, but it's not as strict as Haml
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you want to first indent 2 spaces, then 5 spaces, it's your choice. To nest markup
+you only need to indent by one space, the rest is gravy.
+
+
+Wrap attributes with parentheses
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: plim
+
+    body
+      h1(id="logo" class="small tagline") = page_logo
+      h2 id=(id_from_variable + '-idx') = page_tagline
+
+
+If you wrap the attributes, you can spread them across multiple lines:
+
+.. code-block:: plim
+
+    body
+
+      h1 (id="logo"
+        class="small tagline") = page_logo
+
+      h2 id=(
+        id_from_variable +
+        '-idx'
+      ) = page_tagline
+
+
+Add content to a tag
+~~~~~~~~~~~~~~~~~~~~
+
+Either start on the same line as the tag
+
+.. code-block:: plim
+
+    body
+      h1 id="headline" Welcome to my site.
+
+
+Or nest it. Note: Use either a pipe or `Implicit literal indicators `_
+
+.. code-block:: plim
+
+    body
+      h1 id="headline"
+
+        / Explicit literal with pipe character
+        | Welcome to my site.
+
+        / Implicit literal (uppercase letter at the beginning of the line)
+        Yes, Welcome to my site
+
+
+Add content to a tag with code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Can make the call on the same line
+
+.. code-block:: plim
+
+    body
+      h1 id="headline" = page_headline
+
+
+Or nest it.
+
+.. code-block:: plim
+
+    body
+      h1 id="headline"
+        = page_headline
+
+
+Shortcut form for id and class attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can specify the id and class attributes in the following shortcut form.
+Note: `unlike Slim <https://github.com/stonean/slim#shortcut-form-for-id-and-class-attributes>`_,
+Plim allows you to evaluate dynamic expressions in the shortcuts.
+
+.. code-block:: plim
+
+    body
+
+      / Static shortcuts
+      h1#headline
+        = page_headline
+      h2#tagline.small.tagline
+        = page_tagline
+      .content
+        = show_content
+
+      / Dynamic shortcuts
+      h1#headline-${'dynamic'}
+        = page_headline
+      h2#${tagline.id}.small-${tagline.cls}.${tagline.other_cls}
+        = page_tagline
+      .${'content'}
+        = show_content
+
+
+this is the same as
+
+.. code-block:: plim
+
+    body
+
+      / Static shortcuts
+      h1 id="headline"
+        = page_headline
+      h2 id="tagline" class="small tagline"
+        = page_tagline
+      div class="content"
+        = show_content
+
+      / Dynamic shortcuts
+      h1 id="headline-${'dynamic'}"
+        = page_headline
+      h2 id="${tagline.id}" class="small-${tagline.cls} ${tagline.other_cls}"
+        = page_tagline
+      div class="${'content'}"
+        = show_content
+
+
+Inline tags
+~~~~~~~~~~~
+
+Sometimes you may want to be a little more compact and inline the tags.
+
+.. code-block:: plim
+
+    ul
+      li.first: a href="/a" A link
+      li: a href="/b" B link
+
+
+For readability, don't forget you can wrap the attributes.
+
+.. code-block:: plim
+
+    ul
+      li.first: a(href="/a") A link
+      li: a(href="/b") B link
+
+
+Evaluate python code in text
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use standard `mako expression syntax <http://docs.makotemplates.org/en/latest/syntax.html#expression-substitution>`_.
+The text escaping depends on `mako's default filters settings <http://docs.makotemplates.org/en/latest/filtering.html?highlight=default%20filters#the-default-filters-argument>`_.
+
+.. code-block:: plim
+
+    body
+      h1 Welcome ${current_user.name} to the show.
+      Explicit non-escaped ${content|n} is also possible.
+
+
+Currently, Mako doesn't provide a simple way to escape the interpolation of expressions
+(i.e. render as is). You can use either the `<%text> <http://docs.makotemplates.org/en/latest/syntax.html#text>`_
+tag (or Plim's ``-text`` equivalent for blocks of mako syntax examples), or this trick
+
+.. code-block:: plim
+
+    body
+      h1 Welcome ${'${current_user.name}'} to the show.
+
+
+Skip the html escaping
+~~~~~~~~~~~~~~~~~~~~~~
+
+Use either a double equal sign
+
+.. code-block:: plim
+
+    body
+      h1 id="headline"
+        == page_headline
+
+
+or the explicit ``| n`` filter at the end of the expression
+
+.. code-block:: plim
+
+    body
+      h1 id="headline"
+        = page_headline | n
+
+
+Treat multiple lines of code as text that should bypass parsing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use a pipe ( ``|`` ) or comma ( ``,`` ) or implicit literal indicator to start the escape.
+Each following line that is indented greater than the first one is copied over.
+
+.. code-block:: plim
+
+    body
+      p
+        / Explicit literal
+        | This is a test of the text block.
+
+
+.. code-block:: plim
+
+    body
+      p
+        |
+          This is a test of the text block.
+
+
+.. code-block:: plim
+
+    body
+      p
+        / Implicit literal (the line is started with the uppercase letter)
+        This is a test of the text block.
+
+
+The parsed result of all the above examples:
+
+.. code-block:: html
+
+    <body><p>This is a test of the text block.</p></body>
+
+
+The left margin is set to the zero. Any additional spaces will be copied over.
+
+.. code-block:: plim
+
+    body
+      p
+        |  This line is on the zero left margin.
+            This line will have one space in front of it.
+              This line will have two spaces in front of it.
+                And so on...
+
+
+Add comments
+~~~~~~~~~~~~
+
+Use ``/`` for code comments
+
+.. code-block:: plim
+
+    body
+      p
+        / This line won't get displayed.
+          Neither does this line.
+
+
+Raw HTML tags
+-------------
+
+It is particularly useful in situations like the following
+
+.. code-block:: plim
+
+    - if edit_profile
+      / Wrap interface with editable block
+      <div id="edit-profile">
+
+    - include new_or_edit_interface.html
+
+    -if edit_profile
+      / end wrapping
+      </div>
+
+
+Implicit literal indicators
+---------------------------
+
+
+
 Differences
 -----------
+
 -   Original Slim has the ``'``, ``='``, and ``=='`` `line indicators <https://github.com/stonean/slim#line-indicators>`_.
     The same behaviour in Plim can be achieved by the following constructs:
 
@@ -29,9 +431,9 @@ Differences
         ==, value
 
 
--   There is only one type of parentheses for wrapping tag attributes - ``()``. You can
-    use neither ``[]`` nor ``{}`` braces for attribute wrapping. However, this rule does not propagated
-    to any regular python code:
+-   There is only one type of parentheses for wrapping tag attributes - ``()``. Unlike Slim,
+    Plim doesn't support square or curly braces. However, of course, you can use them in any
+    regular python code:
 
     .. code-block:: slim
 
