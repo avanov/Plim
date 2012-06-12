@@ -1,0 +1,203 @@
+Extensions
+===========
+
+
+
+CoffeeScript
+~~~~~~~~~~~~
+
+Plim uses `Python-CoffeeScript <https://github.com/doloopwhile/Python-CoffeeScript>`_ package
+as a bridge to the JS `CoffeeScript <http://coffeescript.org/>`_ compiler.
+You can start CoffeeScript block with the ``-coffee`` construct.
+
+.. code-block:: plim
+
+    - coffee
+      # Assignment:
+      number   = 42
+      opposite = true
+
+      # Conditions:
+      number = -42 if opposite
+
+      # Functions:
+      square = (x) -> x * x
+
+      # Arrays:
+      list = [1, 2, 3, 4, 5]
+
+      # Objects:
+      math =
+        root:   Math.sqrt
+        square: square
+        cube:   (x) -> x * square x
+
+      # Splats:
+      race = (winner, runners...) ->
+        print winner, runners
+
+      # Existence:
+      alert "I knew it!" if elvis?
+
+      # Array comprehensions:
+      cubes = (math.cube num for num in list)
+
+
+SCSS/SASS
+~~~~~~~~~
+
+Plim uses `pyScss <https://github.com/Kronuz/pyScss>`_ package to translate
+`SCSS/SASS <http://sass-lang.com/>`_ markup to plain CSS.
+You can start SCSS/SASS block with the ``-scss`` or ``-sass`` construct. The output will be
+wrapped with ``<style></style>`` tags.
+
+For example,
+
+.. code-block:: plim
+
+    - scss
+      @option compress: no;
+      .selector {
+        a {
+          display: block;
+        }
+        strong {
+          color: blue;
+        }
+      }
+
+produces
+
+.. code-block:: html
+
+    <style>.selector a {
+      display: block;
+    }
+    .selector strong {
+      color: #00f;
+    }</style>
+
+
+
+Markdown
+~~~~~~~~
+
+Plim uses `python-markdown2 <https://github.com/trentm/python-markdown2>`_ package
+for the ``-markdown`` (or ``-md``) extension.
+
+For example,
+
+.. code-block:: plim
+
+    - markdown
+      A First Level Header
+      ====================
+
+      A Second Level Header
+      ---------------------
+
+      Now is the time for all good men to come to
+      the aid of their country. This is just a
+      regular paragraph.
+
+      The quick brown fox jumped over the lazy
+      dog's back.
+
+      ### Header 3
+
+      > This is a blockquote.
+      >
+      > This is the second paragraph in the blockquote.
+      >
+      > ## This is an H2 in a blockquote
+
+
+produces
+
+.. code-block:: html
+
+    <h1>A First Level Header</h1>
+
+    <h2>A Second Level Header</h2>
+
+    <p>Now is the time for all good men to come to
+    the aid of their country. This is just a
+    regular paragraph.</p>
+
+    <p>The quick brown fox jumped over the lazy
+    dog's back.</p>
+
+    <h3>Header 3</h3>
+
+    <blockquote>
+        <p>This is a blockquote.</p>
+
+        <p>This is the second paragraph in the blockquote.</p>
+
+        <h2>This is an H2 in a blockquote</h2>
+    </blockquote>
+
+
+reStructuredText
+~~~~~~~~~~~~~~~~
+
+Plim uses `Docutils <http://docutils.sourceforge.net/>`_ package for both supporting
+the ``-rest`` (or ``-rst``) extension and project documenting.
+
+For example,
+
+.. code-block:: plim
+
+    - rest
+      Grid table:
+
+      +------------+------------+-----------+
+      | Header 1   | Header 2   | Header 3  |
+      +============+============+===========+
+      | body row 1 | column 2   | column 3  |
+      +------------+------------+-----------+
+      | body row 2 | Cells may span columns.|
+      +------------+------------+-----------+
+      | body row 3 | Cells may  | - Cells   |
+      +------------+ span rows. | - contain |
+      | body row 4 |            | - blocks. |
+      +------------+------------+-----------+
+
+
+produces
+
+.. code-block:: html
+
+    <p>Grid table:</p>
+    <table border="1">
+      <thead valign="bottom">
+        <tr>
+          <th>Header 1
+          </th><th>Header 2
+          </th><th>Header 3
+        </th></tr>
+      </thead>
+      <tbody valign="top">
+        <tr>
+          <td>body row 1
+          </td><td>column 2
+          </td><td>column 3
+        </td></tr>
+        <tr>
+          <td>body row 2
+          </td><td colspan="2">Cells may span columns.
+        </td></tr>
+        <tr>
+          <td>body row 3
+          </td><td rowspan="2">Cells may<br>span rows.
+          </td><td rowspan="2">
+            <ul>
+              <li>Cells
+              </li><li>contain
+              </li><li>blocks.
+            </li></ul>
+        </td></tr>
+        <tr>
+          <td>body row 4
+        </td></tr>
+    </tbody></table>

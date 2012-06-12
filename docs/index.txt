@@ -10,7 +10,8 @@
 .. toctree::
    :maxdepth: 3
 
-   en/index.txt
+   en/syntax.txt
+   en/extensions.txt
    en/license.txt
    en/authors.txt
    en/related.txt
