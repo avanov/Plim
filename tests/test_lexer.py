@@ -190,10 +190,10 @@ class TestLexerFunctions(TestCaseBase):
             assert tail == ''
 
 
-    def test_inline_extract_slim_line(self):
+    def test_inline_extract_plim_line(self):
         def test_case(template, result):
             source = enumerate('')
-            line, close_buf, _, __ = l.extract_slim_line(template, source)
+            line, close_buf, _, __ = l.extract_plim_line(template, source)
             self.assertEqual(line + close_buf, result)
 
         test_case(
@@ -251,7 +251,7 @@ class TestLexerFunctions(TestCaseBase):
         test_case('div( attr=func(test()) attr2=test()? )= Test', result)
 
 
-    def test_multiline_extract_slim_line(self):
+    def test_multiline_extract_plim_line(self):
         def test_case(template, result):
             """Use files for multiline test cases"""
             template = l.enumerate_source(self.get_file_contents(template))
@@ -259,10 +259,10 @@ class TestLexerFunctions(TestCaseBase):
             for lineno, line in template:
                 if line.strip():
                     _, result_line = result.next()
-                    line, close_buf, _, __ = l.extract_slim_line(line, template)
+                    line, close_buf, _, __ = l.extract_plim_line(line, template)
                     self.assertEqual(line + close_buf, result_line.rstrip())
 
-        test_case('slim_multiline_tag_test.html', 'slim_multiline_tag_result.html')
+        test_case('plim_multiline_tag_test.html', 'plim_multiline_tag_result.html')
 
 
     def test_parse_markdown(self):

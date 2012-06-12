@@ -34,8 +34,8 @@ ATTRIBUTES_DELIMITER = WHITESPACE
 # This is not the same as DYNAMIC_CONTENT_PREFIX
 ATTRIBUTE_VALUE_DELIMITER = '='
 # port of ruby's boolean methods:
-# Ruby's slim: selected=option_selected?("Slim")
-# Python Mako's slim: selected=option_selected("Slim")?
+# Ruby's Slim: selected=option_selected?("Slim")
+# Python's Plim: selected=option_selected("Plim")?
 BOOLEAN_ATTRIBUTE_MARKER = '?'
 LINE_BREAK = '\\\n'
 
@@ -167,7 +167,7 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 #    3) tail_line - a line which indentation level (``tail_indent``) is lower or equal to
 #       the input `indent_level``.
 #    4) ``source`` - an instance of enumerated object returned by :func:`enumerate_source`
-#       which represents the remaining (untouched) slim markup.
+#       which represents the remaining (untouched) plim markup.
 # ------------------------------
 #
 # -- EXTRACTORS are the "light" versions of parsers. It means that their input arguments
@@ -441,7 +441,7 @@ def extract_statement_expression(tail, source):
     return u''.join(buf).strip(), source
 
 
-def extract_slim_line(line, source):
+def extract_plim_line(line, source):
     """Returns a 3-tuple of inline tags sequence, closing tags sequence, and a dictionary of
     last tag components (name, attributes, content)"""
     buf = []
@@ -501,7 +501,7 @@ def extract_slim_line(line, source):
                 attribute_pair, tail, source = result
                 if attribute_pair.startswith('id="'):
                     if css_id:
-                        raise errors.SlimSyntaxError('Your template has two "id" attribute definitions', line)
+                        raise errors.PlimSyntaxError('Your template has two "id" attribute definitions', line)
                 if attribute_pair.startswith('class="') and css_class:
                     attribute_pair = "{prefix}{classes} {suffix}".format(
                         #len('class="')
@@ -533,7 +533,7 @@ def extract_slim_line(line, source):
                 # We have reached the end of attributes definition
                 tail = tail[1:].lstrip()
             else:
-                raise errors.SlimSyntaxError("Unexpected end of line", line)
+                raise errors.PlimSyntaxError("Unexpected end of line", line)
         else:
             if tail.startswith(' '):
                 tail = tail.lstrip()
@@ -580,7 +580,7 @@ def extract_slim_line(line, source):
 # Parsers
 # ==================================================================================
 def parse_style_script(indent_level, current_line, matched, source):
-    extracted_html_line, close_buf, _, source = extract_slim_line(current_line, source)
+    extracted_html_line, close_buf, _, source = extract_plim_line(current_line, source)
     buf = [extracted_html_line, '\n']
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
     buf.extend([parsed_data, close_buf])
@@ -593,10 +593,10 @@ def parse_doctype(indent_level, current_line, ___, source):
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
-def parse_slim_tree(indent_level, current_line, ___, source):
+def parse_plim_tree(indent_level, current_line, ___, source):
     buf = []
     current_line = current_line.strip()
-    extracted_html_line, close_buf, _, source = extract_slim_line(current_line, source)
+    extracted_html_line, close_buf, _, source = extract_plim_line(current_line, source)
     buf.append(extracted_html_line)
 
     while True:
@@ -652,7 +652,7 @@ def parse_python(indent_level, __, matched, source):
 
 
 def parse_mako_text(indent, __, matched, source):
-    _, __, components, source = extract_slim_line(matched.group('line').strip(), source)
+    _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
     buf = ['\n<%text']
     if components['attributes']:
         buf.extend([' ', components['attributes']])
@@ -668,10 +668,10 @@ def parse_mako_text(indent, __, matched, source):
 
 
 def parse_call(indent_level, current_line, matched, source):
-    _, __, components, source = extract_slim_line(matched.group('line').strip(), source)
+    _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
     tag = components['content'].strip()
     if not tag:
-        raise errors.SlimSyntaxError("-call must contain namespace:defname declaration", current_line)
+        raise errors.PlimSyntaxError("-call must contain namespace:defname declaration", current_line)
     buf = ['\n<%{tag}'.format(tag=tag)]
     if components['attributes']:
         buf.extend([' ', components['attributes']])
@@ -929,7 +929,7 @@ def parse_raw_html(indent_level, current_line, matched, source):
 
 
 def parse_mako_one_liners(indent_level, __, matched, source):
-    _, __, components, source = extract_slim_line(matched.group('line').strip(), source)
+    _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
     buf = ['\n<%{tag}'.format(tag=components['name'])]
     if components['content']:
         buf.append(' file="{name}"'.format(name=components['content']))
@@ -940,7 +940,7 @@ def parse_mako_one_liners(indent_level, __, matched, source):
 
 
 def parse_def_block(indent_level, __, matched, source):
-    _, __, components, source = extract_slim_line(matched.group('line'), source)
+    _, __, components, source = extract_plim_line(matched.group('line'), source)
     tag = components['name']
     buf = ['<%{def_or_block}'.format(def_or_block=tag)]
     if components['content']:
@@ -985,7 +985,7 @@ def scan_line(line):
     return len(match.group('indent')), match.group('line')
 
 
-def compile_slim_source(source):
+def compile_plim_source(source):
     source = enumerate_source(source)
     result = []
     while True:
@@ -1010,7 +1010,7 @@ def compile_slim_source(source):
 PARSERS = ( # Order matters
     (PARSE_STYLE_SCRIPT_RE, parse_style_script),
     (PARSE_DOCTYPE_RE, parse_doctype),
-    (TAG_LINE_RE, parse_slim_tree),
+    (TAG_LINE_RE, parse_plim_tree),
     (PARSE_EXPLICIT_LITERAL_RE, parse_explicit_literal),
     (PARSE_IMPLICIT_LITERAL_RE, parse_implicit_literal),
     (PARSE_RAW_HTML_RE, parse_raw_html),

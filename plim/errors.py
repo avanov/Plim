@@ -2,14 +2,14 @@
 
 
 
-class SlimError(Exception):
+class PlimError(Exception):
     def __str__(self):
         return self.__unicode__().encode('utf-8')
 
 
-class SlimSyntaxError(SlimError):
+class PlimSyntaxError(PlimError):
     def __init__(self, msg, line):
-        super(SlimSyntaxError, self).__init__()
+        super(PlimSyntaxError, self).__init__()
         self.msg = msg
         self.line = line
 
@@ -17,7 +17,7 @@ class SlimSyntaxError(SlimError):
         return u"{msg}: {line}".format(msg=self.msg, line=self.line)
 
 
-class ParserNotFound(SlimError):
+class ParserNotFound(PlimError):
     def __init__(self, lineno, line):
         super(ParserNotFound, self).__init__()
         self.lineno = lineno

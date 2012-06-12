@@ -5,12 +5,12 @@ from plim import preprocessor
 
 def includeme(config):
     config.add_renderer(
-        config.get_settings().get('plim.file_extension', '.slim'),
-        MakoSlimRenderer
+        config.get_settings().get('plim.file_extension', '.plm'),
+        MakoPlimRenderer
     )
 
 
-class MakoSlimRenderer(object):
+class MakoPlimRenderer(object):
     def __init__(self, info):
         info.settings['mako.preprocessor'] = preprocessor
         self.makoRenderer = mako_templating.renderer_factory(info)

@@ -34,7 +34,7 @@ class TestPreprocessorSyntax(TestCaseBase):
 
     def test_plim(self):
         cases = [
-            'pipe', 'slim_line', 'if', 'unless', 'python', 'for', 'while', 'until', 'with',
+            'pipe', 'plim_line', 'if', 'unless', 'python', 'for', 'while', 'until', 'with',
             'try', 'def_block', 'style_script', 'comment', 'one_liners', 'mako_text',
             'early_return', 'call', 'multiline_variable', 'literal_one_liners', 'no_filtering'
         ]
