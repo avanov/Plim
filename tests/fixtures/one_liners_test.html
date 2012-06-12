@@ -1,0 +1,18 @@
+-inherit base.html
+- inherit file="base.html"
+-inherit
+-inherit /ideas/base.html
+
+-page args="x, y, z='default'"
+- page
+
+-include file="header.html"
+| Content
+- include footer.html
+
+-namespace name="dyn" file="${context['namespace_name']}"
+- namespace name="dyn" = context['namespace_name']
+-namespace name="dyn" ${context['namespace_name']}
+-namespace name="dyn" | ${context['namespace_name']}
+-namespace name="dyn" , ${context['namespace_name']}
+-namespace name="dyn" =, context['namespace_name']

@@ -1,0 +1,37 @@
+                                - def hello()
+                                    | hello world
+
+
+- def account()
+    | Account for ${username}:<br/>
+
+    - for row in accountdata
+        | Value: ${row}<br/>
+
+
+-def account(accountname, type='regular')
+    | account name: ${accountname}, type: ${type}
+
+
+-def mydef()
+    -def subdef()
+        | a sub def
+
+    | i'm the def, and the subcomponent is ${subdef()}
+
+
+html:body
+    -block
+        | this is a block.
+
+
+- block filter="h"
+    html this is some escaped html.
+
+
+span.post_prose
+    -block args="post" post_prose
+        = post.content
+
+-block name="post_prose"
+    =pageargs['post'].content

@@ -1,0 +1,29 @@
+doctype 5
+html
+    head
+        title Title
+
+    body
+        div: a href=request.route_path('profile', tagname=tagname)=name
+        .item.striped.${u' '.join([str(role) for role in roles])}
+        .meta.founded ${_('Founded in')} ${year}.
+        div Test1
+        #test2  Test2
+        #layout-960.decorated | Test3
+        #test4.test4-1 Test4
+        div , Test5
+        p#${fully.dynamic}.${cls.attributes}.${cls.attributes.second}.third-${cls.third} = Test|n
+
+        .block
+            article
+                table: tr
+                    td.pic: img src="/static/proto/upd/10.jpg" alt=""
+                    td.post
+                        h4: a href="#" Sony: No PlayStation Vita Shortages
+                        div style="float:left;"
+                            Sony has increased production of the Vita to make
+                             sure that there are plenty of systems to go around.
+                        .meta
+                            a href="#"
+                                img src="/static/interface/comment.png" width="16"
+                                span.txt 111

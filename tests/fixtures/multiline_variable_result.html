@@ -1,0 +1,1 @@
+${form(fieldset('',field('text',title=_('Tab name'),name='name',size=30,maxlength=16,tip=_('Enter a tab name (up to 16 characters).'),required="required")),render_buttons=False)+ "Test"}

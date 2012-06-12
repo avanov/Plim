@@ -1,0 +1,16 @@
+-text filter="h"
+    heres some fake mako ${syntax}
+    <%def name="x()">${x}</%def>
+
+- text filter="h" heres some fake mako ${syntax}
+    <%def name="x()">${x}</%def>
+
+- text filter="h" = syntax
+    <%def name="x()">${x}</%def>
+
+-text
+    heres some fake mako ${syntax}
+    <%def name="x()">${x}</%def>
+
+-text , heres some fake mako ${syntax}
+    <%def name="x()">${x}</%def>

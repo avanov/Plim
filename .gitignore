@@ -1,0 +1,14 @@
+.[oa]
+*~
+.py[co]
+.doit.db
+.idea/
+
+build/
+dist/
+*.egg-info/
+
+docs/_build
+
+# Ignore all coverage files (see setup.py -> setup(tests_require=[]))
+*coverage*

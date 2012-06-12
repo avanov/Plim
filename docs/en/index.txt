@@ -1,0 +1,176 @@
+=======================
+ Plim User Guide
+=======================
+
+Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
+built on top of the `Mako Templates <http://www.makotemplates.org/>`_.
+
+
+Installation
+============
+
+.. code-block:: bash
+
+   pip install Plim
+
+
+Syntax
+=======
+
+Differences
+-----------
+-   Original Slim has the ``'``, ``='``, and ``=='`` `line indicators <https://github.com/stonean/slim#line-indicators>`_.
+    The same behaviour in Plim can be achieved by the following constructs:
+
+    .. code-block:: slim
+
+        , value
+        =, value
+        ==, value
+
+
+-   There is only one type of parentheses for wrapping tag attributes - ``()``. You can
+    use neither ``[]`` nor ``{}`` braces for attribute wrapping. However, this rule does not propagated
+    to any regular python code:
+
+    .. code-block:: slim
+
+        / For attributes wrapping we can use only parentheses
+        p(title="Link Title")
+            h1 class=(item.id == 1 and 'one' or 'unknown') Title
+
+            / Square and curly braces are allowed only in Python and Mako expressions
+            a#idx-${item.id} href=item.get_link(**{'argument': 'value'}) = item.attrs['title']
+
+
+-   In Plim, all html tags **MUST** be written in lowercase.
+
+    .. code-block:: slim
+
+        doctype 5
+        html
+            head
+                title Page Title
+            body
+                p Hello World
+
+
+Doctype declarations
+--------------------
+
+.. code-block:: slim
+
+   doctype 5
+
+
+Attribute shortcuts
+-------------------
+
+
+
+Control Logic
+-------------
+
+Braces and parentheses
+----------------------
+
+**if/elif/else** statements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**unless** statements
+~~~~~~~~~~~~~~~~~~~~~
+
+**for** statement
+~~~~~~~~~~~~~~~~~
+
+**while** statement
+~~~~~~~~~~~~~~~~~~~
+
+**until** statement
+~~~~~~~~~~~~~~~~~~~
+
+**with** statement
+~~~~~~~~~~~~~~~~~~
+
+**try/except** statements
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Early return from template
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Code comments
+-------------
+
+.. code-block:: slim
+
+   / This is a comment.
+     You can comment-out entire block with indentation
+
+
+Literals
+--------
+
+You can specify either explicit or implicit literal blocks. The difference is whether you
+add an explicit pipe "|" character or use any of the implicit triggers
+
+
+Python Blocks
+-------------
+
+.. code-block:: slim
+
+   - python x = 1
+
+or
+
+.. code-block:: slim
+
+   -py
+       x = 1
+
+or even
+
+.. code-block:: slim
+
+   - python x = 1
+       y = x + 1
+       if True:
+           y += 1
+       else:
+           y -= 1
+
+In latter case, the first line ``x = 1`` will be aligned with the second line ``y = x + 1``.
+
+
+Module-level Blocks
+-------------------
+
+.. code-block:: slim
+
+    -py!
+        from module_one import func_one
+        from module_two import func_two
+
+
+Mako Tags
+---------
+
+Extensions
+----------
+
+CoffeeScript
+~~~~~~~~~~~~
+
+SCSS/SASS
+~~~~~~~~~
+
+Markdown
+~~~~~~~~
+
+reStructuredText
+~~~~~~~~~~~~~~~~
+
+Framework Integration
+---------------------
+
