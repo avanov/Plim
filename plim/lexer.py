@@ -561,7 +561,7 @@ def extract_plim_line(line, source):
                     if tail.startswith(DYNAMIC_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
                         tail, source = extract_statement_expression(tail[2:], source)
-                        buf.append(" ${{{content}}}".format(content=tail))
+                        buf.append("${{{content}}} ".format(content=tail))
                     else:
                         tail, source = extract_statement_expression(tail[1:], source)
                         buf.append("${{{content}}}".format(content=tail))
@@ -569,7 +569,7 @@ def extract_plim_line(line, source):
                     if tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
                         tail, source = extract_statement_expression(tail[1:], source)
-                        buf.append(" ${{{content}}}".format(content=tail))
+                        buf.append("${{{content}}} ".format(content=tail))
                     else:
                         tail, source = extract_statement_expression(tail, source)
                         buf.append("${{{content}}}".format(content=tail))
@@ -579,7 +579,7 @@ def extract_plim_line(line, source):
 
             elif tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
                 tail = tail[1:].strip()
-                buf.append(" {content}".format(content=tail))
+                buf.append("{content} ".format(content=tail))
 
             else:
                 buf.append(tail.strip())

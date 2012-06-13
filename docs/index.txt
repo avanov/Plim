@@ -10,8 +10,10 @@
 .. toctree::
    :maxdepth: 3
 
+   en/nutshell.txt
    en/syntax.txt
    en/extensions.txt
+   en/frameworks.txt
    en/license.txt
    en/authors.txt
    en/related.txt

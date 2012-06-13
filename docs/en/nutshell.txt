@@ -1,0 +1,241 @@
+============================
+ In a Nutshell
+============================
+
+Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
+built on top of the `Mako Templates <http://www.makotemplates.org/>`_.
+It exploits `Mako's preprocessor feature <http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor#api-reference>`_
+to translate its syntax to a valid HTML/Mako markup.
+
+
+Installation
+=============
+
+.. code-block:: bash
+
+   pip install Plim
+
+
+Tests
+=======
+
+Plim provides an extensive test suite based on `nosetests <http://nose.readthedocs.org/en/latest/>`_.
+You can run the tests with the following command
+
+.. code-block:: bash
+
+    python setup.py nosetests
+
+
+
+Syntax Highlighters
+======================
+
+At this moment, Plim doesn't have syntax highlighters.
+
+But, at a starting point you can use
+`Slim syntax highlighters <https://github.com/stonean/slim#syntax-highlighters>`_,
+since Most of the Plim syntax is the same as of Slim.
+
+
+Syntactic Differences
+=====================
+
+Plim is *not the exact* port of Slim. Here is the full list of differences.
+
+
+#.  Slim has the ( ``'`` ), ( ``='`` ), and ( ``=='`` ) `line indicators <https://github.com/stonean/slim#line-indicators>`_.
+    In Plim, single quote has been replaced by the comma char ( ``,`` ):
+
+    .. code-block:: slim
+
+        , value
+        =, value
+        ==, value
+
+
+    The change was made in order to get rid of the syntactic ambiguities like these:
+
+    .. code-block:: plim
+
+        / Is this an empty python string or a syntax error caused by the unclosed single quote?
+        =''
+
+        / Is this a python string 'u' ('u''' is the correct python syntax) or
+          a syntax error caused by the unclosed unicode docstring?
+        ='u'''
+
+    Meanwhile, the comma char is not allowed at the beginning of python expression,
+    therefore the following code samples are consistent:
+
+    .. code-block:: plim
+
+        / Syntax error at mako runtime caused by the unclosed single quote
+        =,'
+
+        / Correct and consistent. Produces an explicit whitespace
+          followed by empty unicode string
+        =,u''
+
+
+    In addition, the comma-syntax seems more natural, since in formal writing we also add a whitespace
+    between a comma and the following word (in contrast to apostrophes, which are usually
+    written together with words).
+
+
+
+#.  Unlike Slim, Plim does not support square or curly braces for wrapping tag attributes.
+    You can use only parentheses ``()``:
+
+    .. code-block:: slim
+
+        / For attributes wrapping we can use only parentheses
+        p(title="Link Title")
+          h1 class=(item.id == 1 and 'one' or 'unknown') Title
+
+          / Square and curly braces are allowed only in Python and Mako expressions
+          a#idx-${item.id} href=item.get_link(
+                       **{'argument': 'value'}) = item.attrs['title']
+
+
+#.  In Plim, all html tags **MUST** be written in lowercase.
+
+    This restriction was introduced to support Implicit Litaral Block feature.
+
+    .. code-block:: slim
+
+        doctype 5
+        html
+          head
+            title Page Title
+          body
+            p
+              | Hello, Explicit Literal Block!
+            p
+              Hello, Implicit Literal Block!
+
+
+#.  Plim does not distinguish between control structures and embedded filters.
+
+    In Slim, you would write ``-if``, ``-for``, and ``coffee:`` (without preceding dash,
+    but with the colon sign at the tail).
+    But in Plim, you must write ``-if``, ``-for``, and ``-coffee``.
+
+
+
+Full Example
+==============================
+
+.. code-block:: plim
+
+    / base.html
+     -------------------------
+    doctype html
+    html = next.body()
+
+
+.. code-block:: plim
+
+    / helpers.html
+     -------------------------
+    -def other_headers()
+        meta charset="utf-8"
+        link rel="stylesheet" href="/static/css/main.css"
+
+
+.. code-block:: plim
+
+    / layout.html
+     -------------------------
+    -inherit base.html
+    -namespace name="helper" helpers.html
+
+    head
+      title Plim Example
+      meta name="keywords" content="template language"
+      = helper.other_headers()
+
+      script
+        /* "script" and "style" blocks do not require explicit literal indicator "|"  */
+        $(content).do_something();
+
+      style
+        body {
+          background:#FFF;
+          }
+
+      -scss
+        /* SCSS/SASS extension */
+        @option compress: no;
+        .selector {
+          a {
+            display: block;
+          }
+          strong {
+            color: blue;
+          }
+        }
+
+      -coffee
+        # CoffeeScript extension
+        square = (x) -> x * x
+
+    body
+      h1 Markup examples
+      #content.example1
+        p Nest by indentation
+        <div>
+          p Mix raw HTML and Plim markup
+        </div>
+
+        -md
+          Use Markdown
+          ============
+
+          See the syntax on [this page][1].
+
+          [1]: http://daringfireball.net/projects/markdown/basics
+
+        -rest
+          or Use reStructuredText
+          =======================
+
+          See the syntax on `this page`_.
+
+          .. _this page: http://docutils.sourceforge.net/docs/user/rst/quickref.html
+
+
+      -if items
+        table
+          -for item in items
+            tr
+              td = item.name
+              td = item.price
+      -elif show_empty
+        p No items found
+      -else
+        a href=request.route_url('items.add') =, _('Add items')
+
+      -unless user.authenticated
+        p Please, sign in.
+      -else
+        p Welcome, ${user.name}!
+        ul
+          -python
+            i = 0
+            limit = 5
+
+          -while i < limit
+            li#idx-${i}.up: a href='#' title="Title" == i
+            -py i += 1
+
+          -until i < 0
+            li#idx-${i}.down-${i}: a href='''#''' title="""Title""" ==, i
+            -python
+              i -= 1
+
+      #footer
+        Copyright &copy; 2010 Andrew Stone.
+        -include footer_links.html
+
+    = render('tracking_code')

@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='Plim',
-    version='0.5.3',
+    version='0.7.0',
     packages=find_packages(exclude=['tests']),
     # Plim is a preprocessor for Mako template language.
     # But it doesn't depend on the Mako package itself.

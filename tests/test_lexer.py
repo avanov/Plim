@@ -206,7 +206,7 @@ class TestLexerFunctions(TestCaseBase):
         )
         test_case(
             'body: #layout: ul#list.cls1.cls2: li.active: a href="#" =, Page Title',
-            '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#"> ${Page Title}</a></li></ul></div></body>'
+            '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#">${Page Title} </a></li></ul></div></body>'
         )
 
         # Check parentheses
@@ -221,7 +221,7 @@ class TestLexerFunctions(TestCaseBase):
         test_case('body=Test', result)
 
         # Test explicit whitespace
-        result = '<body> Test</body>'
+        result = '<body>Test </body>'
         test_case('body , Test', result)
         test_case('body,Test', result)
 
@@ -232,11 +232,11 @@ class TestLexerFunctions(TestCaseBase):
         test_case('div|=Test', '<div>=Test</div>')
 
         # Test dynamic with whitespace
-        result = '<div> ${Test}</div>'
+        result = '<div>${Test} </div>'
         test_case('div=,Test', result)
         test_case('div =, Test', result)
         test_case('div = , Test', '<div>${, Test}</div>')
-        test_case('div, =Test', '<div> =Test</div>')
+        test_case('div, =Test', '<div>=Test </div>')
 
         # Test dynamic with "n" filter
         result = '<div>${Test|n}</div>'
@@ -245,13 +245,13 @@ class TestLexerFunctions(TestCaseBase):
         test_case('div == Test', result)
         test_case('div == Test|u,h', '<div>${Test|n,u,h}</div>')
         test_case('div = = Test', '<div>${= Test}</div>')
-        test_case('div, ==Test', '<div> ==Test</div>')
+        test_case('div, ==Test', '<div>==Test </div>')
 
-        result = '<div> ${Test|n}</div>'
+        result = '<div>${Test|n} </div>'
         test_case('div==,Test', result)
-        test_case('div==,Test | h', '<div> ${Test |n,h}</div>')
+        test_case('div==,Test | h', '<div>${Test |n,h} </div>')
         test_case('div ==, Test', result)
-        test_case('div ==, Test | h', '<div> ${Test |n,h}</div>')
+        test_case('div ==, Test | h', '<div>${Test |n,h} </div>')
         test_case('div == , Test', '<div>${, Test|n}</div>')
 
         # Test parentheses and functions as dynamic variables
