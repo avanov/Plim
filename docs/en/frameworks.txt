@@ -6,3 +6,17 @@
 Pyramid
 =========
 
+Add the following lines into your .ini configuration file
+
+.. code-block:: ini
+
+    [app:main]
+    pyramid.includes =
+        # ... (other packages)
+        plim.adapters.pyramid_renderer
+
+    
+    # Templates options
+    # ... (a number of mako.* options)
+    # file extension of plim templates (.plm by default)
+    plim.file_extension = .plm

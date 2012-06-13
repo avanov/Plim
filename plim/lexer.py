@@ -73,7 +73,7 @@ PARSE_IMPLICIT_LITERAL_RE = re.compile(
 PARSE_RAW_HTML_RE = re.compile('\<.*')
 PARSE_MAKO_TEXT_RE = re.compile('-\s*(?P<line>text(?:\s+.*)?)')
 PARSE_CALL_RE = re.compile('-\s*(?P<line>call(?:\s+.*)?)')
-PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue)\s*')
+PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue|break)\s*')
 
 # This constant uses LITERAL_PREFIX and LITERAL_SPACE_PREFIX
 PARSE_EXPLICIT_LITERAL_RE = re.compile("(?:\||,).*", re.IGNORECASE)

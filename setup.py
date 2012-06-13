@@ -36,6 +36,8 @@ setup(
     maintainer_email="maxim.avanov@gmail.com",
     description="Plim is a Python port of Ruby's Slim template language built on top of the Mako Templates.",
     license="MIT",
+    url="https://github.com/2nd/Plim",
+    download_url="https://github.com/2nd/Plim",
     keywords="mako templates ruby slim jade pyjade",
     classifiers=[
         'Development Status :: 4 - Beta',

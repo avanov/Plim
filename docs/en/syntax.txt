@@ -3,6 +3,9 @@
 =======================
 
 
+Some relevant parts of this section were copied from 
+the `official Slim documentation <https://github.com/stonean/slim>`_.
+
 Line Indicators
 ==================
 
@@ -12,7 +15,7 @@ Line Indicators
 ``,``
   The comma tells Plim to copy the line (similar to ``|``), but makes sure that a single trailing space is appended.
 
-  Please note, that Slim syntax instead has the single quote ( ``'`` ) line indicator.
+  .. note:: Slim syntax instead has the single quote ( ``'`` ) line indicator.
 
 ``-``
   The dash denotes control code. Examples of control code are loops, conditionals,
@@ -22,8 +25,8 @@ Line Indicators
   The equal sign tells Plim it's a Python call that produces output to add to the buffer.
 
 ``=,``
-  Same as the single equal sign ( ``=`` ), except that it adds an explicit whitespace
-  before a python expression.
+  Same as the single equal sign ( ``=`` ), except that it adds an explicit single trailing
+  whitespace after the python expression.
 
 ``==``
   Same as the single equal sign ( ``=`` ), but adds `the "n" filter <http://docs.makotemplates.org/en/latest/filtering.html>`_
@@ -37,43 +40,40 @@ Line Indicators
 
 
 ``==,``
-  Same as the double equal sign ( ``==`` ), except that it adds an explicit whitespace
-  before a python expression.
+  Same as the double equal sign ( ``==`` ), except that it adds an explicit single trailing
+  whitespace after the python expression.
 
 ``/``
   Use the forward slash for code comments - anything after it won't get displayed in the final mako markup.
 
 
-  Please note, that **there is no an equivalent syntax for Slim's ``/!`` html comment**.
-  This construct has been considered redundant since Plim supports raw HTML tags:
+  .. note:: **There is no an equivalent syntax for Slim's "/!" html comment**.
+      This line indicator has been considered redundant since Plim supports raw HTML tags:
 
-  .. code-block:: plim
-
-      / You can use raw HTML comment tags, as well as all other tags
-      <!-- HTML comment -->
-      <div>
-
-        / You can use Plim markup inside the raw HTML
-        a href="#" = link.title
-
-      / If you use raw HTML, you have to close all tags manually
-      </div>
-
-
-Language Features
-==================
+      .. code-block:: plim
+    
+          / You can use raw HTML comment tags, as well as all other tags
+          <!-- HTML comment -->
+          <div>
+    
+            / You can use Plim markup inside the raw HTML
+            a href="#" = link.title
+    
+          / If you use raw HTML, you have to close all tags manually
+          </div>
 
 
 Indentation
-----------------------------------------------------
+==================
 
-Plim indentation rules are the same as of Slim: indentation matters, but it's not as strict as Haml.
+Plim indentation rules are the same as of Slim: indentation matters, but it's not as strict as 
+`Haml <http://haml.info/about.html>`_.
 If you want to first indent 2 spaces, then 5 spaces, it's your choice. To nest markup you only need to
 indent by one space, the rest is gravy.
 
 
-Attributes Wrapping
----------------------------------
+Attribute Wrapping
+===================
 
 You can wrap tag attributes with parentheses ``()``. Unlike Slim, Plim doesn't support square ``[]`` or
 curly ``{}`` braces for attributes wrapping.
@@ -101,7 +101,7 @@ If you wrap the attributes, you can spread them across multiple lines:
 
 
 Inline Tag Content
----------------------
+==================
 
 You can put content on the same line with the tag:
 
@@ -111,7 +111,7 @@ You can put content on the same line with the tag:
       h1 id="headline" Welcome to my site.
 
 
-Or nest it. Note: Use either a pipe or `Implicit literal indicators `_
+Or nest it. Note: use either a pipe or :ref:`Implicit literal indicators <implicit-literals>`
 
 .. code-block:: plim
 
@@ -126,7 +126,7 @@ Or nest it. Note: Use either a pipe or `Implicit literal indicators `_
 
 
 Dynamic Tag Content
---------------------------------
+====================================
 
 You can make the call on the same line
 
@@ -146,12 +146,9 @@ Or nest it.
 
 
 ``id`` and ``class`` Shortcuts
--------------------------------------------
+====================================
 
 You can specify the id and class attributes in the following shortcut form.
-
-Note: `unlike Slim <https://github.com/stonean/slim#shortcut-form-for-id-and-class-attributes>`_,
-Plim allows you to evaluate dynamic expressions in the shortcuts.
 
 .. code-block:: plim
 
@@ -165,22 +162,12 @@ Plim allows you to evaluate dynamic expressions in the shortcuts.
       .content
         = show_content
 
-      / Dynamic shortcuts
-      h1#headline-${'dynamic'}
-        = page_headline
-      h2#${tagline.id}.small-${tagline.cls}.${tagline.other_cls}
-        = page_tagline
-      .${'content'}
-        = show_content
 
-
-this is the same as
+This is the same as:
 
 .. code-block:: plim
 
     body
-
-      / Static shortcuts
       h1 id="headline"
         = page_headline
       h2 id="tagline" class="small tagline"
@@ -188,9 +175,26 @@ this is the same as
       div class="content"
         = show_content
 
+
+
+`In contrast to Slim <https://github.com/stonean/slim#shortcut-form-for-id-and-class-attributes>`_,
+Plim allows you to insert dynamic expressions right into the shortcuts:
+
+.. code-block:: plim
+
       / Dynamic shortcuts
-      h1 id="headline-${'dynamic'}"
-        = page_headline
+      h1#headline-${'dynamic'} = page_headline
+      h2#${tagline.id}.small-${tagline.cls}.${tagline.other_cls}
+        = page_tagline
+      .${'content'}
+        = show_content
+
+
+This is the same as:
+
+.. code-block:: plim
+
+      h1 id="headline-${'dynamic'}" = page_headline
       h2 id="${tagline.id}" class="small-${tagline.cls} ${tagline.other_cls}"
         = page_tagline
       div class="${'content'}"
@@ -198,7 +202,7 @@ this is the same as
 
 
 Inline Tags
-------------
+====================================
 
 Sometimes you may want to be a little more compact and inline the tags.
 
@@ -219,7 +223,7 @@ For readability, don't forget you can wrap the attributes.
 
 
 Evaluate Python Code in Text
--------------------------------
+====================================
 
 Use standard `mako expression syntax <http://docs.makotemplates.org/en/latest/syntax.html#expression-substitution>`_.
 The text escaping depends on `mako's default filters settings <http://docs.makotemplates.org/en/latest/filtering.html?highlight=default%20filters#the-default-filters-argument>`_.
@@ -241,8 +245,8 @@ tag (or Plim's ``-text`` equivalent for blocks of mako syntax examples), or this
       h1 Welcome ${'${current_user.name}'} to the show.
 
 
-Skip the HTML Escaping
-------------------------
+Skip HTML Escaping
+====================================
 
 Use either a double equal sign
 
@@ -262,10 +266,248 @@ or the explicit ``| n`` filter at the end of the expression
         = page_headline | n
 
 
-Treat Multiple Lines of Code as Text That Should Bypass Parsing
-------------------------------------------------------------------
+Code Comments
+===================
 
-Use a pipe ( ``|`` ) or comma ( ``,`` ) or implicit literal indicator to start the escape.
+Use forward slash ``/`` for code comments
+
+.. code-block:: plim
+
+    body
+      p
+        / This is a comment.
+          Indentation is the natural way to get block comments
+
+
+.. _raw-html:
+
+Raw HTML Tags
+====================================
+
+Plim allows you to use raw HTML tag lines, and also to mix them with any 
+available control logic. It is particularly useful in situations like this one:
+
+.. code-block:: plim
+
+    - if edit_profile
+      / Wrap interface with editable block
+      <div id="edit-profile">
+
+    - include new_or_edit_interface.html
+
+    - if edit_profile
+      / close wrapper tag
+      </div>
+
+
+Doctype Declarations
+====================================
+
+There is no default option for doctype declaration tag. Therefore, you should
+explicitly specify the desired doctype:
+
+.. code-block:: plim
+
+    doctype 5
+
+
+Here is the full list of available doctypes:
+
+**doctype html**
+
+    ``<!DOCTYPE html>``
+
+**doctype 5**
+
+    ``<!DOCTYPE html>``
+  
+**doctype 1.1**
+
+    ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">``
+  
+**doctype strict**
+
+    ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">``
+
+**doctype xml**
+
+    ``<?xml version="1.0" encoding="utf-8" ?>``
+
+**doctype transitional**
+
+    ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">``
+
+**doctype frameset**
+
+    ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">``
+    
+**doctype basic**
+
+    ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">``
+    
+**doctype mobile**
+
+    ``<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">``
+
+
+
+Control Logic
+==============
+
+
+**if/elif/else** statements
+----------------------------
+
+.. code-block:: plim
+
+      -if items
+        table
+          -for item in items
+            tr
+              td = item.name
+              td = item.price
+      -elif show_empty
+        p No items found
+      -else
+        a href=request.route_url('items.add') =, _('Add items')
+
+
+**unless** statement
+----------------------
+
+This is the shortcut form of the ``- if not (<EXPR>)`` statement.
+
+.. code-block:: plim
+
+   -unless user.authenticated
+     p Please, sign in.
+   -else
+     p Welcome, ${user.name}!
+
+
+**for** statement
+-------------------
+
+.. code-block:: plim
+
+    table
+      -for item in items
+        tr
+          td = item.name
+          td = item.price
+
+
+You can use the ``-continue`` and ``-break`` commands inside the ``-while`` block.
+See the section :ref:`Returning Early from a Template <return-early>`.
+
+
+**while** statement
+---------------------
+
+.. code-block:: plim
+
+   -python
+     i = 0
+     limit = 5
+   
+   ul
+     -while i < limit
+       li#idx-${i}.up: a href='#' title="Title" == i
+       -py i += 1
+
+
+You can use the ``-continue`` and ``-break`` commands inside the ``-while`` block.
+See the section :ref:`Returning Early from a Template <return-early>`.
+
+
+**until** statement
+-----------------------
+
+This is the shortcut form of the ``- while not (<EXPR>)`` statement.
+
+.. code-block:: plim
+
+   -until i < 0
+     li#idx-${i}.down-${i}: a href='''#''' title="""Title""" ==, i
+     -py i -= 1
+
+
+You can use the ``-continue`` and ``-break`` commands inside the ``-while`` block.
+See the section :ref:`Returning Early from a Template <return-early>`.
+
+
+**with** statement
+---------------------
+
+The ``% with`` statement was introduced in 
+`Mako 0.7.0 <http://www.makotemplates.org/CHANGES>`_.
+
+.. code-block:: plim
+
+    -with <EXPR> as <VAR>
+      / Do some stuff
+    
+
+**try/except** statements
+---------------------------
+
+.. code-block:: plim
+
+    - try
+      div = item[0]
+      div = price['usd']
+      
+    - except IndexError
+      div IndexError
+      
+    - except KeyError as e
+      div = e
+
+
+.. _return-early:
+
+Returning Early from a Template
+--------------------------------
+
+Plim provides a shortcut to Mako's 
+`<% return %> <http://docs.makotemplates.org/en/latest/syntax.html#returning-early-from-a-template>`_
+template directive.
+
+.. code-block:: plim
+
+    - if not len(records)
+      No records found.
+      -return
+
+This is the same as
+
+.. code-block:: plim
+
+    - if not len(records)
+      No records found.
+      -py return
+
+You can use it at any position of the template, not only inside control structures.
+
+There are also the ``-break`` and ``-continue`` shortcuts, that can be used inside the
+``-for``, ``-while``, and ``-until`` loops.
+
+
+
+.. _implicit-literals:
+
+Literals
+=================
+
+You can specify either explicit or implicit literal blocks. The difference is,
+whether you prepend a block with the explicit pipe char ``|`` or start it by one
+of the implicit indicators.
+
+
+Explicit Literals
+--------------------
+
+Use a pipe ( ``|`` ) or comma ( ``,`` ) literal indicators to start the escape.
 Each following line that is indented greater than the first one is copied over.
 
 .. code-block:: plim
@@ -284,15 +526,7 @@ Each following line that is indented greater than the first one is copied over.
           This is a test of the text block.
 
 
-.. code-block:: plim
-
-    body
-      p
-        / Implicit literal (the line is started with the uppercase letter)
-        This is a test of the text block.
-
-
-The parsed result of all the above examples:
+The parsed result of both the above examples:
 
 .. code-block:: html
 
@@ -311,126 +545,90 @@ The left margin is set to the zero. Any additional spaces will be copied over.
                 And so on...
 
 
-Add Comments
----------------
+Implicit Literals
+-----------------------
 
-Use ``/`` for code comments
+Literal blocks can be implicitly specified by the following starting sequences:
 
-.. code-block:: plim
-
-    body
-      p
-        / This line won't get displayed.
-          Neither does this line.
-
-
-Raw HTML Tags
---------------
-
-It is particularly useful in situations like the following
-
-.. code-block:: plim
-
-    - if edit_profile
-      / Wrap interface with editable block
-      <div id="edit-profile">
-
-    - include new_or_edit_interface.html
-
-    -if edit_profile
-      / end wrapping
-      </div>
-
-
-Implicit Literal Indicators
-----------------------------
-
-Literal blocks can be implicitly specified by uppercase starting letter.
-Moreover, any non-ASCII starting letter indicates an implicit literal block, too.
-
-
-Doctype Declarations
---------------------
-
-.. code-block:: slim
-
-   doctype 5
-
-
-
-
-Control Logic
-==============
-
-
-Braces and Parentheses
-----------------------
-
-
-**if/elif/else** statements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-**unless** statements
-~~~~~~~~~~~~~~~~~~~~~
-
-
-**for** statement
-~~~~~~~~~~~~~~~~~
-
-
-**while** statement
-~~~~~~~~~~~~~~~~~~~
-
-
-**until** statement
-~~~~~~~~~~~~~~~~~~~
-
-
-**with** statement
-~~~~~~~~~~~~~~~~~~
-
-
-**try/except** statements
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-Early return from template
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-Code Comments
---------------
-
-.. code-block:: slim
-
-   / This is a comment.
-     You can comment-out entire block with indentation
-
-
-Literals
----------
-
-You can specify either explicit or implicit literal blocks. The difference is,
-whether you prepend a block with the explicit pipe char ``|`` or start it by one
-of the implicit triggers:
-
-- uppercase ASCII letter;
+- an uppercase ASCII letter;
 - any non-ASCII letter;
-- digit without prefixed positive/negative signs;
-- HTML-escaped characters, for example ``&nbsp;``;
+- a digit without prefixed positive/negative signs;
+- HTML-escaped character, for example ``&nbsp;``;
 - Mako open brace sequence ``${``;
-- open square brace ``[``;
-- open parenthesis ``(``;
+- an open square brace ``[``;
+- an open parenthesis ``(``;
 - any unicode character outside the range of U0021 - U007E (ASCII 33 - 126).
+
+.. code-block:: plim
+
+    p
+      | pipe is the explicit literal indicator. It is required if your line starts with
+        the non-literal character.
+    
+    p
+      I'm the implicit literal, because my first letter is in uppercase.
+    
+    p
+      1. Digits
+      2. are
+      3. the
+      4. implicit
+      5. literals
+      6. too.
+    
+    p
+      ${raw_mako_expression} indicates the implicit literal line.
+    
+    p
+      If subsequent lines do not start with implicit literal indicator,
+        you must indent them
+      | or use the pipe.
+
+
+.. only:: html
+
+    .. code-block:: plim
+    
+        p
+          если ваш блок текста написан на русском, или любом другом языке, не
+          использующим символы из ASCII-диапазона, то вам даже не обязательно
+          использовать заглавную букву в начале блока.
+        
+          / if your literal blocks are written in Russian, or any other
+            language which uses non-ASCII letters, you can put even the
+            lowercase letter at the beginning of the block
+
+
+.. only:: latex
+
+    .. code-block:: plim
+    
+        p
+          / if your literal blocks are written in Russian, or any other 
+            language which uses non-ASCII letters, you can put even the 
+            lowercase letter at the beginning of the block
+            
+            Unfortunately, we cannot provide an example of this feature here,
+            because current version of Sphinx Documenting tool cannot automatically
+            build PDF documentation with unicode characters.
+            See an explanation on 
+            https://groups.google.com/forum/#!topic/sphinx-dev/kUeROyCyX9w/discussion
+
+      
 
 
 Python Blocks
---------------
+========================
+
+Use ``-py`` or ``-python`` to insert the 
+`<% %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#python-blocks>`_.
+
+For example
 
 .. code-block:: slim
 
    - python x = 1
+
 
 or
 
@@ -438,6 +636,7 @@ or
 
    -py
        x = 1
+
 
 or even
 
@@ -450,11 +649,15 @@ or even
        else:
            y -= 1
 
+
 In latter case, the first line ``x = 1`` will be aligned with the second line ``y = x + 1``.
 
 
 Module-level Blocks
---------------------
+========================
+
+Use ``-py!`` or ``-python!`` block to insert the 
+`<%! %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#module-level-blocks>`_.
 
 .. code-block:: slim
 
@@ -464,6 +667,87 @@ Module-level Blocks
 
 
 Mako Tags
-----------
+===========================
 
-`Tags <http://docs.makotemplates.org/en/latest/syntax.html#tags>`_
+Plim supports a complete set of 
+`Mako Tags <http://docs.makotemplates.org/en/latest/syntax.html#tags>`_,
+except the ``<%doc>``. The latter has been considered deprecated, since
+Plim itself has built-in support of multi-line comments.
+
+.. note:: As all mako tags start with the ``<`` char, which 
+    indicates a :ref:`raw HTML line <raw-html>`, they all can be written
+    "as is". The only thing you must remember is to manually close the pair tags.
+
+
+``<%page>`` tag
+----------------
+
+.. code-block:: plim
+
+    -page args="x, y, z='default'"
+
+produces
+
+.. code-block:: mako
+
+    <%page args="x, y, z='default'"/>
+
+
+``<%include>`` tag
+-------------------
+
+.. code-block:: plim
+    
+    -include footer.html
+
+or
+
+.. code-block:: plim
+
+    -include file="footer.html"
+
+produce the same output
+
+.. code-block:: mako
+    
+    <%include file="footer.html"/>
+    
+
+``<%inherit>`` tag
+-------------------
+
+.. code-block:: plim
+    
+    -inherit base.html
+
+or
+
+.. code-block:: plim
+    
+    -inherit file="base.html"
+
+will generate the same
+
+.. code-block:: mako
+
+    <%inherit file="base.html"/>
+    
+
+``<%namespace>`` tag
+---------------------
+
+
+
+``<%def>`` tag
+----------------
+
+
+``<%block>`` tag
+-----------------
+
+``<%nsname:defname> / <%call>`` tag
+------------------------------------
+
+``<%text>`` tag
+----------------
+

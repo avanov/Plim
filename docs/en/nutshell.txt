@@ -19,7 +19,8 @@ Installation
 Tests
 =======
 
-Plim provides an extensive test suite based on `nosetests <http://nose.readthedocs.org/en/latest/>`_.
+Plim provides an extensive test suite based on 
+`nosetests <http://nose.readthedocs.org/en/latest/>`_.
 You can run the tests with the following command
 
 .. code-block:: bash
@@ -73,14 +74,14 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
         / Syntax error at mako runtime caused by the unclosed single quote
         =,'
 
-        / Correct and consistent. Produces an explicit whitespace
-          followed by empty unicode string
+        / Correct and consistent. Produces an empty unicode string followed by an
+          explicit trailing whitespace
         =,u''
 
 
-    In addition, the comma-syntax seems more natural, since in formal writing we also add a whitespace
-    between a comma and the following word (in contrast to apostrophes, which are usually
-    written together with words).
+    In addition, the comma syntax seems more natural, since in formal writing we also add a whitespace
+    between a comma and the following word (in contrast to apostrophes, which may be written
+    together with some parts of words - "I'm", "it's" etc).
 
 
 
@@ -100,7 +101,8 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
 
 #.  In Plim, all html tags **MUST** be written in lowercase.
 
-    This restriction was introduced to support Implicit Litaral Block feature.
+    This restriction was introduced to support
+    :ref:`Implicit Litaral Blocks <implicit-literals>` feature.
 
     .. code-block:: slim
 
@@ -115,10 +117,10 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
               Hello, Implicit Literal Block!
 
 
-#.  Plim does not distinguish between control structures and embedded filters.
+#.  Plim does not make distinctions between control structures and embedded filters.
 
-    In Slim, you would write ``-if``, ``-for``, and ``coffee:`` (without preceding dash,
-    but with the colon sign at the tail).
+    For example, in Slim you would write ``-if``, ``-for``, and ``coffee:`` (without 
+    preceding dash, but with the colon sign at the tail).
     But in Plim, you must write ``-if``, ``-for``, and ``-coffee``.
 
 
