@@ -238,6 +238,22 @@ class TestLexerFunctions(TestCaseBase):
         test_case('div = , Test', '<div>${, Test}</div>')
         test_case('div, =Test', '<div> =Test</div>')
 
+        # Test dynamic with "n" filter
+        result = '<div>${Test|n}</div>'
+        test_case('div==Test', result)
+        test_case('div==Test|u', '<div>${Test|n,u}</div>')
+        test_case('div == Test', result)
+        test_case('div == Test|u,h', '<div>${Test|n,u,h}</div>')
+        test_case('div = = Test', '<div>${= Test}</div>')
+        test_case('div, ==Test', '<div> ==Test</div>')
+
+        result = '<div> ${Test|n}</div>'
+        test_case('div==,Test', result)
+        test_case('div==,Test | h', '<div> ${Test |n,h}</div>')
+        test_case('div ==, Test', result)
+        test_case('div ==, Test | h', '<div> ${Test |n,h}</div>')
+        test_case('div == , Test', '<div>${, Test|n}</div>')
+
         # Test parentheses and functions as dynamic variables
         test_case('div attr=func(test("test")) Test', '<div attr="${func(test("test"))}">Test</div>')
 

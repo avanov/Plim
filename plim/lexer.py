@@ -555,13 +555,24 @@ def extract_plim_line(line, source):
         components['content'] = ''
         if tail:
             if tail.startswith(DYNAMIC_CONTENT_PREFIX):
-                if tail.startswith(DYNAMIC_CONTENT_SPACE_PREFIX):
-                    # ensure that a single whitespace is appended
-                    tail, source = extract_statement_expression(tail[2:], source)
-                    buf.append(" ${{{content}}}".format(content=tail))
+                tail = tail[1:]
+                if tail.startswith(DYNAMIC_CONTENT_PREFIX):
+                    tail = _inject_n_filter(tail)
+                    if tail.startswith(DYNAMIC_CONTENT_SPACE_PREFIX):
+                        # ensure that a single whitespace is appended
+                        tail, source = extract_statement_expression(tail[2:], source)
+                        buf.append(" ${{{content}}}".format(content=tail))
+                    else:
+                        tail, source = extract_statement_expression(tail[1:], source)
+                        buf.append("${{{content}}}".format(content=tail))
                 else:
-                    tail, source = extract_statement_expression(tail[1:], source)
-                    buf.append("${{{content}}}".format(content=tail))
+                    if tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
+                        # ensure that a single whitespace is appended
+                        tail, source = extract_statement_expression(tail[1:], source)
+                        buf.append(" ${{{content}}}".format(content=tail))
+                    else:
+                        tail, source = extract_statement_expression(tail, source)
+                        buf.append("${{{content}}}".format(content=tail))
 
             elif tail.startswith(LITERAL_CONTENT_PREFIX):
                 buf.append(tail[1:].strip())
