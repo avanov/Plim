@@ -117,6 +117,8 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
               Hello, Implicit Literal Block!
 
 
+#. You do not have to use the ``|`` (pipe) indicator in ``style`` and ``script`` tags.
+
 #.  Plim does not make distinctions between control structures and embedded filters.
 
     For example, in Slim you would write ``-if``, ``-for``, and ``coffee:`` (without 
