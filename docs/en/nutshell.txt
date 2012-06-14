@@ -125,7 +125,7 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
 
 
 
-Full Example
+Detailed Example
 ==============================
 
 .. code-block:: plim

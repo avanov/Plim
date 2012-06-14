@@ -71,7 +71,97 @@ Plim indentation rules are the same as of Slim: indentation matters, but it's no
 If you want to first indent 2 spaces, then 5 spaces, it's your choice. To nest markup you only need to
 indent by one space, the rest is gravy.
 
+Tag Attributes
+===================
 
+Static Attrbutes
+----------------
+
+Static tag attributes can be specified in the same form as any valid
+python string declaration.
+
+For example
+
+.. code-block:: plim
+
+    input type='text' name="username" value='''Max Power''' maxlength="""32"""
+
+will be rendered as
+
+.. code-block:: html
+    
+    <input type="text" name="username" value="Max Power" maxlength="32"/>
+
+As in Python string declarations, you must take care of correct quote escaping
+
+.. code-block:: plim
+
+    input value='It\'s simple'
+    input value="It's simple"
+    input value='''It's simple'''
+    input value="""It's simple"""
+    
+    input value="He said \"All right!\""
+    input value='He said "All right!"'
+    input value='''He said "All right!"'''
+    input value="""He said "All right!\""""
+
+
+You can omit quotes from digital attribute values:
+
+.. code-block:: plim
+
+    input type='text' name="measure" value=+.97 maxlength=32
+
+produces
+
+.. code-block:: html
+
+    <input type="text" name="measure" value="+.97" maxlength="32"/>
+
+
+Dynamic Attributes
+------------------
+
+Dynamic values can be specified in forms of:
+
+- Mako expression
+
+  .. code-block:: plim
+  
+      input type="text" name="username" value="${user.name}" maxlength=32
+      a href="${request.route_url('user_profile', tagname=user.login, _scheme='https')}"
+  
+  or
+  
+  .. code-block:: plim
+  
+      input type="text" name="username" value=${user.name} maxlength=32
+      a href=${request.route_url('user_profile', tagname=user.login, _scheme='https')}
+
+
+- Python expression
+
+  .. code-block:: plim
+  
+      input type="text" name="username" value=user.name maxlength=32
+      a href=request.route_url('user_profile', tagname=user.login, _scheme='https')
+  
+  or with parentheses
+  
+  .. code-block:: plim
+  
+      input type="text" name="username" value=(user.name) maxlength=32
+      a href=(request.route_url('user_profile', tagname=user.login, _scheme='https'))
+
+All these examples produce the same mako markup:
+
+.. code-block:: mako
+  
+    <input type="text" name="username" value="${user.name}" maxlength="32"/>
+    <a href="${request.route_url('user_profile', tagname=user.login, _scheme='https')}"></a>
+
+    
 Attribute Wrapping
 ===================
 
@@ -679,7 +769,7 @@ Plim itself has built-in support of multi-line comments.
     "as is". The only thing you must remember is to manually close the pair tags.
 
 
-``<%page>`` tag
+**-page** tag
 ----------------
 
 .. code-block:: plim
@@ -692,8 +782,14 @@ produces
 
     <%page args="x, y, z='default'"/>
 
+See the details of what ``<%page>`` is used for in 
+`The body() Method <http://docs.makotemplates.org/en/latest/namespaces.html#namespaces-body>`_
+and `Caching <http://docs.makotemplates.org/en/latest/caching.html>`_
+sections of Mako Documentation.
 
-``<%include>`` tag
+
+
+**-include** tag
 -------------------
 
 .. code-block:: plim
@@ -711,9 +807,12 @@ produce the same output
 .. code-block:: mako
     
     <%include file="footer.html"/>
-    
 
-``<%inherit>`` tag
+
+See the `<%include> section <http://docs.makotemplates.org/en/latest/syntax.html#include>`_
+of Mako Documentation to get more information about this tag.
+
+**-inherit** tag
 -------------------
 
 .. code-block:: plim
@@ -732,22 +831,171 @@ will generate the same
 
     <%inherit file="base.html"/>
     
+See Mako's `inheritance documentation <http://docs.makotemplates.org/en/latest/inheritance.html>`_ 
+to get more information about template inheritance.
 
-``<%namespace>`` tag
+**-namespace** tag
 ---------------------
 
+.. code-block:: plim
+
+    -namespace name="helper" helpers.html
+
+or
+
+.. code-block:: plim
+
+    -namespace file="helpers.html" name="helper"
+
+produce
+
+.. code-block:: mako
+
+    <%namespace file="helpers.html" name="helper"/>
+
+See Mako's `namespace documentation <http://docs.makotemplates.org/en/latest/namespaces.html>`_ 
+to get more information about template namespaces.
 
 
-``<%def>`` tag
+**-def** tag
 ----------------
 
+.. code-block:: plim
 
-``<%block>`` tag
+    -def account(accountname, type='regular')
+    
+or
+
+.. code-block:: plim
+
+    -def name="account(accountname, type='regular')"
+
+produce
+
+.. code-block:: mako
+
+    <%def name="account(accountname, type='regular')">
+    </%def>
+
+See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_ 
+to get more information about functions and blocks.
+
+
+**-block** tag
 -----------------
 
-``<%nsname:defname> / <%call>`` tag
+Unlike ``-def`` statements, blocks can be anonymous
+
+.. code-block:: plim
+
+    -block
+      This is an anonymous block.
+
+Or they can be named as functions
+
+.. code-block:: plim
+
+    -block name="post_prose"
+      = pageargs['post'].content
+
+or
+
+.. code-block:: plim
+
+    -block post_prose
+      = pageargs['post'].content
+
+As in ``-def``, both above examples produce the same result
+
+.. code-block:: mako
+
+    <%block name="post_prose">
+    ${pageargs['post'].content}</%block>
+
+You can also specify other block arguments as well
+
+.. code-block:: plim
+
+    - block filter="h"
+      html this is some escaped html.
+
+
+See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_ 
+to get more information about functions and blocks.
+
+
+**-call** tag
 ------------------------------------
 
-``<%text>`` tag
+This statement allows you to define custom tags.
+
+The following examples
+
+.. code-block:: plim
+
+    -call expression="${4==4}" self:conditional
+      |i'm the result
+    
+    - call expression=${4==4} self:conditional
+      | i'm the result
+    
+    - call self:conditional
+      | i'm the result
+    
+    - call self:conditional
+
+will produce
+
+.. code-block:: mako
+
+    <%self:conditional expression="${4==4}">
+    i'm the result
+    </%self:conditional>
+    
+    <%self:conditional expression="${4==4}">
+    i'm the result
+    </%self:conditional>
+    
+    <%self:conditional>
+    i'm the result
+    </%self:conditional>
+    
+    <%self:conditional>
+    </%self:conditional>
+
+
+Please consult the sections
+`<%nsname:defname> <http://docs.makotemplates.org/en/latest/syntax.html#nsname-defname>`_
+and 
+`Calling a Def with Embedded Content and/or Other Defs <http://docs.makotemplates.org/en/latest/defs.html#defs-with-content>`_
+of Mako Documentation to get more information about custom tags.
+
+
+
+**-text** tag
 ----------------
 
+As it is mentioned in 
+`Mako documentation <http://docs.makotemplates.org/en/latest/syntax.html#text>`_, 
+this tag suspends the Mako lexer’s normal parsing of Mako template directives, 
+and returns its entire body contents as plain text. It is used pretty much to write 
+documentation about Mako:
+
+.. code-block:: plim
+
+    -text filter="h"
+      here's some fake mako ${syntax}
+      <%def name="x()">${x}</%def>
+    
+    - text filter="h" here's some fake mako ${syntax}
+      <%def name="x()">${x}</%def>
+    
+    - text filter="h" = syntax
+      <%def name="x()">${x}</%def>
+    
+    -text
+      here's some fake mako ${syntax}
+      <%def name="x()">${x}</%def>
+    
+    -text , here's some fake mako ${syntax}
+      <%def name="x()">${x}</%def>
