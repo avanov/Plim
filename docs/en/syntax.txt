@@ -161,7 +161,42 @@ All these examples produce the same mako markup:
     <input type="text" name="username" value="${user.name}" maxlength="32"/>
     <a href="${request.route_url('user_profile', tagname=user.login, _scheme='https')}"></a>
 
+
+Boolean Attributes
+-------------------
+
+Boolean attributes can be specified either by static or dynamic method:
+
+Static attribute example:
+
+.. code-block::  plim
+
+    / Static boolean attribute "disabled"
+    input type="text" name="username" disabled="disabled"
     
+    / If you wrap your attributes with parentheses, you can use
+      shortcut form
+    input (type="text" name="username" disabled)
+
+Dynamic attribute example (note the trailing question mark):
+
+.. code-block::  plim
+
+    / Dynamic boolean attribute "disabled"
+      will be evaluated to 'disabled="disabled"' if `is_disabled`
+      evaluates to True
+      
+    input type="text" name="username" disabled=${is_disabled}?
+    
+    / or you can write it that way
+    input type="text" name="username" disabled=is_disabled?
+    
+    / or even that way
+    input type="text" name="username" disabled=(is_disabled or 
+                                                is_really_disabled)?
+    
+
+
 Attribute Wrapping
 ===================
 
@@ -672,7 +707,7 @@ Literal blocks can be implicitly specified by the following starting sequences:
     p
       If subsequent lines do not start with implicit literal indicator,
         you must indent them
-      | or use the pipe.
+      | or you can use the "explicit" pipe.
 
 
 .. only:: html
