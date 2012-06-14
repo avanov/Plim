@@ -9,4 +9,4 @@ to translate its syntax to a valid HTML/Mako markup.
 For more information visit the `Documentation Page`_.
 
 
-.. _Documentation Page: http://jinja.pocoo.org/2/documentation/
+.. _Documentation Page: http://plim.readthedocs.org/en/latest/
