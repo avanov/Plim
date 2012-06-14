@@ -1,24 +1,12 @@
 Plim
-~~~~~~
+==============
 
-Plim is a Python port of Ruby's Slim template language.
-
-
-In a Nutshell
--------------
-
-Plim is build on top of the Mako templates by exploiting its preprocessor feature.
-
-
-Philosophy
-----------
-
-Application logic is for the controller but don't try to make the life
-for the template designer too hard by giving him too few functionality.
+Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
+built on top of the `Mako Templates <http://www.makotemplates.org/>`_.
+It exploits `Mako's preprocessor feature <http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor#api-reference>`_
+to translate its syntax to a valid HTML/Mako markup.
 
 For more information visit the `Documentation Page`_.
 
 
-
 .. _Documentation Page: http://jinja.pocoo.org/2/documentation/
-.. _Jinja2 tip: http://dev.pocoo.org/hg/jinja2-main/archive/tip.tar.gz#egg=Jinja2-dev
