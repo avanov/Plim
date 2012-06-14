@@ -22,7 +22,7 @@ CSS_ID_SHORTCUT_DELIMITER = '#'
 CSS_CLASS_SHORTCUT_DELIMITER = '.'
 # used to separate tag attributes from its inline content and as a prefix of literal blocks
 LITERAL_CONTENT_PREFIX = '|'
-# Same as above but with the preceding space
+# Same as above but with the trailing whitespace
 LITERAL_CONTENT_SPACE_PREFIX = ','
 DYNAMIC_CONTENT_PREFIX = '='
 DYNAMIC_CONTENT_SPACE_PREFIX = "=,"
