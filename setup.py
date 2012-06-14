@@ -39,7 +39,7 @@ setup(
     license="MIT",
     url="https://github.com/2nd/Plim",
     download_url="https://github.com/2nd/Plim",
-    keywords="mako templates ruby slim jade pyjade",
+    keywords="mako templates ruby slim jade pyjade pyramid",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
