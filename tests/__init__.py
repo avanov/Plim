@@ -25,13 +25,6 @@ class TestCaseBase(unittest.TestCase):
 
 class TestPreprocessorSyntax(TestCaseBase):
 
-    def setUp(self):
-        here = os.path.abspath(os.path.dirname(__file__))
-        self.templates_dir = os.path.join(here, 'fixtures')
-
-    def tearDown(self):
-        pass
-
     def test_plim(self):
         cases = [
             'pipe', 'plim_line', 'if', 'unless', 'python', 'for', 'while', 'until', 'with',
