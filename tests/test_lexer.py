@@ -274,7 +274,7 @@ class TestLexerFunctions(TestCaseBase):
             result = l.enumerate_source(self.get_file_contents(result))
             for lineno, line in template:
                 if line.strip():
-                    _, result_line = result.next()
+                    _, result_line = next(result)
                     line, close_buf, _, __ = l.extract_plim_line(line, template)
                     self.assertEqual(line + close_buf, result_line.rstrip())
 
@@ -284,7 +284,7 @@ class TestLexerFunctions(TestCaseBase):
     def test_parse_markdown(self):
         source = self.get_file_contents('markdown_test.html')
         source = l.enumerate_source(source)
-        _, line = source.next()
+        _, line = next(source)
         result = self.get_file_contents('markdown_result.html')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
@@ -293,7 +293,7 @@ class TestLexerFunctions(TestCaseBase):
     def test_parse_rst(self):
         source = self.get_file_contents('reST_test.html')
         source = l.enumerate_source(source)
-        _, line = source.next()
+        _, line = next(source)
         result = self.get_file_contents('reST_result.html')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
@@ -302,7 +302,7 @@ class TestLexerFunctions(TestCaseBase):
     def test_sass(self):
         source = self.get_file_contents('scss_test.html')
         source = l.enumerate_source(source)
-        _, line = source.next()
+        _, line = next(source)
         result = self.get_file_contents('scss_result.html')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
