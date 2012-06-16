@@ -36,6 +36,7 @@ setup(
         # If any package contains *.txt or *.rst files, include them
         '':['*.txt', '*.rst',]
     },
+    include_package_data=True,
 
     # PyPI metadata
     # Read more at http://docs.python.org/distutils/setupscript.html#meta-data
