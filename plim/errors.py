@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .util import as_unicode
 
 
 
@@ -14,7 +15,7 @@ class PlimSyntaxError(PlimError):
         self.line = line
 
     def __unicode__(self):
-        return u"{msg}: {line}".format(msg=self.msg, line=self.line)
+        return as_unicode("{msg}: {line}").format(msg=self.msg, line=self.line)
 
 
 class ParserNotFound(PlimError):
@@ -24,5 +25,5 @@ class ParserNotFound(PlimError):
         self.line = line
 
     def __unicode__(self):
-        return u"Invalid syntax at line {lineno}: {line}".format(
+        return as_unicode("Invalid syntax at line {lineno}: {line}").format(
             lineno=self.lineno, line=self.line)
