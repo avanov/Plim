@@ -6,7 +6,7 @@ Version 0.7
 ------------
 
 - 0.7.1
-  Fix installation error.
+  Fixed installation error caused by missing README.rst.
 
 - 0.7.0
   Initial public release.
