@@ -1,11 +1,17 @@
+import os
+import sys
+
 from setuptools import find_packages
 from setuptools import setup
 
 
 
+PY3K = sys.version_info >= (3,0)
+readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
+
 setup(
     name='Plim',
-    version='0.7.0',
+    version='0.7.1',
     packages=find_packages(exclude=['tests']),
     # Plim is a preprocessor for Mako template language.
     # But it doesn't depend on the Mako package itself.
@@ -19,7 +25,10 @@ setup(
         # We use CoffeeScript for "-coffee" extension
         'CoffeeScript',
         # We use SCSS for "-scss/sass" extension
-        'pyScss'
+        # There is a SyntaxError during pySCSS==1.1.3 installation
+        # https://github.com/Kronuz/pyScss/issues/87
+        # TODO: remove exact version marker when the issue will be fixed.
+        PY3K and 'pyScss==1.1.1' or 'pyScss'
     ],
     setup_requires=['nose>=1.1.2'],
     tests_require=['coverage'],
@@ -27,6 +36,7 @@ setup(
         # If any package contains *.txt or *.rst files, include them
         '':['*.txt', '*.rst',]
     },
+    include_package_data=True,
 
     # PyPI metadata
     # Read more at http://docs.python.org/distutils/setupscript.html#meta-data
@@ -35,7 +45,7 @@ setup(
     maintainer="Maxim Avanov",
     maintainer_email="maxim.avanov@gmail.com",
     description="Plim is a Python port of Ruby's Slim template language built on top of the Mako Templates",
-    long_description=open('README.rst').read(),
+    long_description=readme,
     license="MIT",
     url="https://github.com/2nd/Plim",
     download_url="https://github.com/2nd/Plim",

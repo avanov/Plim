@@ -5,4 +5,8 @@ Changelog
 Version 0.7
 ------------
 
-Initial public release.
+- 0.7.1
+  Fixed installation error caused by missing README.rst.
+
+- 0.7.0
+  Initial public release.

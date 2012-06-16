@@ -2,6 +2,8 @@ from docutils.core import publish_string
 import coffeescript
 from scss import Scss
 
+from .util import as_unicode
+
 
 
 def rst_to_html(source):
@@ -12,9 +14,9 @@ def rst_to_html(source):
 
 
 def coffee_to_js(source):
-    return u'<script>{js}</script>'.format(js=coffeescript.compile(source))
+    return as_unicode('<script>{js}</script>').format(js=coffeescript.compile(source))
 
 
 def scss_to_css(source):
     css = Scss().compile(source).strip()
-    return u'<style>{css}</style>'.format(css=css)
+    return as_unicode('<style>{css}</style>').format(css=css)
