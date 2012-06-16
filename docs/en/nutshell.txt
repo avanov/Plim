@@ -36,7 +36,7 @@ At this moment, Plim doesn't have syntax highlighters.
 
 But, at a starting point you can use
 `Slim syntax highlighters <https://github.com/stonean/slim#syntax-highlighters>`_,
-since Most of the Plim syntax is the same as of Slim.
+since most of Plim syntax is the same as of Slim.
 
 
 Syntactic Differences
