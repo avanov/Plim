@@ -42,10 +42,10 @@ LINE_BREAK = '\\\n'
 # Please note that in Plim all tag names are intentionally lower-cased
 TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
 TAG_RE = re.compile(TAG_RULE)
-TAG_LINE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
 LINE_PARTS_RE = re.compile('(?P<indent>\s*)(?P<line>.*)\s*')
 MAKO_FILTERS_TAIL_RE = re.compile('\|\s*(?P<filters>[a-zA-Z][_.a-zA-Z0-9]*(?:,\s*[a-zA-Z][_.a-zA-Z0-9]*)*)\s*$')
 
+PARSE_PLIM_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
 PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
 PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
 STATEMENT_CONVERT = {
@@ -62,20 +62,20 @@ PARSE_MAKO_ONE_LINERS_RE = re.compile('-\s*(?P<line>(?:include|inherit|page|name
 PARSE_IMPLICIT_LITERAL_RE = re.compile(
     # Order matters
     u'(?P<line>(?:'
-    u'\$?\{|\(|\[|&.+;|[0-9]+|'
-    u'(?:'
-        u'[^\u0021-\u007E]'  # not ASCII 33 - 126
-        u'|'                 # or
-        u'[A-Z]))'           # uppercase latin letters (ASCII 65 - 90)
-                             # It is possible because TAG_RE can match only lowercase tag names
-    u'.*)\s*'
+        u'\$?\{|\(|\[|&.+;|[0-9]+|'
+        u'(?:'
+            u'[^\u0021-\u007E]'  # not ASCII 33 - 126
+            u'|'                 # or
+            u'[A-Z]'             # uppercase latin letters (ASCII 65 - 90)
+        u')'                     # It is possible because TAG_RE can match only lowercase tag names
+    u').*)\s*'
 )
 PARSE_RAW_HTML_RE = re.compile('\<.*')
 PARSE_MAKO_TEXT_RE = re.compile('-\s*(?P<line>text(?:\s+.*)?)')
 PARSE_CALL_RE = re.compile('-\s*(?P<line>call(?:\s+.*)?)')
 PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue|break)\s*')
 
-# This constant uses LITERAL_PREFIX and LITERAL_SPACE_PREFIX
+# This constant uses LITERAL_CONTENT_PREFIX and LITERAL_CONTENT_SPACE_PREFIX
 PARSE_EXPLICIT_LITERAL_RE = re.compile("(?:\||,).*", re.IGNORECASE)
 
 PARSE_VARIABLE_RE = re.compile("=(?P<prevent_escape>=)?(?P<explicit_space>,)?\s*(?P<line>.*)", re.IGNORECASE)
@@ -1021,7 +1021,7 @@ def compile_plim_source(source):
 PARSERS = ( # Order matters
     (PARSE_STYLE_SCRIPT_RE, parse_style_script),
     (PARSE_DOCTYPE_RE, parse_doctype),
-    (TAG_LINE_RE, parse_plim_tree),
+    (PARSE_PLIM_TREE_RE, parse_plim_tree),
     (PARSE_EXPLICIT_LITERAL_RE, parse_explicit_literal),
     (PARSE_IMPLICIT_LITERAL_RE, parse_implicit_literal),
     (PARSE_RAW_HTML_RE, parse_raw_html),
