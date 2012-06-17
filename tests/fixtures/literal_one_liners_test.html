@@ -54,3 +54,11 @@ You must capitalize the first letter
 <li${extra_attrs|n}>
 a#${link.get('id', 'sidenav-{}'.format(i))} href=link['url'] = link['text']
 </li>
+
+<li${extra_attrs|n}>
+    a#${
+        link.get('id', 'sidenav-{}'.format(i))
+    }.${asl_class} href=link['url'] \
+                   data-cache=cache \
+                   data-frame=frame = link['text']
+</li>

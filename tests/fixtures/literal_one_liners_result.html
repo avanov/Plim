@@ -46,3 +46,5 @@ and then indent each following line to make it working.
 <a href="${link['url']}" id="${link.get('id', 'sidenav-{}'.format(i))}">${link['text']}</a></li>
 <li${extra_attrs|n}>
 <a href="${link['url']}" id="${link.get('id', 'sidenav-{}'.format(i))}">${link['text']}</a></li>
+<li${extra_attrs|n}>
+<a href="${link['url']}" data-cache="${cache}" data-frame="${frame}" id="${link.get('id', 'sidenav-{}'.format(i))}" class="${asl_class}">${link['text']}</a></li>
