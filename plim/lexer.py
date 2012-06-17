@@ -234,7 +234,11 @@ def _extract_braces_api(line, source, starting_braces_re, open_braces_re, closin
     buf = [open_brace]
     tail = line[len(open_brace):]
     braces_counter = 1
-
+    
+    if not tail:
+        _, tail = next(source)
+        tail = tail.lstrip()
+    
     while tail:
         current_char = tail[0]
         if closing_braces_re.match(current_char):
@@ -493,7 +497,6 @@ def extract_plim_line(line, source):
         # 3. Parse tag attributes
         # -----------------------------------
         _, tail, source = extract_line_break(tail.lstrip(), source)
-
         parentheses = tail.startswith(OPEN_BRACE)
         if parentheses:
             tail = tail[1:].lstrip()

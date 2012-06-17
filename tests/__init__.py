@@ -29,7 +29,7 @@ class TestPreprocessorSyntax(TestCaseBase):
         cases = [
             'pipe', 'plim_line', 'if', 'unless', 'python', 'for', 'while', 'until', 'with',
             'try', 'def_block', 'style_script', 'comment', 'one_liners', 'mako_text',
-            'early_return', 'call', 'multiline_variable', 'literal_one_liners', 'no_filtering'
+            'early_return', 'call', 'multiline_variable', 'literal_one_liners', 'no_filtering',
         ]
         for test_case in cases:
             source = self.get_file_contents(test_case + '_test.html')
