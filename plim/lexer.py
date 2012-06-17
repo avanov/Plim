@@ -234,41 +234,41 @@ def _extract_braces_api(line, source, starting_braces_re, open_braces_re, closin
     buf = [open_brace]
     tail = line[len(open_brace):]
     braces_counter = 1
-    
-    if not tail:
-        _, tail = next(source)
-        tail = tail.lstrip()
-    
-    while tail:
-        current_char = tail[0]
-        if closing_braces_re.match(current_char):
-            braces_counter -= 1
-            buf.append(current_char)
-            if braces_counter:
-                tail = tail[1:]
-                continue
-            return joined(buf), tail[1:], source
-
-        if current_char == NEWLINE:
+     
+    while True:
+        if not tail:
             _, tail = next(source)
             tail = tail.lstrip()
-            continue
-
-        if open_braces_re.match(current_char):
-            braces_counter += 1
+        
+        while tail:
+            current_char = tail[0]
+            if closing_braces_re.match(current_char):
+                braces_counter -= 1
+                buf.append(current_char)
+                if braces_counter:
+                    tail = tail[1:]
+                    continue
+                return joined(buf), tail[1:], source
+    
+            if current_char == NEWLINE:
+                _, tail = next(source)
+                tail = tail.lstrip()
+                continue
+    
+            if open_braces_re.match(current_char):
+                braces_counter += 1
+                buf.append(current_char)
+                tail = tail[1:]
+                continue
+    
+            result = search_quotes(tail)
+            if result is not None:
+                buf.append(tail[:result])
+                tail = tail[result:]
+                continue
+    
             buf.append(current_char)
             tail = tail[1:]
-            continue
-
-        result = search_quotes(tail)
-        if result is not None:
-            buf.append(tail[:result])
-            tail = tail[result:]
-            continue
-
-        buf.append(current_char)
-        tail = tail[1:]
-    return None
 
 
 extract_braces = lambda line, source: _extract_braces_api(line, source,

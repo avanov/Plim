@@ -11,7 +11,7 @@ readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='Plim',
-    version='0.7.2',
+    version='0.7.3',
     packages=find_packages(exclude=['tests']),
     # Plim is a preprocessor for Mako template language.
     # But it doesn't depend on the Mako package itself.
