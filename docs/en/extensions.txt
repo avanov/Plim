@@ -78,6 +78,49 @@ produces
     }</style>
 
 
+Stylus
+~~~~~~~~~
+
+Plim uses `stylus <https://github.com/bkad/python-stylus>`_ package to translate
+`stylus <http://learnboost.github.com/stylus/>`_ markup to plain CSS.
+You can start Stylus block with the ``-stylus`` construct. The output will be
+wrapped with ``<style></style>`` tags.
+
+For example,
+
+.. code-block:: plim
+
+    - stylus
+      @import 'nib'
+      body
+        background: linear-gradient(top, white, black)
+      
+      border-radius()
+        -webkit-border-radius arguments
+        -moz-border-radius arguments
+        border-radius arguments
+    
+      a.button
+        border-radius 5px
+
+produces
+
+.. code-block:: html
+
+    <style>body {
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #000));
+      background: -webkit-linear-gradient(top, #fff 0%, #000 100%);
+      background: -moz-linear-gradient(top, #fff 0%, #000 100%);
+      background: -o-linear-gradient(top, #fff 0%, #000 100%);
+      background: -ms-linear-gradient(top, #fff 0%, #000 100%);
+      background: linear-gradient(top, #fff 0%, #000 100%);
+    }
+    a.button {
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+    }</style>
+
 
 Markdown
 ~~~~~~~~

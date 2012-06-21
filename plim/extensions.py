@@ -1,6 +1,7 @@
 from docutils.core import publish_string
 import coffeescript
 from scss import Scss
+from stylus import Stylus
 
 from .util import as_unicode
 
@@ -20,3 +21,8 @@ def coffee_to_js(source):
 def scss_to_css(source):
     css = Scss().compile(source).strip()
     return as_unicode('<style>{css}</style>').format(css=css)
+
+
+def stylus_to_css(source):
+    compiler = Stylus(plugins={'nib':{}})
+    return as_unicode('<style>{css}</style>').format(css=compiler.compile(source).strip())
