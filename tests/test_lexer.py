@@ -306,3 +306,21 @@ class TestLexerFunctions(TestCaseBase):
         result = self.get_file_contents('scss_result.html')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
+
+        
+    def test_coffee(self):
+        source = self.get_file_contents('coffee_test.html')
+        source = l.enumerate_source(source)
+        _, line = next(source)
+        result = self.get_file_contents('coffee_result.html')
+        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
+        self.assertEqual(data.strip(), result.strip())
+        
+        
+    def test_stylus(self):
+        source = self.get_file_contents('stylus_test.html')
+        source = l.enumerate_source(source)
+        _, line = next(source)
+        result = self.get_file_contents('stylus_result.html')
+        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
+        self.assertEqual(data.strip(), result.strip())
