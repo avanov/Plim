@@ -8,6 +8,7 @@ from .util import StringIO, PY3K, joined, space_separated, as_unicode
 from .extensions import rst_to_html
 from .extensions import coffee_to_js
 from .extensions import scss_to_css
+from .extensions import stylus_to_css
 
 
 
@@ -45,6 +46,10 @@ TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
 TAG_RE = re.compile(TAG_RULE)
 LINE_PARTS_RE = re.compile('(?P<indent>\s*)(?P<line>.*)\s*')
 MAKO_FILTERS_TAIL_RE = re.compile('\|\s*(?P<filters>[a-zA-Z][_.a-zA-Z0-9]*(?:,\s*[a-zA-Z][_.a-zA-Z0-9]*)*)\s*$')
+DIGITAL_VALUE_RE = re.compile(
+    # Order matters
+    '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+))'
+)
 
 PARSE_PLIM_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
 PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
@@ -88,7 +93,7 @@ PARSE_VARIABLE_RE = re.compile("=(?P<prevent_escape>=)?(?P<explicit_space>,)?\s*
 PARSE_COMMENT_RE = re.compile('/.*')
 PARSE_DOCTYPE_RE = re.compile('doctype\s+(?P<type>[0-9a-z\.]+)', re.IGNORECASE)
 PARSE_STYLE_SCRIPT_RE = re.compile('(?:style|script).*', re.IGNORECASE)
-PARSE_EXTENSION_LANGUAGES_RE = re.compile('-\s*(?P<lang>md|markdown|rst|rest|coffee|scss|sass)\s*')
+PARSE_EXTENSION_LANGUAGES_RE = re.compile('-\s*(?P<lang>md|markdown|rst|rest|coffee|scss|sass|stylus)\s*')
 
 CSS_ID_SHORTCUT_TERMINATORS = (
     CSS_CLASS_SHORTCUT_DELIMITER,
@@ -314,10 +319,6 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
     return joined(buf), tail, source
 
 
-DIGITAL_VALUE_RE = re.compile(
-    # Order matters
-    '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+))'
-)
 def extract_digital_attr_value(line):
     result = DIGITAL_VALUE_RE.match(line)
     if result:
@@ -1056,7 +1057,8 @@ MARKUP_LANGUAGES = {
     'rest': rst_to_html,
     'coffee': coffee_to_js,
     'scss': scss_to_css,
-    'sass': scss_to_css
+    'sass': scss_to_css,
+    'stylus': stylus_to_css
 }
 
 DOCTYPES = {
