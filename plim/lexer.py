@@ -729,6 +729,8 @@ def parse_comment(indent_level, __, ___, source):
         except StopIteration:
             break
         tail_indent, tail_line = scan_line(tail_line)
+        if not tail_line:
+            continue
         if tail_indent <= indent_level:
             return '', tail_indent, tail_line, source
     return '', 0, '', source
