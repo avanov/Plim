@@ -10,6 +10,7 @@ dist/
 
 docs/_build
 
-# Ignore all coverage files (see setup.py -> setup(tests_require=[]))
+# Ignore all test-related files (see setup.py -> setup(tests_require=[]))
 *coverage*
 *nose*
+*node_modules*
