@@ -197,6 +197,21 @@ class TestLexerFunctions(TestCaseBase):
             self.assertEqual(line + close_buf, result)
 
         test_case(
+            "input#proceed (type='submit' name='proceed' value=_('Start creating my account') disabled)",
+            """<input type="submit" name="proceed" value="${_('Start creating my account')}" disabled="disabled" id="proceed"/>"""
+        )
+        
+        test_case(
+            "input#proceed ( disabled )",
+            """<input disabled="disabled" id="proceed"/>"""
+        )
+        
+        test_case(
+            "input#proceed (disabled)",
+            """<input disabled="disabled" id="proceed"/>"""
+        )
+            
+        test_case(
             'body: #layout: ul#list.cls1.cls2: li.active: a href="#" = Page Title',
             '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#">${Page Title}</a></li></ul></div></body>'
         )
