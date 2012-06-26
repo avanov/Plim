@@ -408,7 +408,7 @@ def extract_tag_attribute(line, source, parentheses=False):
                 return attribute, tail, source
             return None
 
-        elif parentheses and tail.startswith(ATTRIBUTES_DELIMITER):
+        elif parentheses and tail.startswith(ATTRIBUTES_DELIMITER) or tail.startswith(CLOSE_BRACE):
             # attribute is presented in a form of boolean attribute
             # which should be converted to attr="attr"
             return '{attr_name}="{attr_name}"'.format(attr_name=attr_name), tail, source
