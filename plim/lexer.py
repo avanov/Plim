@@ -843,11 +843,10 @@ def parse_foreign_statements(indent_level, __, matched, source):
 def parse_explicit_literal(indent_level, current_line, ___, source):
     """Parses lines and blocks started with the "|" (pipe) or "'" character."""
     # Get rid of the pipe character
-    explicit_space = current_line.startswith(LITERAL_CONTENT_SPACE_PREFIX)
     current_line = current_line[1:]
     _, striped_line = scan_line(current_line)
     # Add line and trailing newline character
-    buf = [explicit_space and " " or "", current_line.strip(), striped_line and "\n" or ""]
+    buf = [current_line.strip(), striped_line and "\n" or ""]
 
     align = None
     while True:
@@ -867,7 +866,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
         # remove preceding spaces
         line = current_line[align:].rstrip()
         buf.extend([line.rstrip(), "\n"])
-
+    
     return joined(buf), 0, '', source
 
 
