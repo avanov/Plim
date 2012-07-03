@@ -1,0 +1,1 @@
+<p>${ungettext('The link remains valid for {num} day.','The link remains valid for {num} days.',3).format(num=3)} ${_('Upon the expiration of this period, all non-activated accounts ''will be removed from the site.')}</p>

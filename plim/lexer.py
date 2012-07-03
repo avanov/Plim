@@ -39,7 +39,7 @@ ATTRIBUTE_VALUE_DELIMITER = '='
 # Ruby's Slim: selected=option_selected?("Slim")
 # Python's Plim: selected=option_selected("Plim")?
 BOOLEAN_ATTRIBUTE_MARKER = '?'
-LINE_BREAK = '\\\n'
+LINE_BREAK = '\\'
 
 # Please note that in Plim all tag names are intentionally lower-cased
 TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
@@ -523,7 +523,7 @@ def extract_plim_line(line, source):
                 continue
             else:
                 if parentheses and not tail:
-                    # We have reached the end of a line
+                    # We have reached the end of the line
                     # Try to parse multiline attributes list
                     lineno, tail = next(source)
                     continue
@@ -843,11 +843,10 @@ def parse_foreign_statements(indent_level, __, matched, source):
 def parse_explicit_literal(indent_level, current_line, ___, source):
     """Parses lines and blocks started with the "|" (pipe) or "'" character."""
     # Get rid of the pipe character
-    explicit_space = current_line.startswith(LITERAL_CONTENT_SPACE_PREFIX)
     current_line = current_line[1:]
     _, striped_line = scan_line(current_line)
     # Add line and trailing newline character
-    buf = [explicit_space and " " or "", current_line.strip(), striped_line and "\n" or ""]
+    buf = [current_line.strip(), striped_line and "\n" or ""]
 
     align = None
     while True:
@@ -867,7 +866,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
         # remove preceding spaces
         line = current_line[align:].rstrip()
         buf.extend([line.rstrip(), "\n"])
-
+    
     return joined(buf), 0, '', source
 
 
@@ -889,7 +888,7 @@ def _inject_n_filter(line):
 def parse_variable(indent_level, __, matched, source):
     explicit_space = matched.group('explicit_space') and ' ' or ''
     prevent_escape = matched.group('prevent_escape')
-    buf = [explicit_space, '${', matched.group('line')]
+    buf = ['${', matched.group('line')]
     while True:
         try:
             lineno, current_line = next(source)
@@ -903,14 +902,14 @@ def parse_variable(indent_level, __, matched, source):
             if prevent_escape:
                 buf = _inject_n_filter(buf)
             # add closing brace to complete mako expression syntax ${}
-            buf += '}'
+            buf += '}' + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
 
     buf = joined(buf)
     if prevent_escape:
         buf = _inject_n_filter(buf)
-    buf += '}'
+    buf += '}' + explicit_space
     return buf, 0, '', source
 
 

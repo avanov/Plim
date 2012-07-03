@@ -1,0 +1,1 @@
+<div class="extra-title"><input style="margin:0 10px 23px 0" type="text" name="extra_title" value="${extra_title[0]}" maxlength="200"/></div>
