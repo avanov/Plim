@@ -39,7 +39,7 @@ ATTRIBUTE_VALUE_DELIMITER = '='
 # Ruby's Slim: selected=option_selected?("Slim")
 # Python's Plim: selected=option_selected("Plim")?
 BOOLEAN_ATTRIBUTE_MARKER = '?'
-LINE_BREAK = '\\\n'
+LINE_BREAK = '\\'
 
 # Please note that in Plim all tag names are intentionally lower-cased
 TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
@@ -523,7 +523,7 @@ def extract_plim_line(line, source):
                 continue
             else:
                 if parentheses and not tail:
-                    # We have reached the end of a line
+                    # We have reached the end of the line
                     # Try to parse multiline attributes list
                     lineno, tail = next(source)
                     continue
