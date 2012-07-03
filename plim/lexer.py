@@ -889,7 +889,7 @@ def _inject_n_filter(line):
 def parse_variable(indent_level, __, matched, source):
     explicit_space = matched.group('explicit_space') and ' ' or ''
     prevent_escape = matched.group('prevent_escape')
-    buf = [explicit_space, '${', matched.group('line')]
+    buf = ['${', matched.group('line')]
     while True:
         try:
             lineno, current_line = next(source)
@@ -903,14 +903,14 @@ def parse_variable(indent_level, __, matched, source):
             if prevent_escape:
                 buf = _inject_n_filter(buf)
             # add closing brace to complete mako expression syntax ${}
-            buf += '}'
+            buf += '}' + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
 
     buf = joined(buf)
     if prevent_escape:
         buf = _inject_n_filter(buf)
-    buf += '}'
+    buf += '}' + explicit_space
     return buf, 0, '', source
 
 
