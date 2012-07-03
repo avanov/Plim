@@ -5,6 +5,10 @@ Changelog
 Version 0.7
 ------------
 
+- 0.7.7
+  -  Fixed bug with linebreaks without trailing newline character.
+  -  Fixed bug with missing explicit whitespace after ``=,`` and ``==,`` line indicators.
+
 - 0.7.6
   Fixed bug with incorrect parsing of static boolean attributes.
 
