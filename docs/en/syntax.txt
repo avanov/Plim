@@ -107,7 +107,7 @@ As in Python string declarations, you must take care of correct quote escaping
     input value="""He said "All right!\""""
 
 
-You can omit quotes from digital attribute values:
+You can omit quotes from numeric attribute values:
 
 .. code-block:: plim
 
