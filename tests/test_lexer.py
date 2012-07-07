@@ -137,6 +137,8 @@ class TestLexerFunctions(TestCaseBase):
         assert_this('attr=+7 attr2=val', False,  'attr="+7"', ' attr2=val')
         assert_this('attr=-.7 attr2=val', False,  'attr="-.7"', ' attr2=val')
         assert_this('attr=+.7 attr2=val', False,  'attr="+.7"', ' attr2=val')
+        assert_this('attr=7% attr2=val', False,  'attr="7%"', ' attr2=val')
+        
         assert_this('attr=10.7 attr2=val', False,  'attr="10.7"', ' attr2=val')
         assert_this('attr=-10.7 attr2=val', False,  'attr="-10.7"', ' attr2=val')
         assert_this('attr=+10.7 attr2=val', False,  'attr="+10.7"', ' attr2=val')

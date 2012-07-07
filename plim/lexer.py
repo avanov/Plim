@@ -46,9 +46,10 @@ TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
 TAG_RE = re.compile(TAG_RULE)
 LINE_PARTS_RE = re.compile('(?P<indent>\s*)(?P<line>.*)\s*')
 MAKO_FILTERS_TAIL_RE = re.compile('\|\s*(?P<filters>[a-zA-Z][_.a-zA-Z0-9]*(?:,\s*[a-zA-Z][_.a-zA-Z0-9]*)*)\s*$')
-DIGITAL_VALUE_RE = re.compile(
+NUMERIC_VALUE_RE = re.compile(
     # Order matters
-    '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+))'
+    # Can parse -NUM, +NUM, NUM, .NUM, NUM% and all its combinations
+    '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+%?))'
 )
 
 PARSE_PLIM_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
@@ -320,7 +321,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
 
 
 def extract_digital_attr_value(line):
-    result = DIGITAL_VALUE_RE.match(line)
+    result = NUMERIC_VALUE_RE.match(line)
     if result:
         return result.group('value'), line[result.end():]
     return None
