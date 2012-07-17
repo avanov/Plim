@@ -185,7 +185,7 @@ class TestLexerFunctions(TestCaseBase):
 
 
     def test_extract_dynamic_attr_value(self):
-        for terminators in (l.ATTRIBUTE_VALUE_WITH_PARENTHESES_TERMINATORS, l.ATTRIBUTE_VALUE_TERMINATORS):
+        for terminators in (l.ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES, l.ATTRIBUTE_VALUE_TERMINATORS):
             source = l.enumerate_source('')
             value, tail, _ = l.extract_dynamic_attr_value("(value in func('test') and 'yes' or 'no')", source, terminators)
             assert value == "value in func('test') and 'yes' or 'no'"

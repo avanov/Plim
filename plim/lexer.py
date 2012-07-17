@@ -133,7 +133,7 @@ ATTRIBUTE_VALUE_TERMINATORS = (
     BOOLEAN_ATTRIBUTE_MARKER
 )
 
-ATTRIBUTE_VALUE_WITH_PARENTHESES_TERMINATORS = (
+ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES = (
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
     LITERAL_CONTENT_PREFIX,
@@ -389,7 +389,7 @@ def extract_tag_attribute(line, source, parentheses=False):
             # 3. Try to parse dynamic value
             # -------------------------------------
             if parentheses:
-                result = extract_dynamic_attr_value(tail, source, ATTRIBUTE_VALUE_WITH_PARENTHESES_TERMINATORS)
+                result = extract_dynamic_attr_value(tail, source, ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES)
             else:
                 result = extract_dynamic_attr_value(tail, source, ATTRIBUTE_VALUE_TERMINATORS)
 
