@@ -5,6 +5,9 @@ Changelog
 Version 0.7
 ------------
 
+- 0.7.9
+  Added babel message extraction plugin.
+
 - 0.7.8
   Expanded range of possible numeric values that don't require double-quoting.
 

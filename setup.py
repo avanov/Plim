@@ -11,11 +11,12 @@ readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='Plim',
-    version='0.7.8',
+    version='0.7.9',
     packages=find_packages(exclude=['tests']),
     # Plim is a preprocessor for Mako template language.
     # But it doesn't depend on the Mako package itself.
     install_requires=[
+        'Mako>=0.7.0',
         # We use reStructuredText (docutils' component) for both supporting
         # the "-rest" extension and project documenting. So, ensure that the docutils
         # get installed or upgraded on the target machine

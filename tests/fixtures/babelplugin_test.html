@@ -1,0 +1,34 @@
+-inherit ../_layouts/960.html
+-def test_def(test=_('Test'))
+    = pluralize(
+        '${num} conversation has been marked as read.',
+        '${num} conversations have been marked as read.',
+        msgs_num, mapping=dict(num=msgs_num))
+    = ungettext(
+        '{num} conversation has been marked as read.',
+        '{num} conversations have been marked as read.',
+        msgs_num).format(num=msgs_num)
+
+#mosaic
+    div style="float:none;clear:both"
+
+        #latest-tabs
+            div style="width:650px;background:#EFEFEF;padding:10px 0 10px 0"
+                a.active href="#" = _('News')
+                a href="#" = _('Articles')
+                a href="#" = _('Videos')
+
+            .more: a href="#" ${_('View more')} &#x25B8;
+
+
+        h2.block-title = _('Recent comments')
+        #comments.block-ct
+            .block-tabs
+                a.active href="#" = _('News')
+                a href="#" = _('Previews')
+                a href="#" = _('Reviews')
+                a href="#" = _('Videos')
+                a href="#" = _('Blogs')
+
+            .more: a href="#" ${_('View more')} &#x25B8;
+
