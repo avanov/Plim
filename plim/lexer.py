@@ -668,7 +668,7 @@ def parse_python(indent_level, __, matched, source):
 
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
     if parsed_data:
-        buf.append('{literal}\n'.format(literal=parsed_data.rstrip()))
+        buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
     buf.append('%>\n')
     return joined(buf), tail_indent, tail_line, source
 
@@ -684,7 +684,7 @@ def parse_mako_text(indent, __, matched, source):
 
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent, LITERAL_CONTENT_PREFIX, matched, source)
     if parsed_data:
-        buf.append('{literal}\n'.format(literal=parsed_data.rstrip()))
+        buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
     buf.append('</%text>\n')
     return joined(buf), tail_indent, tail_line, source
 
