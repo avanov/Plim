@@ -18,6 +18,7 @@ def extract(fileobj, keywords, comment_tags, options):
     :return: an iterator over ``(lineno, funcname, message, comments)`` tuples
     :rtype: ``iterator``
     """
-    fileobj = StringIO(lexer.compile_plim_source(fileobj))
-    for extracted in _extract_mako(fileobj, keywords, comment_tags, options):
+    encoding = options.get('input_encoding', options.get('encoding', 'utf-8'))
+    data = lexer.compile_plim_source(fileobj.read().decode(encoding))
+    for extracted in _extract_mako(StringIO(data), keywords, comment_tags, options):
         yield extracted
