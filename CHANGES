@@ -4,6 +4,11 @@ Changelog
 
 Version 0.7
 ------------
+- 0.7.11
+
+  - Fixed bug that had to do with incorrect parsing of multi-line dynamic class attributes.
+  - Fixed bug that had to do with passing incorrect data to plim parser in babel adapter.
+
 - 0.7.10
   Fixed bug with unicode error in python block. Thanks to sqrabs@github!
 
