@@ -301,7 +301,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
     while tail:
         current_char = tail[0]
         if current_char in terminators:
-            return joined(buf), tail, source
+            return joined(buf).rstrip(), tail, source
 
         # Let's try to find "mako variable" part of possible css-identifier
         result = extract_mako_expression(tail, source)
@@ -317,7 +317,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
             continue
         buf.append(current_char)
         tail = tail[1:]
-    return joined(buf), tail, source
+    return joined(buf).rstrip(), tail, source
 
 
 def extract_digital_attr_value(line):
@@ -483,18 +483,17 @@ def extract_plim_line(line, source):
             # remove preceding '#' character
             css_id = result[1:].rstrip()
 
-        # 2. Parse css class
+        # 2. Parse css class shortcut
         # --------------------------------------------
-        css_class = []
+        class_identifiers = []
         while True:
             result = extract_identifier(tail, source, CSS_CLASS_SHORTCUT_DELIMITER, CSS_CLASS_SHORTCUT_TERMINATORS)
             if result:
                 result, tail, source = result
                 # remove preceding '.' character
-                css_class.append(result[1:].rstrip())
+                class_identifiers.append(result[1:].rstrip())
                 continue
             break
-        css_class = space_separated(css_class)
 
         # 3. Parse tag attributes
         # -----------------------------------
@@ -510,16 +509,13 @@ def extract_plim_line(line, source):
             result = extract_tag_attribute(tail, source, parentheses)
             if result:
                 attribute_pair, tail, source = result
-                if attribute_pair.startswith('id="'):
-                    if css_id:
-                        raise errors.PlimSyntaxError('Your template has two "id" attribute definitions', line)
-                if attribute_pair.startswith('class="') and css_class:
-                    attribute_pair = "{prefix}{classes} {suffix}".format(
-                        #len('class="')
-                        prefix=attribute_pair[:7],
-                        classes=css_class,
-                        suffix=attribute_pair[7:]
-                    )
+                if attribute_pair.startswith('id="') and css_id:
+                    raise errors.PlimSyntaxError('Your template has two "id" attribute definitions', line)
+                if attribute_pair.startswith('class="'):
+                    # len('class="') == 7
+                    class_identifiers.append(attribute_pair[7:-1])
+                    continue
+
                 attributes.append(attribute_pair)
                 continue
             else:
@@ -529,9 +525,10 @@ def extract_plim_line(line, source):
                     lineno, tail = next(source)
                     continue
                 if css_id:
-                    attributes.append('id="{css_id}"'.format(css_id=css_id))
-                if css_class:
-                    attributes.append('class="{css_class}"'.format(css_class=css_class))
+                    attributes.append('id="{ids}"'.format(ids=css_id))
+                if class_identifiers:
+                    class_identifiers = space_separated(class_identifiers)
+                    attributes.append('class="{classes}"'.format(classes=class_identifiers))
             break
         attributes = space_separated(attributes).strip()
         components['attributes'] = attributes
@@ -867,7 +864,6 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
         # remove preceding spaces
         line = current_line[align:].rstrip()
         buf.extend([line.rstrip(), "\n"])
-    
     return joined(buf), 0, '', source
 
 

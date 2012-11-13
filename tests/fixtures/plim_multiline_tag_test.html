@@ -50,3 +50,8 @@ img\
 \
 width="100"\
  )  = Test
+
+
+#m${c.message.id}.msg class=(
+    ((prev_author != c.message.author or prev_day != c.message.time.day) and ' with-border' or '')
+)
