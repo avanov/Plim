@@ -125,8 +125,6 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
     preceding dash, but with the colon sign at the tail).
     But in Plim, you must write ``-if``, ``-for``, and ``-coffee``.
 
-#. Plim supports HTML tags! See the :ref:`relevant section<raw-html>` of the documentation.
-
 #. In contrast to Slim, Plim does not support the ``/!`` line indicator 
    `which is used as an HTML-comment <https://github.com/stonean/slim#-7>`_. You can use
    raw HTML-comments instead.
