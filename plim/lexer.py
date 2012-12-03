@@ -839,8 +839,9 @@ def parse_foreign_statements(indent_level, __, matched, source):
 
 
 def parse_explicit_literal(indent_level, current_line, ___, source):
-    """Parses lines and blocks started with the "|" (pipe) or "'" character."""
+    """Parses lines and blocks started with the "|" (pipe) or "," (comma) character."""
     # Get rid of the pipe character
+    trailing_space_required = current_line[0] == LITERAL_CONTENT_SPACE_PREFIX
     current_line = current_line[1:]
     _, striped_line = scan_line(current_line)
     # Add line and trailing newline character
@@ -857,14 +858,21 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
             buf.append('\n')
             continue
         if indent <= indent_level:
-            return joined(buf), indent, line, source
+            result = joined(buf).rstrip()
+            if trailing_space_required:
+                result = "{} ".format(result)
+            return result, indent, line, source
         if align is None:
             align = len(current_line) - len(current_line.lstrip())
 
         # remove preceding spaces
         line = current_line[align:].rstrip()
         buf.extend([line.rstrip(), "\n"])
-    return joined(buf), 0, '', source
+
+    result = joined(buf).rstrip()
+    if trailing_space_required:
+        result = "{} ".format(result)
+    return result, 0, '', source
 
 
 def _inject_n_filter(line):
@@ -915,12 +923,11 @@ def parse_early_return(indent_level, __, matched, source):
 
 
 def parse_implicit_literal(indent_level, __, matched, source):
-    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(
+    return parse_explicit_literal(
         indent_level,
         as_unicode('{}{}').format(LITERAL_CONTENT_PREFIX, matched.group('line')),
         matched, source
     )
-    return as_unicode('{lines}\n').format(lines=parsed_data), tail_indent, tail_line, source
 
 
 def parse_raw_html(indent_level, current_line, ___, source):
