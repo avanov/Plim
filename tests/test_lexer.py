@@ -284,6 +284,17 @@ class TestLexerFunctions(TestCaseBase):
         test_case('div( attr=func(test()) attr2=test()? )= Test', result)
 
 
+    def test_explicit_literal(self):
+        result, _, __, ___ = l.parse_explicit_literal(0, "| Test", None, l.enumerate_source(""))
+        assert result == "Test"
+
+        result, _, __, ___ = l.parse_explicit_literal(0, ", Test", None, l.enumerate_source(""))
+        assert result == "Test "
+
+        result, _, __, ___ = l.parse_explicit_literal(0, ",Test\n Test", None, l.enumerate_source(""))
+        assert result == "Test\n Test "
+
+
     def test_multiline_extract_plim_line(self):
         def test_case(template, result):
             """Use files for multiline test cases"""

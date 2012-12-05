@@ -1,26 +1,19 @@
 <%def name="hello()">
-hello world
-</%def>
+hello world</%def>
 <%def name="account()">
 Account for ${username}:<br/>
-
 %for row in accountdata:
 Value: ${row}<br/>
-
 %endfor
 </%def>
 <%def name="account(accountname, type='regular')">
-account name: ${accountname}, type: ${type}
-</%def>
+account name: ${accountname}, type: ${type}</%def>
 <%def name="mydef()">
 <%def name="subdef()">
-a sub def
-</%def>
-i'm the def, and the subcomponent is ${subdef()}
-</%def>
+a sub def</%def>
+i'm the def, and the subcomponent is ${subdef()}</%def>
 <html><body><%block>
-this is a block.
-</%block>
+this is a block.</%block>
 </body></html><%block filter="h">
 <html>this is some escaped html.</html></%block>
 <span class="post_prose"><%block name="post_prose" args="post">
