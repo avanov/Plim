@@ -41,6 +41,12 @@ setup(
     },
     include_package_data=True,
 
+    entry_points={
+        'console_scripts': [
+            'plimc = plim.console:plim_compiler',
+        ]
+    },
+
     # PyPI metadata
     # Read more at http://docs.python.org/distutils/setupscript.html#meta-data
     author="Maxim Avanov",
