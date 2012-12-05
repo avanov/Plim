@@ -9,8 +9,8 @@ def plim_compiler():
     cli_parser = argparse.ArgumentParser(
         description='Compile plim source files into mako files.'
     )
-    cli_parser.add_argument('source', help="path to plim source file")
-    cli_parser.add_argument('dest',  help="path to destination file")
+    cli_parser.add_argument('source', help="path to source plim template")
+    cli_parser.add_argument('target',  help="path to target mako template")
     cli_parser.add_argument('--encoding',  help="source file encoding")
     args = cli_parser.parse_args()
 
@@ -18,5 +18,5 @@ def plim_compiler():
     with codecs.open(args.source, 'rb',encoding) as fd:
         mako_markup = compile_plim_source(fd.read())
 
-    with codecs.open(args.dest, 'wb', encoding) as fd:
+    with codecs.open(args.target, 'wb', encoding) as fd:
         fd.write(mako_markup)
