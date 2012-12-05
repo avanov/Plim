@@ -15,6 +15,7 @@
    en/syntax.txt
    en/extensions.txt
    en/frameworks.txt
+   en/cli.txt
    en/license.txt
    en/authors.txt
    en/related.txt
