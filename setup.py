@@ -13,8 +13,6 @@ setup(
     name='Plim',
     version='0.7.12',
     packages=find_packages(exclude=['tests']),
-    # Plim is a preprocessor for Mako template language.
-    # But it doesn't depend on the Mako package itself.
     install_requires=[
         'Mako>=0.7.3',
         # We use reStructuredText (docutils' component) for both supporting
