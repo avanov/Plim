@@ -357,10 +357,8 @@ def extract_dynamic_attr_value(line, source, terminators):
 
 
 def extract_tag_attribute(line, source, parentheses=False):
-    if parentheses:
-        result = extract_identifier(line, source, '', ATTRIBUTE_TERMINATORS_WITH_PARENTHESES)
-    else:
-        result = extract_identifier(line, source, '', ATTRIBUTE_TERMINATORS)
+    terminators = parentheses and ATTRIBUTE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_TERMINATORS
+    result = extract_identifier(line, source, '', terminators)
     if result and result[0]:
         result, tail, source = result
         attr_name = result
@@ -388,10 +386,8 @@ def extract_tag_attribute(line, source, parentheses=False):
 
             # 3. Try to parse dynamic value
             # -------------------------------------
-            if parentheses:
-                result = extract_dynamic_attr_value(tail, source, ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES)
-            else:
-                result = extract_dynamic_attr_value(tail, source, ATTRIBUTE_VALUE_TERMINATORS)
+            terminators = parentheses and ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_VALUE_TERMINATORS
+            result = extract_dynamic_attr_value(tail, source, terminators)
 
             if result:
                 value, tail, source = result
