@@ -38,6 +38,13 @@ But, at a starting point you can use
 `Slim syntax highlighters <https://github.com/stonean/slim#syntax-highlighters>`_,
 since most of Plim syntax is the same as of Slim.
 
+Editors support
+----------------
+
+
+* `vim-plim <https://github.com/keitheis/vim-plim>`_ - a Plim port of `vim-slim <https://github.com/slim-template/vim-slim>`_ plugin.
+
+
 
 Syntactic Differences
 =====================

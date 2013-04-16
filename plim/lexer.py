@@ -476,7 +476,7 @@ def extract_plim_line(line, source):
             css_id = ''
         else:
             result, tail, source = result
-            # remove preceding '#' character
+            # remove the preceding '#' character
             css_id = result[1:].rstrip()
 
         # 2. Parse css class shortcut
@@ -486,7 +486,7 @@ def extract_plim_line(line, source):
             result = extract_identifier(tail, source, CSS_CLASS_SHORTCUT_DELIMITER, CSS_CLASS_SHORTCUT_TERMINATORS)
             if result:
                 result, tail, source = result
-                # remove preceding '.' character
+                # remove the preceding '.' character
                 class_identifiers.append(result[1:].rstrip())
                 continue
             break
@@ -499,7 +499,7 @@ def extract_plim_line(line, source):
             tail = tail[1:].lstrip()
 
         attributes = []
-        # 3.1. get attribute-value pairs until the end of section (indicated by terminators)
+        # 3.1. get attribute-value pairs until the end of the section (indicated by terminators)
         while True:
             _, tail, source = extract_line_break(tail.lstrip(), source)
             result = extract_tag_attribute(tail, source, parentheses)
@@ -516,8 +516,8 @@ def extract_plim_line(line, source):
                 continue
             else:
                 if parentheses and not tail:
-                    # We have reached the end of the line
-                    # Try to parse multiline attributes list
+                    # We have reached the end of the line.
+                    # Try to parse multiline attributes list.
                     lineno, tail = next(source)
                     continue
                 if css_id:
@@ -643,8 +643,8 @@ def parse_plim_tree(indent_level, current_line, ___, source):
 def parse_markup_languages(indent_level, __, matched, source):
     markup_parser = MARKUP_LANGUAGES[matched.group('lang')]
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
-    # This is slow, but correct.
-    # Trying to remove preceding indentation from
+    # This is slow but correct.
+    # Trying to remove redundant indentation
     parsed_data = markup_parser(parsed_data)
     return parsed_data.strip(), tail_indent, tail_line, source
 
@@ -737,7 +737,6 @@ def parse_statements(indent_level, __, matched, source):
     if expr:
         expr, source = extract_statement_expression(expr, source)
         buf.append(joined([' ', expr]))
-
     buf.append(':\n')
 
     while True:
@@ -796,7 +795,7 @@ def parse_statements(indent_level, __, matched, source):
                             buf.append('\n%finally:\n')
                             break
                     else:
-                        # elif/else is not found, finalize and return buffer
+                        # elif/else is not found, finalize and return the buffer
                         buf.append('\n%end{statement}\n'.format(statement=stmnt))
                         return joined(buf), tail_indent, tail_line, source
 
@@ -902,7 +901,7 @@ def parse_variable(indent_level, __, matched, source):
             buf = joined(buf)
             if prevent_escape:
                 buf = _inject_n_filter(buf)
-            # add closing brace to complete mako expression syntax ${}
+            # add a closing brace to complete mako expression syntax ${}
             buf += '}' + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
@@ -936,7 +935,7 @@ def parse_raw_html(indent_level, current_line, ___, source):
         tail_indent, tail_line = scan_line(tail_line)
         if not tail_line:
             continue
-        # Parse tree
+        # Parse a tree
         # --------------------------------------------------------
         while tail_line:
             if tail_indent <= indent_level:
@@ -979,7 +978,7 @@ def parse_def_block(indent_level, __, matched, source):
         tail_indent, tail_line = scan_line(tail_line)
         if not tail_line:
             continue
-        # Parse tree
+        # Parse a tree
         # --------------------------------------------------------
         while tail_line:
             if tail_indent <= indent_level:
