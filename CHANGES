@@ -4,6 +4,10 @@ Changelog
 
 Version 0.7
 ------------
+- 0.7.13
+
+  - Hotfix: fixed bug with static unicode attributes.
+
 - 0.7.12
 
   - Unnecessary newline characters at the end of literal blocks have been removed.
