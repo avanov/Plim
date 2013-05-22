@@ -385,7 +385,8 @@ def extract_tag_attribute(line, source, parentheses=False):
             result = extract_digital_attr_value(tail)
             if result:
                 value, tail = result
-                return as_unicode('{attr_name}="{value}"').format(attr_name=attr_name, value=value), tail, source
+                # no need for as_unicode since values are always digits
+                return '{attr_name}="{value}"'.format(attr_name=attr_name, value=value), tail, source
 
             # 3. Try to parse dynamic value
             # -------------------------------------
