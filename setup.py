@@ -15,6 +15,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.7.3',
+        'babel',
         # We use reStructuredText (docutils' component) for both supporting
         # the "-rest" extension and project documenting. So, ensure that the docutils
         # get installed or upgraded on the target machine

@@ -336,7 +336,10 @@ def extract_quoted_attr_value(line):
             skip = 1
         # remove quotes from value
         value = line[skip:result - skip]
-        return value.decode('string_escape'), line[result:]
+        # We have to remove backslash escape sequences from the value, but
+        # at the same time, preserve unicode escape sequences like "\u4e2d\u6587".
+        value = value.encode('raw_unicode_escape')
+        return value.decode('unicode_escape'), line[result:]
     return None
 
 
@@ -375,14 +378,14 @@ def extract_tag_attribute(line, source, parentheses=False):
                 value, tail = result
                 # remove possible newline character
                 value = value.rstrip()
-                return '{attr_name}="{value}"'.format(attr_name=attr_name, value=value), tail, source
+                return as_unicode('{attr_name}="{value}"').format(attr_name=attr_name, value=value), tail, source
 
             # 2. Try to parse digital value
             # -------------------------------------
             result = extract_digital_attr_value(tail)
             if result:
                 value, tail = result
-                return '{attr_name}="{value}"'.format(attr_name=attr_name, value=value), tail, source
+                return as_unicode('{attr_name}="{value}"').format(attr_name=attr_name, value=value), tail, source
 
             # 3. Try to parse dynamic value
             # -------------------------------------
