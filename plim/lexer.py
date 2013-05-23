@@ -399,20 +399,20 @@ def extract_tag_attribute(line, source, parentheses=False):
                 value = value.rstrip()
                 if tail.startswith(BOOLEAN_ATTRIBUTE_MARKER):
                     # selected=dynamic_variable?
-                    value = """${{({value}) and '{attr_name}="{attr_name}"' or ''|n}}""".format(
+                    value = as_unicode("""${{({value}) and '{attr_name}="{attr_name}"' or ''|n}}""").format(
                         value=value, attr_name=attr_name
                     )
                     attribute = value
                     tail = tail[1:]
                 else:
-                    attribute = '{attr_name}="${{{value}}}"'.format(attr_name=attr_name, value=value)
+                    attribute = as_unicode('{attr_name}="${{{value}}}"').format(attr_name=attr_name, value=value)
                 return attribute, tail, source
             return None
 
         elif parentheses and tail.startswith(ATTRIBUTES_DELIMITER) or tail.startswith(CLOSE_BRACE):
             # attribute is presented in a form of boolean attribute
             # which should be converted to attr="attr"
-            return '{attr_name}="{attr_name}"'.format(attr_name=attr_name), tail, source
+            return as_unicode('{attr_name}="{attr_name}"').format(attr_name=attr_name), tail, source
         else:
             return None
     return None
