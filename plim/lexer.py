@@ -955,12 +955,12 @@ def parse_raw_html(indent_level, current_line, ___, source):
 
 def parse_mako_one_liners(indent_level, __, matched, source):
     _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
-    buf = ['\n<%{tag}'.format(tag=components['name'])]
+    buf = ['<%{tag}'.format(tag=components['name'])]
     if components['content']:
         buf.append(' file="{name}"'.format(name=components['content']))
     if components['attributes']:
         buf.extend([' ', components['attributes']])
-    buf.append('/>\n')
+    buf.append('/>')
     return joined(buf), indent_level, '', source
 
 
