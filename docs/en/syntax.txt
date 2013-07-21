@@ -194,7 +194,50 @@ Dynamic attribute example (note the trailing question mark):
     / or even that way
     input type="text" name="username" disabled=(is_disabled or 
                                                 is_really_disabled)?
-    
+
+
+Dynamic unpacking
+--------------------
+
+This feature is an equivalent to
+`Slim's splat attributes <https://github.com/slim-template/slim#splat-attributes->`_, but the syntax
+was changed in order to correspond to Python's ``**kwargs`` semantics.
+
+Consider the following python dictionary:
+
+.. code-block:: python
+
+    attrs = {
+        'id': 'navbar-1',
+        'class': 'navbar',
+        'href': '#',
+        'data-context': 'same-frame',
+    }
+
+Now we can unpack the dictionary in order to populate tags with attributes. The following line::
+
+    a**attrs Link
+
+will be translated to mako template which will output an equivalent to the following HTML markup
+
+.. code-block:: html
+
+    <a id="navbar-1" class="navbar" href="#" data-context="same-frame">Link</a>
+
+Here are some other examples
+
+.. code-block:: plim
+
+    a **attrs|Link
+
+    a **attrs **more_attrs Link
+
+    a(**attrs disabled) Disabled Link
+
+    a **function_returning_dict(
+      *args, **kwargs
+    ) Link
+
 
 
 Attribute Wrapping

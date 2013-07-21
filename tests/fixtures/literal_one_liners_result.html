@@ -1,23 +1,17 @@
 %if not new_title:
 <div id="extra-titles">
 %endif
-
 <%include file="content.html"/>
-
 %if not new_title:
 </div>
 %endif
-
 <%inherit file="../../base.html"/>
-
 %if c.id:
 <div id="edit-profile-${c.id}">
 %else:
 <div id="new-profile">
 %endif
-
-<%include file="profile.html"/>
-</div>
+<%include file="profile.html"/></div>
 
 ${test.variable}(${test.variable}){${test.variable}}[${test.variable}]&nbsp;&nbsp;&mdash;&mdash;01.2.2.13 -4)AbcdeабвгдÖ汉语/漢語This is a test
 of implicit literal.You must capitalize the first letter

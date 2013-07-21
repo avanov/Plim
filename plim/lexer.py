@@ -28,6 +28,7 @@ LITERAL_CONTENT_PREFIX = '|'
 LITERAL_CONTENT_SPACE_PREFIX = ','
 DYNAMIC_CONTENT_PREFIX = '='
 DYNAMIC_CONTENT_SPACE_PREFIX = "=,"
+DYNAMIC_ATTRIBUTES_PREFIX = '**'
 # used to separate inline tags
 INLINE_TAG_SEPARATOR = ':'
 # used to separate attribute-value pairs from one another
@@ -186,8 +187,8 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 #    and return values are task-specific. However, they still have several common features:
 #      - Each extractor has its own starting and termination sequences.
 #      - Each extractor tries to find the starting sequence of characters at the beginning
-#        of the input line. If that attempt fails, the extractor returns None (in most of cases).
-#        If the attempt has been succeeded, the extractor will capture all the input characters up to
+#        of the input line. If that attempt fails, the extractor returns None (in most cases).
+#        If the attempt is successful, the extractor captures all the input characters up to
 #        the termination sequence.
 #      - The return value of the succeeded extractor MUST contain not only the extracted value, but
 #        also an instance of enumerated object returned by :func:`enumerate_source`.
@@ -200,7 +201,12 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 # Searchers
 # ==================================================================================
 def search_quotes(line, escape_char='\\'):
-    """``line`` may be empty"""
+    """
+    ``line`` may be empty
+
+    :param line:
+    :param escape_char:
+    """
     match = QUOTES_RE.match(line)
     if not match: return None
 
@@ -220,7 +226,11 @@ def search_quotes(line, escape_char='\\'):
 
 
 def search_parser(lineno, line):
-    """Finds a proper parser function for a given line or raises an error"""
+    """Finds a proper parser function for a given line or raises an error
+
+    :param lineno:
+    :param line:
+    """
     for template, parser in PARSERS:
         matched = template.match(line)
         if matched:
@@ -230,8 +240,17 @@ def search_parser(lineno, line):
 
 # Extractors
 # ==================================================================================
-def _extract_braces_api(line, source, starting_braces_re, open_braces_re, closing_braces_re):
-    """``line`` may be empty"""
+def _extract_braces_expression(line, source, starting_braces_re, open_braces_re, closing_braces_re):
+    """
+
+    :param line: may be empty
+    :type line: str
+    :param source:
+    :type source: str
+    :param starting_braces_re:
+    :param open_braces_re:
+    :param closing_braces_re:
+    """
     match = starting_braces_re.match(line)
     if not match:
         return None
@@ -277,13 +296,13 @@ def _extract_braces_api(line, source, starting_braces_re, open_braces_re, closin
             tail = tail[1:]
 
 
-extract_braces = lambda line, source: _extract_braces_api(line, source,
+extract_braces = lambda line, source: _extract_braces_expression(line, source,
     PYTHON_EXPR_OPEN_BRACES_RE,
     PYTHON_EXPR_OPEN_BRACES_RE,
     PYTHON_EXPR_CLOSING_BRACES_RE
 )
 
-extract_mako_expression = lambda line, source: _extract_braces_api(line, source,
+extract_mako_expression = lambda line, source: _extract_braces_expression(line, source,
     MAKO_EXPR_START_BRACE_RE,
     MAKO_EXPR_COUNT_OPEN_BRACES_RE,
     MAKO_EXPR_COUNT_CLOSING_BRACES_RE
@@ -291,7 +310,15 @@ extract_mako_expression = lambda line, source: _extract_braces_api(line, source,
 
 
 def extract_identifier(line, source, identifier_start='#', terminators=('.', ' ', CLOSE_BRACE, INLINE_TAG_SEPARATOR)):
-    """``line`` may be empty"""
+    """
+
+    :param line: Current line. It may be empty.
+    :type line: str
+    :param source:
+    :type source: str
+    :param identifier_start:
+    :param terminators:
+    """
     if not line or not line.startswith(identifier_start):
         return None
 
@@ -359,8 +386,55 @@ def extract_dynamic_attr_value(line, source, terminators):
     return value, tail, source
 
 
-def extract_tag_attribute(line, source, parentheses=False):
-    terminators = parentheses and ATTRIBUTE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_TERMINATORS
+def extract_dynamic_tag_attributes(line, source, inside_parentheses=False):
+    """
+    Extract one occurrence of ``**dynamic_attributes``
+    :param line:
+    :param source:
+    :param inside_parentheses:
+    """
+    if not line.startswith(DYNAMIC_ATTRIBUTES_PREFIX):
+        return None
+    line = line[len(DYNAMIC_ATTRIBUTES_PREFIX):]
+
+    terminators = {
+        WHITESPACE,
+        NEWLINE,
+        LITERAL_CONTENT_PREFIX,
+        LITERAL_CONTENT_SPACE_PREFIX,
+        # we want to terminate extract_identifier() by DYNAMIC_ATTRIBUTES_PREFIX,
+        # but it contains two characters, whereas the function checks only one character.
+        # Therefore, we use a single asterisk terminator here instead of DYNAMIC_ATTRIBUTES_PREFIX.
+        '*',
+        INLINE_TAG_SEPARATOR,
+        LINE_BREAK
+    }
+    if inside_parentheses:
+        terminators.add(CLOSE_BRACE)
+
+    result = extract_identifier(line, source, '', terminators)
+    if result is None:
+        return None
+
+    expr, tail, source = result
+    attributes = (
+        '\n%for __plim_key__, __plim_value__ in {expr}.items():\n'
+        '${{__plim_key__}}="${{__plim_value__}}"\n'
+        '%endfor\n'
+    ).format(expr=expr)
+    return attributes, tail, source
+
+
+
+def extract_tag_attribute(line, source, inside_parentheses=False):
+    """
+
+    :param line:
+    :param source:
+    :param inside_parentheses:
+    :return:
+    """
+    terminators = inside_parentheses and ATTRIBUTE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_TERMINATORS
     result = extract_identifier(line, source, '', terminators)
     if result and result[0]:
         result, tail, source = result
@@ -390,7 +464,7 @@ def extract_tag_attribute(line, source, parentheses=False):
 
             # 3. Try to parse dynamic value
             # -------------------------------------
-            terminators = parentheses and ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_VALUE_TERMINATORS
+            terminators = inside_parentheses and ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_VALUE_TERMINATORS
             result = extract_dynamic_attr_value(tail, source, terminators)
 
             if result:
@@ -409,7 +483,7 @@ def extract_tag_attribute(line, source, parentheses=False):
                 return attribute, tail, source
             return None
 
-        elif parentheses and tail.startswith(ATTRIBUTES_DELIMITER) or tail.startswith(CLOSE_BRACE):
+        elif inside_parentheses and tail.startswith(ATTRIBUTES_DELIMITER) or tail.startswith(CLOSE_BRACE):
             # attribute is presented in a form of boolean attribute
             # which should be converted to attr="attr"
             return as_unicode('{attr_name}="{attr_name}"').format(attr_name=attr_name), tail, source
@@ -434,6 +508,12 @@ def extract_line_break(tail, source):
 
 
 def extract_statement_expression(tail, source):
+    """
+
+    :param tail:
+    :param source:
+    :return:
+    """
     buf = []
     # Ensure that tail ends with a newline character
     # (required by extract_braces() to properly handle multi-line expressions)
@@ -454,8 +534,15 @@ def extract_statement_expression(tail, source):
 
 
 def extract_plim_line(line, source):
-    """Returns a 3-tuple of inline tags sequence, closing tags sequence, and a dictionary of
-    last tag components (name, attributes, content)"""
+    """
+    Returns a 3-tuple of inline tags sequence, closing tags sequence, and a dictionary of
+    last tag components (name, attributes, content)
+
+    :param line:
+    :type line: str
+    :param source:
+    :type source: str
+    """
     buf = []
     close_buf = []
     components = {}
@@ -498,15 +585,23 @@ def extract_plim_line(line, source):
         # 3. Parse tag attributes
         # -----------------------------------
         _, tail, source = extract_line_break(tail.lstrip(), source)
-        parentheses = tail.startswith(OPEN_BRACE)
-        if parentheses:
+        inside_parentheses = tail.startswith(OPEN_BRACE)
+        if inside_parentheses:
             tail = tail[1:].lstrip()
 
         attributes = []
-        # 3.1. get attribute-value pairs until the end of the section (indicated by terminators)
         while True:
             _, tail, source = extract_line_break(tail.lstrip(), source)
-            result = extract_tag_attribute(tail, source, parentheses)
+
+            # 3.1 try to get and unpack dynamic attributes
+            result = extract_dynamic_tag_attributes(tail, source, inside_parentheses)
+            if result:
+                dynamic_attrs, tail, source = result
+                attributes.append(dynamic_attrs)
+                continue
+
+            # 3.2. get attribute-value pairs until the end of the section (indicated by terminators)
+            result = extract_tag_attribute(tail, source, inside_parentheses)
             if result:
                 attribute_pair, tail, source = result
                 if attribute_pair.startswith('id="') and css_id:
@@ -519,7 +614,7 @@ def extract_plim_line(line, source):
                 attributes.append(attribute_pair)
                 continue
             else:
-                if parentheses and not tail:
+                if inside_parentheses and not tail:
                     # We have reached the end of the line.
                     # Try to parse multiline attributes list.
                     lineno, tail = next(source)
@@ -530,13 +625,13 @@ def extract_plim_line(line, source):
                     class_identifiers = space_separated(class_identifiers)
                     attributes.append('class="{classes}"'.format(classes=class_identifiers))
             break
-        attributes = space_separated(attributes).strip()
+        attributes = space_separated(attributes)
         components['attributes'] = attributes
         if attributes:
             tag_composer.extend([' ', attributes])
 
         # 3.2 syntax check
-        if parentheses:
+        if inside_parentheses:
             if tail.startswith(CLOSE_BRACE):
                 # We have reached the end of attributes definition
                 tail = tail[1:].lstrip()
@@ -599,6 +694,15 @@ def extract_plim_line(line, source):
 # Parsers
 # ==================================================================================
 def parse_style_script(indent_level, current_line, matched, source):
+    """
+
+    :param indent_level:
+    :param current_line:
+    :type current_line: str
+    :param matched:
+    :param source:
+    :return:
+    """
     extracted_html_line, close_buf, _, source = extract_plim_line(current_line, source)
     buf = [extracted_html_line, '\n']
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
@@ -607,12 +711,28 @@ def parse_style_script(indent_level, current_line, matched, source):
 
 
 def parse_doctype(indent_level, current_line, ___, source):
+    """
+
+    :param indent_level:
+    :param current_line:
+    :param ___:
+    :param source:
+    :return:
+    """
     match = PARSE_DOCTYPE_RE.match(current_line.strip())
     doctype = match.group('type')
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
 def parse_plim_tree(indent_level, current_line, ___, source):
+    """
+
+    :param indent_level:
+    :param current_line:
+    :param ___:
+    :param source:
+    :return:
+    """
     buf = []
     current_line = current_line.strip()
     extracted_html_line, close_buf, _, source = extract_plim_line(current_line, source)
@@ -645,6 +765,14 @@ def parse_plim_tree(indent_level, current_line, ___, source):
 
 
 def parse_markup_languages(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     markup_parser = MARKUP_LANGUAGES[matched.group('lang')]
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
     # This is slow but correct.
@@ -654,6 +782,14 @@ def parse_markup_languages(indent_level, __, matched, source):
 
 
 def parse_python(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     # TODO: merge with parse_mako_text()
     if matched.group('python').endswith('!'):
         buf = ['<%!\n']
@@ -671,6 +807,14 @@ def parse_python(indent_level, __, matched, source):
 
 
 def parse_mako_text(indent, __, matched, source):
+    """
+
+    :param indent:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
     buf = ['\n<%text']
     if components['attributes']:
@@ -687,6 +831,14 @@ def parse_mako_text(indent, __, matched, source):
 
 
 def parse_call(indent_level, current_line, matched, source):
+    """
+
+    :param indent_level:
+    :param current_line:
+    :param matched:
+    :param source:
+    :return: :raise:
+    """
     _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
     tag = components['content'].strip()
     if not tag:
@@ -721,6 +873,14 @@ def parse_call(indent_level, current_line, matched, source):
 
 
 def parse_comment(indent_level, __, ___, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param ___:
+    :param source:
+    :return:
+    """
     while True:
         try:
             lineno, tail_line = next(source)
@@ -735,6 +895,14 @@ def parse_comment(indent_level, __, ___, source):
 
 
 def parse_statements(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     stmnt = matched.group('stmnt')
     expr = matched.group('expr')
     buf = ['\n%{statement}'.format(statement=stmnt)]
@@ -827,6 +995,14 @@ def parse_statements(indent_level, __, matched, source):
 
 
 def parse_foreign_statements(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     stmnt = STATEMENT_CONVERT[matched.group('stmnt')]
     buf = ['-{statement}'.format(statement=stmnt)]
     expr = matched.group('expr')
@@ -838,7 +1014,14 @@ def parse_foreign_statements(indent_level, __, matched, source):
 
 
 def parse_explicit_literal(indent_level, current_line, ___, source):
-    """Parses lines and blocks started with the "|" (pipe) or "," (comma) character."""
+    """
+    Parses lines and blocks started with the "|" (pipe) or "," (comma) character.
+
+    :param indent_level:
+    :param current_line:
+    :param ___:
+    :param source:
+    """
     # Get rid of the pipe character
     trailing_space_required = current_line[0] == LITERAL_CONTENT_SPACE_PREFIX
     current_line = current_line[1:]
@@ -875,7 +1058,11 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
 
 
 def _inject_n_filter(line):
-    """This is a helper function for :func:parse_variable"""
+    """
+    This is a helper function for :func:parse_variable
+
+    :param line:
+    """
     # try to find specified filters
     found_filters = MAKO_FILTERS_TAIL_RE.search(line)
     if found_filters:
@@ -890,6 +1077,14 @@ def _inject_n_filter(line):
 
 
 def parse_variable(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     explicit_space = matched.group('explicit_space') and ' ' or ''
     prevent_escape = matched.group('prevent_escape')
     buf = ['${', matched.group('line')]
@@ -918,10 +1113,26 @@ def parse_variable(indent_level, __, matched, source):
 
 
 def parse_early_return(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     return as_unicode('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
 
 
 def parse_implicit_literal(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     return parse_explicit_literal(
         indent_level,
         as_unicode('{}{}').format(LITERAL_CONTENT_PREFIX, matched.group('line')),
@@ -930,6 +1141,14 @@ def parse_implicit_literal(indent_level, __, matched, source):
 
 
 def parse_raw_html(indent_level, current_line, ___, source):
+    """
+
+    :param indent_level:
+    :param current_line:
+    :param ___:
+    :param source:
+    :return:
+    """
     buf = [current_line.strip(), '\n']
     while True:
         try:
@@ -954,17 +1173,33 @@ def parse_raw_html(indent_level, current_line, ___, source):
 
 
 def parse_mako_one_liners(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
-    buf = ['\n<%{tag}'.format(tag=components['name'])]
+    buf = ['<%{tag}'.format(tag=components['name'])]
     if components['content']:
         buf.append(' file="{name}"'.format(name=components['content']))
     if components['attributes']:
         buf.extend([' ', components['attributes']])
-    buf.append('/>\n')
+    buf.append('/>')
     return joined(buf), indent_level, '', source
 
 
 def parse_def_block(indent_level, __, matched, source):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :return:
+    """
     _, __, components, source = extract_plim_line(matched.group('line'), source)
     tag = components['name']
     buf = ['<%{def_or_block}'.format(def_or_block=tag)]
@@ -1001,16 +1236,30 @@ def parse_def_block(indent_level, __, matched, source):
 # Miscellaneous utilities
 # ==================================================================================
 def enumerate_source(source):
+    """
+
+    :param source:
+    :return:
+    """
     return enumerate(StringIO(source), start=1)
 
 
 def scan_line(line):
-    """Returns a 2-tuple of (length_of_the_indentation, line_without_preceding_indentation)"""
+    """
+    Returns a 2-tuple of (length_of_the_indentation, line_without_preceding_indentation)
+
+    :param line:
+    """
     match = LINE_PARTS_RE.match(line)
     return len(match.group('indent')), match.group('line')
 
 
 def compile_plim_source(source):
+    """
+
+    :param source:
+    :return:
+    """
     source = enumerate_source(source)
     result = []
     while True:
