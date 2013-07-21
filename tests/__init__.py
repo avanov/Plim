@@ -10,6 +10,7 @@ class TestCaseBase(unittest.TestCase):
     def setUp(self):
         here = os.path.abspath(os.path.dirname(__file__))
         self.templates_dir = os.path.join(here, 'fixtures')
+        self.maxDiff = None
 
     def tearDown(self):
         pass
@@ -27,13 +28,44 @@ class TestPreprocessorSyntax(TestCaseBase):
 
     def test_plim(self):
         cases = [
-            'pipe', 'plim_line', 'if', 'unless', 'python', 'for', 'while', 'until', 'with',
-            'try', 'def_block', 'style_script', 'comment', 'one_liners', 'mako_text',
-            'early_return', 'call', 'multiline_variable', 'literal_one_liners', 'no_filtering',
-            'linebreak', 'explicit_space', 'unicode_attributes'
+            'pipe',
+            'plim_line',
+            'if',
+            'unless',
+            'python',
+            'for',
+            'while',
+            'until',
+            'with',
+            'try',
+            'def_block',
+            'style_script',
+            'comment',
+            'one_liners',
+            'mako_text',
+            'early_return',
+            'call',
+            'multiline_variable',
+            'literal_one_liners',
+            'no_filtering',
+            'linebreak',
+            'explicit_space',
+            'unicode_attributes',
         ]
         for test_case in cases:
             source = self.get_file_contents(test_case + '_test.html')
             result = self.get_file_contents(test_case + '_result.html')
             data = plim.preprocessor(source)
             self.check_relevant_chars(data.strip(), result.strip())
+
+
+    def test_dynamic_attributes(self):
+        test_case = 'dynamic_attributes'
+        source = self.get_file_contents(test_case + '_test.html')
+        result = self.get_file_contents(test_case + '_result.html')
+        data = plim.preprocessor(source)
+        # normalize data
+        data = data.replace("<a \n", "<a\n")
+        # normalize for Test4
+        data = data.replace("\n \n", "\n\n")
+        self.assertEqual(data.strip(), result.strip())

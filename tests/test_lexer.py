@@ -192,6 +192,23 @@ class TestLexerFunctions(TestCaseBase):
             assert tail == ''
 
 
+    def test_extract_dynamic_tag_attributes(self):
+        source = l.enumerate_source('')
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test", source, False)
+        self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test.items()"))
+
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(**values)", source, False)
+        self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
+
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test**test2", source, False)
+        self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test.items()"))
+
+        # Test multi-line expression
+        source = l.enumerate_source('**values\n)')
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(\n", source, False)
+        self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
+
+
     def test_inline_extract_plim_line(self):
         def test_case(template, result):
             source = enumerate('')
