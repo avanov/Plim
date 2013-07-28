@@ -1,1 +1,4 @@
--for item in ['a','b','c',':'][::][1:]: li: strong = item
+-for item in ['a','b','c',':'][::][1:]: li: strong = Case1
+
+-for item in ['a','b','c',':'][::][1:]: li
+  strong = Case2

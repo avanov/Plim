@@ -738,7 +738,7 @@ def parse_plim_tree(indent_level, current_line, ___, source):
     :param current_line:
     :param ___:
     :param source:
-    :return:
+    :return: 4-tuple
     """
     buf = []
     current_line = current_line.strip()
@@ -920,10 +920,11 @@ def parse_statements(indent_level, __, matched, source):
         expr = expr.lstrip()
         tail = tail[1:].lstrip()
         if tail:
-            html, tail_indent, tail_line, source = parse_plim_tree(indent_level, tail, __, source)
+            extracted_html_line, close_buf, _, source = extract_plim_line(tail, source)
         else:
-            html = ''
-        buf.append(joined([' ', expr, ':\n', html]))
+            extracted_html_line = ''
+            close_buf = ''
+        buf.append(joined([' ', expr, ':\n', extracted_html_line, close_buf]))
     else:
         buf.append(':\n')
 
