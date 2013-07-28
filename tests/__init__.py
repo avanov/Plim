@@ -53,16 +53,16 @@ class TestPreprocessorSyntax(TestCaseBase):
             'unicode_attributes',
         ]
         for test_case in cases:
-            source = self.get_file_contents(test_case + '_test.html')
-            result = self.get_file_contents(test_case + '_result.html')
+            source = self.get_file_contents(test_case + '_test.plim')
+            result = self.get_file_contents(test_case + '_result.mako')
             data = plim.preprocessor(source)
             self.check_relevant_chars(data.strip(), result.strip())
 
 
     def test_dynamic_attributes(self):
         test_case = 'dynamic_attributes'
-        source = self.get_file_contents(test_case + '_test.html')
-        result = self.get_file_contents(test_case + '_result.html')
+        source = self.get_file_contents(test_case + '_test.plim')
+        result = self.get_file_contents(test_case + '_result.mako')
         data = plim.preprocessor(source)
         # normalize data
         data = data.replace("<a \n", "<a\n")
