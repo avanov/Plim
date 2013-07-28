@@ -43,7 +43,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'plimc = plim.console:main',
+            'plimc = plim.console:plimc',
         ]
     },
 
