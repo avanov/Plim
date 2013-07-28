@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Plim lexer"""
 import re
 
 import markdown2
@@ -9,7 +10,6 @@ from .extensions import rst_to_html
 from .extensions import coffee_to_js
 from .extensions import scss_to_css
 from .extensions import stylus_to_css
-
 
 
 # Preface
@@ -53,7 +53,7 @@ NUMERIC_VALUE_RE = re.compile(
     '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+%?))'
 )
 
-PARSE_PLIM_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
+PARSE_TAG_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
 PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
 PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
 STATEMENT_CONVERT = {
@@ -145,6 +145,8 @@ ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES = (
     NEWLINE
 )
 
+STATEMENT_TERMINATORS = {INLINE_TAG_SEPARATOR, NEWLINE}
+
 PYTHON_EXPR_OPEN_BRACES_RE = re.compile('(?P<start_brace>\(|\{|\[).*')
 PYTHON_EXPR_CLOSING_BRACES_RE = re.compile('\)|\}|\].*')
 MAKO_EXPR_START_BRACE_RE = re.compile('(?P<start_brace>\$\{).*')
@@ -183,7 +185,7 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 #       which represents the remaining (untouched) plim markup.
 # ------------------------------
 #
-# -- EXTRACTORS are the "light" versions of parsers. It means that their input arguments
+# -- EXTRACTORS are "light" versions of parsers. Their input arguments
 #    and return values are task-specific. However, they still have several common features:
 #      - Each extractor has its own starting and termination sequences.
 #      - Each extractor tries to find the starting sequence of characters at the beginning
@@ -194,9 +196,9 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 #        also an instance of enumerated object returned by :func:`enumerate_source`.
 # ------------------------------
 #
-# P.S. Yes, I'm well informed about a symbiotic relationship between "for" statements and iterators.
-# But I wanted to make all parsers pure functional. Therefore, You can find a number of
-# "while True: try/except StopIteration" constructs below.
+# P.S. I intentionally did not use "for" statements in conjunction with iterators.
+# I wanted to make all parsers free from implicit side-effects.
+# Therefore, you can find a number of "while True" and "try/except StopIteration" constructs below.
 
 # Searchers
 # ==================================================================================
@@ -313,7 +315,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
     """
 
     :param line: Current line. It may be empty.
-    :type line: str
+    :type line: str or unicode
     :param source:
     :type source: str
     :param identifier_start:
@@ -493,6 +495,13 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
 
 
 def extract_line_break(tail, source):
+    """
+    Checks the first character of the tail.
+
+    :param tail:
+    :param source:
+    :return:
+    """
     found = False
     while True:
         if tail.startswith(LINE_BREAK):
@@ -533,7 +542,7 @@ def extract_statement_expression(tail, source):
     return joined(buf).strip(), source
 
 
-def extract_plim_line(line, source):
+def extract_tag_line(line, source):
     """
     Returns a 3-tuple of inline tags sequence, closing tags sequence, and a dictionary of
     last tag components (name, attributes, content)
@@ -541,7 +550,7 @@ def extract_plim_line(line, source):
     :param line:
     :type line: str
     :param source:
-    :type source: str
+    :type source: enumerate
     """
     buf = []
     close_buf = []
@@ -650,8 +659,7 @@ def extract_plim_line(line, source):
 
         if tail.startswith(INLINE_TAG_SEPARATOR):
             tail = tail[1:].lstrip()
-            # continue to parse inline tags
-            continue
+            break
 
         # 3.3 The remainder of the line will be treated as content
         # ------------------------------------------------------------------
@@ -687,8 +695,9 @@ def extract_plim_line(line, source):
             else:
                 buf.append(tail.strip())
             components['content'] = buf[-1]
-        break
-    return joined(buf), joined(reversed(close_buf)), components, source
+        tail = ''
+
+    return joined(buf), joined(reversed(close_buf)), components, tail, source
 
 
 # Parsers
@@ -703,7 +712,7 @@ def parse_style_script(indent_level, current_line, matched, source):
     :param source:
     :return:
     """
-    extracted_html_line, close_buf, _, source = extract_plim_line(current_line, source)
+    extracted_html_line, close_buf, _, tail, source = extract_tag_line(current_line, source)
     buf = [extracted_html_line, '\n']
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
     buf.extend([parsed_data, close_buf])
@@ -724,19 +733,27 @@ def parse_doctype(indent_level, current_line, ___, source):
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
-def parse_plim_tree(indent_level, current_line, ___, source):
+def parse_tag_tree(indent_level, current_line, ___, source):
     """
 
     :param indent_level:
     :param current_line:
     :param ___:
     :param source:
-    :return:
+    :return: 4-tuple
     """
     buf = []
+    close_buf = []
     current_line = current_line.strip()
-    extracted_html_line, close_buf, _, source = extract_plim_line(current_line, source)
-    buf.append(extracted_html_line)
+    html_tag, close_seq, _, tail, source = extract_tag_line(current_line, source)
+    buf.append(html_tag)
+    close_buf.append(close_seq)
+    if tail:
+        parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail, source)
+        # at this point we have tail_indent <= indent_level
+        buf.extend(parsed)
+        buf.append(joined(close_buf))
+        return joined(buf), tail_indent, tail_line, source
 
     while True:
         try:
@@ -748,7 +765,7 @@ def parse_plim_tree(indent_level, current_line, ___, source):
         if not tail_line:
             continue
         if tail_indent <= indent_level:
-            buf.append(close_buf)
+            buf.append(joined(close_buf))
             return joined(buf), tail_indent, tail_line, source
 
         # ----------------------------------------------------------
@@ -757,10 +774,10 @@ def parse_plim_tree(indent_level, current_line, ___, source):
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source)
             buf.append(parsed_data)
             if tail_indent <= indent_level:
-                buf.append(close_buf)
+                buf.append(joined(close_buf))
                 return joined(buf), tail_indent, tail_line, source
 
-    buf.append(close_buf)
+    buf.append(joined(close_buf))
     return joined(buf), 0, '', source
 
 
@@ -815,7 +832,7 @@ def parse_mako_text(indent, __, matched, source):
     :param source:
     :return:
     """
-    _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
+    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source)
     buf = ['\n<%text']
     if components['attributes']:
         buf.extend([' ', components['attributes']])
@@ -839,7 +856,7 @@ def parse_call(indent_level, current_line, matched, source):
     :param source:
     :return: :raise:
     """
-    _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
+    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source)
     tag = components['content'].strip()
     if not tag:
         raise errors.PlimSyntaxError("-call must contain namespace:defname declaration", current_line)
@@ -908,18 +925,23 @@ def parse_statements(indent_level, __, matched, source):
     buf = ['\n%{statement}'.format(statement=stmnt)]
     if expr:
         expr, source = extract_statement_expression(expr, source)
-        buf.append(joined([' ', expr]))
-    buf.append(':\n')
-
-    while True:
+        expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+        expr = expr.lstrip()
+        tail_line = tail_line[1:].lstrip()
+        parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source)
+        buf.append(joined([' ', expr, ':\n', joined(parsed)]))
+    else:
+        # So far only the "-try" statement has empty ``expr`` part
+        buf.append(':\n')
         try:
             lineno, tail_line = next(source)
         except StopIteration:
-            break
+            tail_indent = 0
+            tail_line = ''
+        else:
+            tail_indent, tail_line = scan_line(tail_line)
 
-        tail_indent, tail_line = scan_line(tail_line)
-        if not tail_line:
-            continue
+    while True:
         # Parse tree
         # --------------------------------------------------------
         while tail_line:
@@ -930,11 +952,27 @@ def parse_statements(indent_level, __, matched, source):
                     if match:
                         if match.group('control') == 'elif':
                             expr, source = extract_statement_expression(match.group('expr'), source)
-                            buf.append('\n%elif {expr}:\n'.format(expr=expr))
+                            expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+                            expr = expr.lstrip()
+                            tail_line = tail_line[1:].lstrip()
+                            parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source)
+                            buf.append(joined(['\n%elif {expr}:\n'.format(expr=expr), joined(parsed)]))
+                            if tail_line:
+                                continue
                             break
                         else:
                             # "-else" is found
-                            buf.append('\n%else:\n')
+                            expr = match.group('expr')
+                            result = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+                            if result:
+                                expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+                                expr = expr.lstrip()
+                                tail_line = tail_line[1:].lstrip()
+                                parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source)
+                                buf.append(joined(['\n%else:\n'.format(expr=expr), joined(parsed)]))
+                                if tail_line:
+                                    continue
+                            buf.append(joined(['\n%else:\n'.format(expr=expr)]))
                             break
                     else:
                         # elif/else is not found, finalize and return buffer
@@ -989,6 +1027,13 @@ def parse_statements(indent_level, __, matched, source):
                 matched_obj, parse = search_parser(lineno, tail_line)
                 parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source)
                 buf.append(parsed_data)
+
+        try:
+            lineno, tail_line = next(source)
+        except StopIteration:
+            break
+        tail_indent, tail_line = scan_line(tail_line)
+
 
     buf.append('\n%end{statement}\n'.format(statement=stmnt))
     return joined(buf), 0, '', source
@@ -1181,7 +1226,7 @@ def parse_mako_one_liners(indent_level, __, matched, source):
     :param source:
     :return:
     """
-    _, __, components, source = extract_plim_line(matched.group('line').strip(), source)
+    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source)
     buf = ['<%{tag}'.format(tag=components['name'])]
     if components['content']:
         buf.append(' file="{name}"'.format(name=components['content']))
@@ -1200,7 +1245,7 @@ def parse_def_block(indent_level, __, matched, source):
     :param source:
     :return:
     """
-    _, __, components, source = extract_plim_line(matched.group('line'), source)
+    _, __, components, tail, source = extract_tag_line(matched.group('line'), source)
     tag = components['name']
     buf = ['<%{def_or_block}'.format(def_or_block=tag)]
     if components['content']:
@@ -1231,6 +1276,18 @@ def parse_def_block(indent_level, __, matched, source):
 
     buf.append('</%{def_or_block}>\n'.format(def_or_block=tag))
     return joined(buf), 0, '', source
+
+
+def parse_plim_tail(lineno, indent_level, tail_line, source):
+    buf = []
+    tail_indent = indent_level
+    while tail_line:
+        matched_obj, parse = search_parser(lineno, tail_line)
+        parsed_data, tail_indent, tail_line, source = parse(indent_level, tail_line, matched_obj, source)
+        buf.append(parsed_data)
+        if tail_indent <= indent_level:
+            break
+    return buf, tail_indent, tail_line, source
 
 
 # Miscellaneous utilities
@@ -1284,7 +1341,7 @@ def compile_plim_source(source):
 PARSERS = ( # Order matters
     (PARSE_STYLE_SCRIPT_RE, parse_style_script),
     (PARSE_DOCTYPE_RE, parse_doctype),
-    (PARSE_PLIM_TREE_RE, parse_plim_tree),
+    (PARSE_TAG_TREE_RE, parse_tag_tree),
     (PARSE_EXPLICIT_LITERAL_RE, parse_explicit_literal),
     (PARSE_IMPLICIT_LITERAL_RE, parse_implicit_literal),
     (PARSE_RAW_HTML_RE, parse_raw_html),

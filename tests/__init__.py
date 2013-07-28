@@ -21,7 +21,7 @@ class TestCaseBase(unittest.TestCase):
     def check_relevant_chars(self, value1, value2):
         value1 = value1.strip().replace('\n\n\n\n', '\n\n').replace('\n\n\n', '\n\n').replace('\n\n', '\n')
         value2 = value2.strip().replace('\n\n\n\n', '\n\n').replace('\n\n\n', '\n\n').replace('\n\n', '\n')
-        assert value1 == value2
+        self.assertEqual(value1, value2)
 
 
 class TestPreprocessorSyntax(TestCaseBase):
@@ -51,21 +51,29 @@ class TestPreprocessorSyntax(TestCaseBase):
             'linebreak',
             'explicit_space',
             'unicode_attributes',
+            'inline_conditions'
         ]
         for test_case in cases:
-            source = self.get_file_contents(test_case + '_test.html')
-            result = self.get_file_contents(test_case + '_result.html')
+            source = self.get_file_contents(test_case + '_test.plim')
+            result = self.get_file_contents(test_case + '_result.mako')
             data = plim.preprocessor(source)
             self.check_relevant_chars(data.strip(), result.strip())
 
 
     def test_dynamic_attributes(self):
         test_case = 'dynamic_attributes'
-        source = self.get_file_contents(test_case + '_test.html')
-        result = self.get_file_contents(test_case + '_result.html')
+        source = self.get_file_contents(test_case + '_test.plim')
+        result = self.get_file_contents(test_case + '_result.mako')
         data = plim.preprocessor(source)
         # normalize data
         data = data.replace("<a \n", "<a\n")
         # normalize for Test4
         data = data.replace("\n \n", "\n\n")
+        self.assertEqual(data.strip(), result.strip())
+
+    def test_inline_loops(self):
+        test_case = 'inline_loop'
+        source = self.get_file_contents(test_case + '_test.plim')
+        result = self.get_file_contents(test_case + '_result.mako')
+        data = plim.preprocessor(source)
         self.assertEqual(data.strip(), result.strip())
