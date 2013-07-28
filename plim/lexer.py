@@ -493,6 +493,13 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
 
 
 def extract_line_break(tail, source):
+    """
+    Checks the first character of the tail.
+
+    :param tail:
+    :param source:
+    :return:
+    """
     found = False
     while True:
         if tail.startswith(LINE_BREAK):

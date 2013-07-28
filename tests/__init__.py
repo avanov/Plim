@@ -69,3 +69,10 @@ class TestPreprocessorSyntax(TestCaseBase):
         # normalize for Test4
         data = data.replace("\n \n", "\n\n")
         self.assertEqual(data.strip(), result.strip())
+
+    def test_inline_loops(self):
+        test_case = 'inline_loop'
+        source = self.get_file_contents(test_case + '_test.plim')
+        result = self.get_file_contents(test_case + '_result.mako')
+        data = plim.preprocessor(source)
+        self.assertEqual(data.strip(), result.strip())
