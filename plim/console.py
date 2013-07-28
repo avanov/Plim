@@ -36,7 +36,7 @@ def plimc():
     if args.html:
         root_dir = os.path.dirname(os.path.abspath(args.source))
         lookup = TemplateLookup(directories=[root_dir])
-        content = Template(content, lookup=lookup)
+        content = Template(content, lookup=lookup).render()
 
     # Output
     # ------------------------------------
