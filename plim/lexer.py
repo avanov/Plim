@@ -313,7 +313,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
     """
 
     :param line: Current line. It may be empty.
-    :type line: str
+    :type line: str or unicode
     :param source:
     :type source: str
     :param identifier_start:
@@ -915,8 +915,17 @@ def parse_statements(indent_level, __, matched, source):
     buf = ['\n%{statement}'.format(statement=stmnt)]
     if expr:
         expr, source = extract_statement_expression(expr, source)
-        buf.append(joined([' ', expr]))
-    buf.append(':\n')
+        terminators = {INLINE_TAG_SEPARATOR, NEWLINE}
+        expr, tail, source = extract_identifier(expr, source, '', terminators)
+        expr = expr.lstrip()
+        tail = tail[1:].lstrip()
+        if tail:
+            html, tail_indent, tail_line, source = parse_plim_tree(indent_level, tail, __, source)
+        else:
+            html = ''
+        buf.append(joined([' ', expr, ':\n', html]))
+    else:
+        buf.append(':\n')
 
     while True:
         try:

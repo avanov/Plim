@@ -21,7 +21,7 @@ class TestCaseBase(unittest.TestCase):
     def check_relevant_chars(self, value1, value2):
         value1 = value1.strip().replace('\n\n\n\n', '\n\n').replace('\n\n\n', '\n\n').replace('\n\n', '\n')
         value2 = value2.strip().replace('\n\n\n\n', '\n\n').replace('\n\n\n', '\n\n').replace('\n\n', '\n')
-        assert value1 == value2
+        self.assertEqual(value1, value2)
 
 
 class TestPreprocessorSyntax(TestCaseBase):
