@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Plim lexer"""
 import re
 
 import markdown2
@@ -9,7 +10,6 @@ from .extensions import rst_to_html
 from .extensions import coffee_to_js
 from .extensions import scss_to_css
 from .extensions import stylus_to_css
-
 
 
 # Preface
@@ -183,7 +183,7 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 #       which represents the remaining (untouched) plim markup.
 # ------------------------------
 #
-# -- EXTRACTORS are the "light" versions of parsers. It means that their input arguments
+# -- EXTRACTORS are "light" versions of parsers. Their input arguments
 #    and return values are task-specific. However, they still have several common features:
 #      - Each extractor has its own starting and termination sequences.
 #      - Each extractor tries to find the starting sequence of characters at the beginning
@@ -194,9 +194,9 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 #        also an instance of enumerated object returned by :func:`enumerate_source`.
 # ------------------------------
 #
-# P.S. Yes, I'm well informed about a symbiotic relationship between "for" statements and iterators.
-# But I wanted to make all parsers pure functional. Therefore, You can find a number of
-# "while True: try/except StopIteration" constructs below.
+# P.S. I intentionally did not use "for" statements in conjunction with iterators.
+# I wanted to make all parsers free from implicit side-effects.
+# Therefore, you can find a number of "while True" and "try/except StopIteration" constructs below.
 
 # Searchers
 # ==================================================================================
