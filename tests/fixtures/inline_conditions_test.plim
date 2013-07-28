@@ -1,0 +1,17 @@
+- if i > 7: li: a href=route_to(i)=i
+
+-if i > 7: -if i < 10: a href=route_to(i)=i
+-else
+  No link
+
+h2.caption:-if is_editor :a href="#" Edit
+-elif(is_admin)          :       a href="#" Delete
+-elif is_guest
+  No Caption
+- else : Caption
+
+h3:-if idea:Idea
+-elif is_day: Think about it
+-else
+  Sleep
+Cool!

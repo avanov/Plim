@@ -931,6 +931,7 @@ def parse_statements(indent_level, __, matched, source):
         parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source)
         buf.append(joined([' ', expr, ':\n', joined(parsed)]))
     else:
+        # So far only the "-try" statement has empty ``expr`` part
         buf.append(':\n')
         try:
             lineno, tail_line = next(source)
@@ -951,11 +952,27 @@ def parse_statements(indent_level, __, matched, source):
                     if match:
                         if match.group('control') == 'elif':
                             expr, source = extract_statement_expression(match.group('expr'), source)
-                            buf.append('\n%elif {expr}:\n'.format(expr=expr))
+                            expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+                            expr = expr.lstrip()
+                            tail_line = tail_line[1:].lstrip()
+                            parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source)
+                            buf.append(joined(['\n%elif {expr}:\n'.format(expr=expr), joined(parsed)]))
+                            if tail_line:
+                                continue
                             break
                         else:
                             # "-else" is found
-                            buf.append('\n%else:\n')
+                            expr = match.group('expr')
+                            result = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+                            if result:
+                                expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
+                                expr = expr.lstrip()
+                                tail_line = tail_line[1:].lstrip()
+                                parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source)
+                                buf.append(joined(['\n%else:\n'.format(expr=expr), joined(parsed)]))
+                                if tail_line:
+                                    continue
+                            buf.append(joined(['\n%else:\n'.format(expr=expr)]))
                             break
                     else:
                         # elif/else is not found, finalize and return buffer
