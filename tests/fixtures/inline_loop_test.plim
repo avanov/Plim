@@ -8,3 +8,9 @@
 
 
 ul: -for item in {1, 2, 3}: li.link:a(href=route_to(item))=item
+
+ul: -for link in [
+    'About',
+    'Blog',
+    'Sitemap'
+    ]: li: a href=route_to(link) = link

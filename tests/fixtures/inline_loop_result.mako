@@ -17,4 +17,8 @@
 %for item in {1, 2, 3}:
 <li class="link"><a href="${route_to(item)}">${item}</a></li>
 %endfor
+</ul><ul>
+%for link in ['About','Blog','Sitemap']:
+<li><a href="${route_to(link)}">${link}</a></li>
+%endfor
 </ul>
