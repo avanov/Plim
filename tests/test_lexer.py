@@ -208,97 +208,160 @@ class TestLexerFunctions(TestCaseBase):
         attrs, tail, source = l.extract_dynamic_tag_attributes("**test(\n", source, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
 
-
     def test_inline_extract_plim_line(self):
-        def test_case(template, result):
+        def test_case(template, result_list, result_tail_list):
             source = enumerate('')
-            line, close_buf, _, __ = l.extract_plim_line(template, source)
-            self.assertEqual(line + close_buf, result)
+            tail = template
+            while True:
+                result = result_list.pop(0)
+                result_tail = result_tail_list.pop(0)
+                line, close_buf, _, tail, __ = l.extract_tag_line(tail, source)
+                self.assertEqual(line + close_buf, result)
+                self.assertEqual(result_tail, tail)
+                if not tail:
+                    break
 
         test_case(
             "input#proceed (type='submit' name='proceed' value=_('Start creating my account') disabled)",
-            """<input type="submit" name="proceed" value="${_('Start creating my account')}" disabled="disabled" id="proceed"/>"""
+            ["""<input type="submit" name="proceed" value="${_('Start creating my account')}" disabled="disabled" id="proceed"/>"""],
+            [""]
         )
         
         test_case(
             "input#proceed ( disabled )",
-            """<input disabled="disabled" id="proceed"/>"""
+            ["""<input disabled="disabled" id="proceed"/>"""],
+            [""]
         )
         
         test_case(
             "input#proceed (disabled)",
-            """<input disabled="disabled" id="proceed"/>"""
+            ["""<input disabled="disabled" id="proceed"/>"""],
+            [""]
         )
-            
+
         test_case(
             'body: #layout: ul#list.cls1.cls2: li.active: a href="#" = Page Title',
-            '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#">${Page Title}</a></li></ul></div></body>'
+            [
+                '<body></body>',
+                '<div id="layout"></div>',
+                '<ul id="list" class="cls1 cls2"></ul>',
+                '<li class="active"></li>',
+                '<a href="#">${Page Title}</a>',
+            ],
+            [
+                '#layout: ul#list.cls1.cls2: li.active: a href="#" = Page Title',
+                'ul#list.cls1.cls2: li.active: a href="#" = Page Title',
+                'li.active: a href="#" = Page Title',
+                'a href="#" = Page Title',
+                '',
+            ]
         )
+
         test_case(
             'body: #layout: ul#list.cls1.cls2: li.active: a href="#"=Page Title',
-            '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#">${Page Title}</a></li></ul></div></body>'
+            [
+                '<body></body>',
+                '<div id="layout"></div>',
+                '<ul id="list" class="cls1 cls2"></ul>',
+                '<li class="active"></li>',
+                '<a href="#">${Page Title}</a>'
+            ],
+            [
+                '#layout: ul#list.cls1.cls2: li.active: a href="#"=Page Title',
+                'ul#list.cls1.cls2: li.active: a href="#"=Page Title',
+                'li.active: a href="#"=Page Title',
+                'a href="#"=Page Title',
+                ''
+            ],
+
         )
         test_case(
             'body: #layout: ul#list.cls1.cls2: li.active: a href="#" =, Page Title',
-            '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#">${Page Title} </a></li></ul></div></body>'
+            [
+                '<body></body>',
+                '<div id="layout"></div>',
+                '<ul id="list" class="cls1 cls2"></ul>',
+                '<li class="active"></li>',
+                '<a href="#">${Page Title} </a>'
+            ],
+            [
+                '#layout: ul#list.cls1.cls2: li.active: a href="#" =, Page Title',
+                'ul#list.cls1.cls2: li.active: a href="#" =, Page Title',
+                'li.active: a href="#" =, Page Title',
+                'a href="#" =, Page Title',
+                ''
+            ],
         )
 
         # Check parentheses
         test_case(
             'body(): #layout (): ul#list.cls1.cls2(   ): li.active: a ( href="#" ) = Page Title',
-            '<body><div id="layout"><ul id="list" class="cls1 cls2"><li class="active"><a href="#">${Page Title}</a></li></ul></div></body>'
+            [
+                '<body></body>',
+                '<div id="layout"></div>',
+                '<ul id="list" class="cls1 cls2"></ul>',
+                '<li class="active"></li>',
+                '<a href="#">${Page Title}</a>'
+            ],
+            [
+                '#layout (): ul#list.cls1.cls2(   ): li.active: a ( href="#" ) = Page Title',
+                'ul#list.cls1.cls2(   ): li.active: a ( href="#" ) = Page Title',
+                'li.active: a ( href="#" ) = Page Title',
+                'a ( href="#" ) = Page Title',
+                ''
+            ]
         )
 
         # test dynamic content
         result = '<body>${Test}</body>'
-        test_case('body = Test', result)
-        test_case('body=Test', result)
+        test_case('body = Test', [result], [''])
+        test_case('body=Test', [result], [''])
 
         # Test explicit whitespace
         result = '<body>Test </body>'
-        test_case('body , Test', result)
-        test_case('body,Test', result)
+        test_case('body , Test', [result], [''])
+        test_case('body,Test', [result], [''])
 
         # Test literals
         result = '<div>Test</div>'
-        test_case('div | Test', result)
-        test_case('div|Test', result)
-        test_case('div|=Test', '<div>=Test</div>')
+        test_case('div | Test', [result], [''])
+        test_case('div|Test', [result], [''])
+        test_case('div|=Test', ['<div>=Test</div>'], [''])
 
         # Test dynamic with whitespace
         result = '<div>${Test} </div>'
-        test_case('div=,Test', result)
-        test_case('div =, Test', result)
-        test_case('div = , Test', '<div>${, Test}</div>')
-        test_case('div, =Test', '<div>=Test </div>')
+        test_case('div=,Test', [result], [''])
+        test_case('div =, Test', [result], [''])
+        test_case('div = , Test', ['<div>${, Test}</div>'], [''])
+        test_case('div, =Test', ['<div>=Test </div>'], [''])
 
         # Test dynamic with "n" filter
         result = '<div>${Test|n}</div>'
-        test_case('div==Test', result)
-        test_case('div==Test|u', '<div>${Test|n,u}</div>')
-        test_case('div == Test', result)
-        test_case('div == Test|u,h', '<div>${Test|n,u,h}</div>')
-        test_case('div = = Test', '<div>${= Test}</div>')
-        test_case('div, ==Test', '<div>==Test </div>')
+        test_case('div==Test', [result], [''])
+        test_case('div==Test|u', ['<div>${Test|n,u}</div>'], [''])
+        test_case('div == Test', [result], [''])
+        test_case('div == Test|u,h', ['<div>${Test|n,u,h}</div>'], [''])
+        test_case('div = = Test', ['<div>${= Test}</div>'], [''])
+        test_case('div, ==Test', ['<div>==Test </div>'], [''])
 
         result = '<div>${Test|n} </div>'
-        test_case('div==,Test', result)
-        test_case('div==,Test | h', '<div>${Test |n,h} </div>')
-        test_case('div ==, Test', result)
-        test_case('div ==, Test | h', '<div>${Test |n,h} </div>')
-        test_case('div == , Test', '<div>${, Test|n}</div>')
+        test_case('div==,Test', [result], [''])
+        test_case('div==,Test | h', ['<div>${Test |n,h} </div>'], [''])
+        test_case('div ==, Test', [result], [''])
+        test_case('div ==, Test | h', ['<div>${Test |n,h} </div>'], [''])
+        test_case('div == , Test', ['<div>${, Test|n}</div>'], [''])
 
         # Test parentheses and functions as dynamic variables
-        test_case('div attr=func(test("test")) Test', '<div attr="${func(test("test"))}">Test</div>')
+        test_case('div attr=func(test("test")) Test', ['<div attr="${func(test("test"))}">Test</div>'], [''])
 
         result = '<div attr="${func(test())}">${Test}</div>'
-        test_case('div (attr=func(test()))= Test', result)
+        test_case('div (attr=func(test()))= Test', [result], [''])
 
         result = '<div attr="${func(test())}" attr2="${test()}">${Test}</div>'
-        test_case('div( attr=func(test()) attr2=test() )= Test', result)
+        test_case('div( attr=func(test()) attr2=test() )= Test', [result], [''])
 
         result = '<div attr="${func(test())}" ${(test()) and \'attr2="attr2"\' or \'\'|n}>${Test}</div>'
-        test_case('div( attr=func(test()) attr2=test()? )= Test', result)
+        test_case('div( attr=func(test()) attr2=test()? )= Test', [result], [''])
 
 
     def test_explicit_literal(self):
@@ -320,52 +383,52 @@ class TestLexerFunctions(TestCaseBase):
             for lineno, line in template:
                 if line.strip():
                     _, result_line = next(result)
-                    line, close_buf, _, __ = l.extract_plim_line(line, template)
+                    line, close_buf, _, tail, __ = l.extract_tag_line(line, template)
                     self.assertEqual(line + close_buf, result_line.rstrip())
 
-        test_case('plim_multiline_tag_test.html', 'plim_multiline_tag_result.html')
+        test_case('plim_multiline_tag_test.plim', 'plim_multiline_tag_result.mako')
 
 
     def test_parse_markdown(self):
-        source = self.get_file_contents('markdown_test.html')
+        source = self.get_file_contents('markdown_test.plim')
         source = l.enumerate_source(source)
         _, line = next(source)
-        result = self.get_file_contents('markdown_result.html')
+        result = self.get_file_contents('markdown_result.mako')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
 
 
     def test_parse_rst(self):
-        source = self.get_file_contents('reST_test.html')
+        source = self.get_file_contents('reST_test.plim')
         source = l.enumerate_source(source)
         _, line = next(source)
-        result = self.get_file_contents('reST_result.html')
+        result = self.get_file_contents('reST_result.mako')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
 
 
     def test_sass(self):
-        source = self.get_file_contents('scss_test.html')
+        source = self.get_file_contents('scss_test.plim')
         source = l.enumerate_source(source)
         _, line = next(source)
-        result = self.get_file_contents('scss_result.html')
+        result = self.get_file_contents('scss_result.mako')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
 
         
     def test_coffee(self):
-        source = self.get_file_contents('coffee_test.html')
+        source = self.get_file_contents('coffee_test.plim')
         source = l.enumerate_source(source)
         _, line = next(source)
-        result = self.get_file_contents('coffee_result.html')
+        result = self.get_file_contents('coffee_result.mako')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())
         
         
     def test_stylus(self):
-        source = self.get_file_contents('stylus_test.html')
+        source = self.get_file_contents('stylus_test.plim')
         source = l.enumerate_source(source)
         _, line = next(source)
-        result = self.get_file_contents('stylus_result.html')
+        result = self.get_file_contents('stylus_result.mako')
         data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source)
         self.assertEqual(data.strip(), result.strip())

@@ -5,6 +5,10 @@ Changelog
 Version 0.8
 ------------
 
+- 0.8.1
+
+  - Feature: added support for `Inline Statements <http://plim.readthedocs.org/en/latest/en/syntax.html#inline-statements>`_
+
 - 0.8.0
 
   - Feature: added support for dynamic attributes unpacker (an equivalent to Slim's splat attributes).

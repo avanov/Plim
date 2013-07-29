@@ -389,6 +389,25 @@ For readability, don't forget you can wrap the attributes.
       li.first: a(href="/a") A link
       li: a(href="/b") B link
 
+Inline Statements
+====================================
+
+You can inline python loops and conditional expressions in the same manner as tags.
+
+.. code-block:: plim
+
+    ul: -for link in ['About', 'Blog', 'Sitemap']: li: a href=route_to(link) = link
+
+will be rendered as
+
+.. code-block:: mako
+
+    <ul>
+    %for link in ['About', 'Blog', 'Sitemap']:
+    <li><a href="${route_to(link)}">${link}</a></li>
+    %endfor
+    </ul>
+
 
 Evaluate Python Code in Text
 ====================================
