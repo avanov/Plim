@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plim import lexer as l
+from plim.errors import PlimSyntaxError
 from . import TestCaseBase
 
 
@@ -387,6 +388,30 @@ class TestLexerFunctions(TestCaseBase):
                     self.assertEqual(line + close_buf, result_line.rstrip())
 
         test_case('plim_multiline_tag_test.plim', 'plim_multiline_tag_result.mako')
+
+    def test_search_embedding_quotes(self):
+        result = l.search_embedding_quotes('`abc`')
+        self.assertEqual(result, 5)
+
+        result = l.search_embedding_quotes('prefix`abc`')
+        self.assertEqual(result, None)
+
+    def test_parse_embedded_markup(self):
+        result = l._parse_embedded_markup("this is a `test`")
+        self.assertEqual(result, "this is a <test></test>")
+
+        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a `test")
+
+        result = l._parse_embedded_markup("this is a ``test")
+        self.assertEqual(result, "this is a `test")
+
+        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a ```test")
+
+        result = l._parse_embedded_markup("this is a ````test")
+        self.assertEqual(result, "this is a ``test")
+
+        result = l._parse_embedded_markup("this is a `recursive Test \`recursive Test\``test")
+        self.assertEqual(result, "this is a <recursive>Test <recursive>Test</recursive></recursive>test")
 
 
     def test_parse_markdown(self):

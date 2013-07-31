@@ -77,3 +77,12 @@ class TestPreprocessorSyntax(TestCaseBase):
         result = self.get_file_contents(test_case + '_result.mako')
         data = plim.preprocessor(source)
         self.assertEqual(data.strip(), result.strip())
+
+    def test_embedded_markup(self):
+        test_case = 'embedded'
+        source = self.get_file_contents(test_case + '_test.plim')
+        result = self.get_file_contents(test_case + '_result.mako')
+        data = plim.preprocessor(source)
+        # normalize result
+        result = result.strip().replace('\n---\n', '')
+        self.assertEqual(data.strip(), result)

@@ -154,6 +154,9 @@ MAKO_EXPR_COUNT_OPEN_BRACES_RE = re.compile('\{')
 MAKO_EXPR_COUNT_CLOSING_BRACES_RE = re.compile('\}')
 QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 
+EMBEDDING_QUOTE = '`'
+EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote_symbol=EMBEDDING_QUOTE))
+
 
 # ============================================================================================
 # Okay, let's get started.
@@ -202,14 +205,14 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 
 # Searchers
 # ==================================================================================
-def search_quotes(line, escape_char='\\'):
+def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
     """
     ``line`` may be empty
 
     :param line:
     :param escape_char:
     """
-    match = QUOTES_RE.match(line)
+    match = quotes_re.match(line)
     if not match: return None
 
     find_seq = match.group('quote_type')
@@ -225,6 +228,8 @@ def search_quotes(line, escape_char='\\'):
             return pos + find_seq_len
         pos += 1
     return None
+
+search_embedding_quotes = lambda line: search_quotes(line, quotes_re=EMBEDDING_QUOTES_RE)
 
 
 def search_parser(lineno, line):
@@ -261,12 +266,12 @@ def _extract_braces_expression(line, source, starting_braces_re, open_braces_re,
     buf = [open_brace]
     tail = line[len(open_brace):]
     braces_counter = 1
-     
+
     while True:
         if not tail:
             _, tail = next(source)
             tail = tail.lstrip()
-        
+
         while tail:
             current_char = tail[0]
             if closing_braces_re.match(current_char):
@@ -276,24 +281,24 @@ def _extract_braces_expression(line, source, starting_braces_re, open_braces_re,
                     tail = tail[1:]
                     continue
                 return joined(buf), tail[1:], source
-    
+
             if current_char == NEWLINE:
                 _, tail = next(source)
                 tail = tail.lstrip()
                 continue
-    
+
             if open_braces_re.match(current_char):
                 braces_counter += 1
                 buf.append(current_char)
                 tail = tail[1:]
                 continue
-    
+
             result = search_quotes(tail)
             if result is not None:
                 buf.append(tail[:result])
                 tail = tail[result:]
                 continue
-    
+
             buf.append(current_char)
             tail = tail[1:]
 
@@ -356,7 +361,7 @@ def extract_digital_attr_value(line):
     return None
 
 
-def extract_quoted_attr_value(line):
+def extract_quoted_attr_value(line, search_quotes=search_quotes):
     result = search_quotes(line)
     if result:
         if line.startswith('"""') or line.startswith("'''"):
@@ -668,6 +673,7 @@ def extract_tag_line(line, source):
             if tail.startswith(DYNAMIC_CONTENT_PREFIX):
                 tail = tail[1:]
                 if tail.startswith(DYNAMIC_CONTENT_PREFIX):
+                    # case for the '==' prefix
                     tail = _inject_n_filter(tail)
                     if tail.startswith(DYNAMIC_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
@@ -686,14 +692,16 @@ def extract_tag_line(line, source):
                         buf.append("${{{content}}}".format(content=tail))
 
             elif tail.startswith(LITERAL_CONTENT_PREFIX):
-                buf.append(tail[1:].strip())
+                tail = _parse_embedded_markup(tail[1:].strip())
+                buf.append(tail)
 
             elif tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
-                tail = tail[1:].strip()
+                tail = _parse_embedded_markup(tail[1:].strip())
                 buf.append("{content} ".format(content=tail))
 
             else:
-                buf.append(tail.strip())
+                tail = _parse_embedded_markup(tail.strip())
+                buf.append(tail)
             components['content'] = buf[-1]
         tail = ''
 
@@ -791,7 +799,7 @@ def parse_markup_languages(indent_level, __, matched, source):
     :return:
     """
     markup_parser = MARKUP_LANGUAGES[matched.group('lang')]
-    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
+    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source, False)
     # This is slow but correct.
     # Trying to remove redundant indentation
     parsed_data = markup_parser(parsed_data)
@@ -816,7 +824,7 @@ def parse_python(indent_level, __, matched, source):
     if inlined:
         buf.extend([inlined.strip(), '\n'])
 
-    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
+    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source, False)
     if parsed_data:
         buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
     buf.append('%>\n')
@@ -840,7 +848,7 @@ def parse_mako_text(indent, __, matched, source):
     if components['content']:
         buf.extend([components['content'], '\n'])
 
-    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent, LITERAL_CONTENT_PREFIX, matched, source)
+    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent, LITERAL_CONTENT_PREFIX, matched, source, False)
     if parsed_data:
         buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
     buf.append('</%text>\n')
@@ -1058,7 +1066,7 @@ def parse_foreign_statements(indent_level, __, matched, source):
     return parse_statements(indent_level, __, matched, source)
 
 
-def parse_explicit_literal(indent_level, current_line, ___, source):
+def parse_explicit_literal(indent_level, current_line, ___, source, parse_embedded=True):
     """
     Parses lines and blocks started with the "|" (pipe) or "," (comma) character.
 
@@ -1069,6 +1077,17 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
     """
     # Get rid of the pipe character
     trailing_space_required = current_line[0] == LITERAL_CONTENT_SPACE_PREFIX
+
+    # ---------------------------------
+    def prepare_result(buf):
+        result = joined(buf).rstrip()
+        if trailing_space_required:
+            result = "{} ".format(result)
+        if parse_embedded:
+            result = _parse_embedded_markup(result)
+        return result
+
+    # --------------------------------
     current_line = current_line[1:]
     _, striped_line = scan_line(current_line)
     # Add line and trailing newline character
@@ -1085,9 +1104,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
             buf.append('\n')
             continue
         if indent <= indent_level:
-            result = joined(buf).rstrip()
-            if trailing_space_required:
-                result = "{} ".format(result)
+            result = prepare_result(buf)
             return result, indent, line, source
         if align is None:
             align = len(current_line) - len(current_line.lstrip())
@@ -1096,10 +1113,38 @@ def parse_explicit_literal(indent_level, current_line, ___, source):
         line = current_line[align:].rstrip()
         buf.extend([line.rstrip(), "\n"])
 
-    result = joined(buf).rstrip()
-    if trailing_space_required:
-        result = "{} ".format(result)
+    result = prepare_result(buf)
     return result, 0, '', source
+
+
+def _parse_embedded_markup(content):
+    buf = []
+    tail = content
+    quote_escape = EMBEDDING_QUOTE * 2
+    while tail:
+        if tail.startswith(quote_escape):
+            tail = tail[len(quote_escape):]
+            buf.append(EMBEDDING_QUOTE)
+            continue
+        result = extract_quoted_attr_value(tail, search_embedding_quotes)
+        if result:
+            value, tail = result
+            value = value.rstrip().replace("\\`", "`")
+            if value:
+                try:
+                    value = compile_plim_source(value)
+                except errors.ParserNotFound:
+                    # invalid plim markup
+                    raise
+            buf.append(value)
+            continue
+        else:
+            if tail.startswith(EMBEDDING_QUOTE):
+                pos = len(content) - len(tail)
+                raise errors.PlimSyntaxError('Embedding quote is not closed: "{}"'.format(content), pos)
+        buf.append(tail[0])
+        tail = tail[1:]
+    return joined(buf)
 
 
 def _inject_n_filter(line):

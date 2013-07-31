@@ -15,7 +15,7 @@ class PlimSyntaxError(PlimError):
         self.line = line
 
     def __unicode__(self):
-        return as_unicode("{msg}: {line}").format(msg=self.msg, line=self.line)
+        return as_unicode("{msg} | at line(pos) {line}").format(msg=self.msg, line=self.line)
 
 
 class ParserNotFound(PlimError):
