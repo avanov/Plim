@@ -157,7 +157,8 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 EMBEDDING_QUOTE = '`'
 EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote_symbol=EMBEDDING_QUOTE))
 
-BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+`)')
+BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+)')
+EMBEDDED_BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+`)')
 BACKSLASH_REMOVE_ONE_LEVEL = lambda match: match.group('escape_seq')[1:]
 
 
@@ -232,7 +233,31 @@ def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
         pos += 1
     return None
 
-search_embedding_quotes = lambda line: search_quotes(line, quotes_re=EMBEDDING_QUOTES_RE)
+def search_embedding_quotes(line, escape_seq=BACKSLASH_ESCAPE_RE, quotes_re=EMBEDDING_QUOTES_RE):
+    """
+    ``line`` may be empty
+
+    :param line:
+    :param escape_seq:
+    """
+    match = quotes_re.match(line)
+    if not match: return None
+
+    find_seq = match.group('quote_type')
+    find_seq_len = len(find_seq)
+    pos = find_seq_len
+    line_len = len(line)
+
+    while pos < line_len:
+        current_line = line[pos:]
+        escaped = escape_seq.match(current_line)
+        if escaped:
+            pos += len(escaped.group('escape_seq')) + 1
+            continue
+        if current_line.startswith(find_seq):
+            return pos + find_seq_len
+        pos += 1
+    return None
 
 
 def search_parser(lineno, line):
@@ -364,7 +389,15 @@ def extract_digital_attr_value(line):
     return None
 
 
-def extract_quoted_attr_value(line, search_quotes=search_quotes):
+def extract_quoted_attr_value(line, search_quotes=search_quotes, remove_escape_seq=True):
+    """
+
+    :param line:
+    :param search_quotes:
+    :param remove_escape_seq: Sometimes escape sequences have to be removed outside of the extractor.
+                              This flag prevents double-escaping of backslash sequences.
+    :return:
+    """
     result = search_quotes(line)
     if result:
         if line.startswith('"""') or line.startswith("'''"):
@@ -375,8 +408,10 @@ def extract_quoted_attr_value(line, search_quotes=search_quotes):
         value = line[skip:result - skip]
         # We have to remove backslash escape sequences from the value, but
         # at the same time, preserve unicode escape sequences like "\u4e2d\u6587".
-        value = value.encode('raw_unicode_escape')
-        return value.decode('unicode_escape'), line[result:]
+        if remove_escape_seq:
+            value = value.encode('raw_unicode_escape')
+            value = value.decode('unicode_escape')
+        return value, line[result:]
     return None
 
 
@@ -1130,15 +1165,15 @@ def _parse_embedded_markup(content):
             tail = tail[len(quote_escape):]
             buf.append(EMBEDDING_QUOTE)
             continue
-        result = extract_quoted_attr_value(tail, search_embedding_quotes)
+        result = extract_quoted_attr_value(tail, search_embedding_quotes, False)
         if result:
             value, tail = result
             value = value.rstrip()
-            # Remove one level of backslash escaping
-            value = BACKSLASH_ESCAPE_RE.sub(BACKSLASH_REMOVE_ONE_LEVEL, value)
             if value:
+                # Remove one level of backslash escaping
+                value = BACKSLASH_ESCAPE_RE.sub(BACKSLASH_REMOVE_ONE_LEVEL, value)
                 try:
-                    value = compile_plim_source(value)
+                    value = compile_plim_source(value, False)
                 except errors.ParserNotFound:
                     # invalid plim markup
                     raise
@@ -1362,10 +1397,11 @@ def scan_line(line):
     return len(match.group('indent')), match.group('line')
 
 
-def compile_plim_source(source):
+def compile_plim_source(source, strip=True):
     """
 
     :param source:
+    :param strip: for embedded markup we don't want to strip whitespaces from result
     :return:
     """
     source = enumerate_source(source)
@@ -1384,7 +1420,10 @@ def compile_plim_source(source):
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source)
             result.append(parsed_data)
 
-    return joined(result).strip()
+    result = joined(result)
+    if strip:
+        result = result.strip()
+    return result
 
 
 # Acknowledgements
