@@ -1,0 +1,7 @@
+a href="#" Embedded `strong string` everywhere
+
+This is a `a href="#" link` embedded `br` into a literal block.
+
+| another `a href="#" very \`strong funny \\`i recursive\\`\`` test
+
+Embed everything `#even statements\`-for word in ['like', 'this']:= word\``.
