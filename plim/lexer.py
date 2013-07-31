@@ -157,6 +157,9 @@ QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 EMBEDDING_QUOTE = '`'
 EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote_symbol=EMBEDDING_QUOTE))
 
+BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+`)')
+BACKSLASH_REMOVE_ONE_LEVEL = lambda match: match.group('escape_seq')[1:]
+
 
 # ============================================================================================
 # Okay, let's get started.
@@ -1121,6 +1124,7 @@ def _parse_embedded_markup(content):
     buf = []
     tail = content
     quote_escape = EMBEDDING_QUOTE * 2
+
     while tail:
         if tail.startswith(quote_escape):
             tail = tail[len(quote_escape):]
@@ -1129,7 +1133,9 @@ def _parse_embedded_markup(content):
         result = extract_quoted_attr_value(tail, search_embedding_quotes)
         if result:
             value, tail = result
-            value = value.rstrip().replace("\\`", "`")
+            value = value.rstrip()
+            # Remove one level of backslash escaping
+            value = BACKSLASH_ESCAPE_RE.sub(BACKSLASH_REMOVE_ONE_LEVEL, value)
             if value:
                 try:
                     value = compile_plim_source(value)
