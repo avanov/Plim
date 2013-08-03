@@ -160,10 +160,6 @@ EMBEDDING_QUOTE_ESCAPE = EMBEDDING_QUOTE * 2
 EMBEDDING_QUOTE_END = '`_'
 EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote_symbol=EMBEDDING_QUOTE))
 
-BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+)')
-EMBEDDED_BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+`)')
-BACKSLASH_REMOVE_ONE_LEVEL = lambda match: match.group('escape_seq')[1:]
-
 
 # ============================================================================================
 # Okay, let's get started.
