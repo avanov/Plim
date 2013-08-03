@@ -9,3 +9,5 @@ Embed everything <div id="even">statements
 ${word}
 %endfor
 </div>.
+---
+Try using multi-line embedded markup <a href="#">Like this <strong data-something="true">test</strong></a>

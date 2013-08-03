@@ -19,3 +19,13 @@ from module import func
 <%
 a = u'Привет Мир!'
 %>
+<%
+
+for i in i_list:
+    for j in j_list:
+        print i, j
+    if i == j:
+        print "Equal"
+if True:
+    print "True"
+%>

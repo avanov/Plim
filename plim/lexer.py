@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Plim lexer"""
 import re
+import sys
 
 import markdown2
 
@@ -155,6 +156,8 @@ MAKO_EXPR_COUNT_CLOSING_BRACES_RE = re.compile('\}')
 QUOTES_RE = re.compile('(?P<quote_type>\'\'\'|"""|\'|").*') # order matters!
 
 EMBEDDING_QUOTE = '`'
+EMBEDDING_QUOTE_ESCAPE = EMBEDDING_QUOTE * 2
+EMBEDDING_QUOTE_END = '`_'
 EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote_symbol=EMBEDDING_QUOTE))
 
 BACKSLASH_ESCAPE_RE = re.compile('(?P<escape_seq>[\\\]+)')
@@ -199,8 +202,8 @@ BACKSLASH_REMOVE_ONE_LEVEL = lambda match: match.group('escape_seq')[1:]
 #        of the input line. If that attempt fails, the extractor returns None (in most cases).
 #        If the attempt is successful, the extractor captures all the input characters up to
 #        the termination sequence.
-#      - The return value of the succeeded extractor MUST contain not only the extracted value, but
-#        also an instance of enumerated object returned by :func:`enumerate_source`.
+#      - The return value of the succeeded extractor MUST contain not only the extracted value,
+#        but also an instance of enumerated object returned by :func:`enumerate_source`.
 # ------------------------------
 #
 # P.S. I intentionally did not use "for" statements in conjunction with iterators.
@@ -233,32 +236,6 @@ def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
         pos += 1
     return None
 
-def search_embedding_quotes(line, escape_seq=BACKSLASH_ESCAPE_RE, quotes_re=EMBEDDING_QUOTES_RE):
-    """
-    ``line`` may be empty
-
-    :param line:
-    :param escape_seq:
-    """
-    match = quotes_re.match(line)
-    if not match: return None
-
-    find_seq = match.group('quote_type')
-    find_seq_len = len(find_seq)
-    pos = find_seq_len
-    line_len = len(line)
-
-    while pos < line_len:
-        current_line = line[pos:]
-        escaped = escape_seq.match(current_line)
-        if escaped:
-            pos += len(escaped.group('escape_seq')) + 1
-            continue
-        if current_line.startswith(find_seq):
-            return pos + find_seq_len
-        pos += 1
-    return None
-
 
 def search_parser(lineno, line):
     """Finds a proper parser function for a given line or raises an error
@@ -275,6 +252,46 @@ def search_parser(lineno, line):
 
 # Extractors
 # ==================================================================================
+def extract_embedding_quotes(content):
+    """
+    ``content`` may be empty
+
+    :param content:
+    :param escape_seq:
+    """
+    match = EMBEDDING_QUOTES_RE.match(content)
+    if not match:
+        return None
+
+    original_string = [EMBEDDING_QUOTE]
+    embedded_string = []
+    tail = content[1:]
+
+    while tail:
+        if tail.startswith(EMBEDDING_QUOTE_ESCAPE):
+            original_string.append(EMBEDDING_QUOTE_ESCAPE)
+            embedded_string.append(EMBEDDING_QUOTE)
+            tail = tail[len(EMBEDDING_QUOTE_ESCAPE):]
+            continue
+
+        if tail.startswith(EMBEDDING_QUOTE):
+            append_seq = EMBEDDING_QUOTE_END if tail.startswith(EMBEDDING_QUOTE_END) else EMBEDDING_QUOTE
+            original_string.append(append_seq)
+            original_string = joined(original_string)
+            content = content[len(original_string):]
+            embedded_string = joined(embedded_string)
+            return embedded_string, original_string, content
+
+        current_char = tail[0]
+        original_string.append(current_char)
+        embedded_string.append(current_char)
+        tail = tail[1:]
+
+    original_string = joined(original_string)
+    pos = len(original_string)
+    raise errors.PlimSyntaxError('Embedding quote is not closed: "{}"'.format(original_string), pos)
+
+
 def _extract_braces_expression(line, source, starting_braces_re, open_braces_re, closing_braces_re):
     """
 
@@ -688,7 +705,7 @@ def extract_tag_line(line, source):
                 # We have reached the end of attributes definition
                 tail = tail[1:].lstrip()
             else:
-                raise errors.PlimSyntaxError("Unexpected end of line", line)
+                raise errors.PlimSyntaxError("Unexpected end of line", tail)
         else:
             if tail.startswith(' '):
                 tail = tail.lstrip()
@@ -1131,7 +1148,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, parse_embedd
     # Add line and trailing newline character
     buf = [current_line.strip(), striped_line and "\n" or ""]
 
-    align = None
+    align = sys.maxint
     while True:
         try:
             lineno, current_line = next(source)
@@ -1144,9 +1161,10 @@ def parse_explicit_literal(indent_level, current_line, ___, source, parse_embedd
         if indent <= indent_level:
             result = prepare_result(buf)
             return result, indent, line, source
-        if align is None:
-            align = len(current_line) - len(current_line.lstrip())
 
+        new_align = len(current_line) - len(current_line.lstrip())
+        if align > new_align:
+            align = new_align
         # remove preceding spaces
         line = current_line[align:].rstrip()
         buf.extend([line.rstrip(), "\n"])
@@ -1158,33 +1176,28 @@ def parse_explicit_literal(indent_level, current_line, ___, source, parse_embedd
 def _parse_embedded_markup(content):
     buf = []
     tail = content
-    quote_escape = EMBEDDING_QUOTE * 2
-
     while tail:
-        if tail.startswith(quote_escape):
-            tail = tail[len(quote_escape):]
+        if tail.startswith(EMBEDDING_QUOTE_ESCAPE):
+            tail = tail[len(EMBEDDING_QUOTE_ESCAPE):]
             buf.append(EMBEDDING_QUOTE)
             continue
-        result = extract_quoted_attr_value(tail, search_embedding_quotes, False)
+        result = extract_embedding_quotes(tail)
         if result:
-            value, tail = result
-            value = value.rstrip()
-            if value:
-                # Remove one level of backslash escaping
-                value = BACKSLASH_ESCAPE_RE.sub(BACKSLASH_REMOVE_ONE_LEVEL, value)
+            embedded, original, tail = result
+            embedded = embedded.strip()
+            if embedded:
                 try:
-                    value = compile_plim_source(value, False)
+                    embedded = compile_plim_source(embedded, False)
                 except errors.ParserNotFound:
-                    # invalid plim markup
-                    raise
-            buf.append(value)
+                    # invalid plim markup, leave things as is
+                    buf.append(original)
+                else:
+                    buf.append(embedded)
             continue
-        else:
-            if tail.startswith(EMBEDDING_QUOTE):
-                pos = len(content) - len(tail)
-                raise errors.PlimSyntaxError('Embedding quote is not closed: "{}"'.format(content), pos)
+
         buf.append(tail[0])
         tail = tail[1:]
+
     return joined(buf)
 
 
