@@ -408,7 +408,6 @@ will be rendered as
     %endfor
     </ul>
 
-
 Evaluate Python Code in Text
 ====================================
 
@@ -430,6 +429,46 @@ tag (or Plim's ``-text`` equivalent for blocks of mako syntax examples), or this
 
     body
       h1 Welcome ${'${current_user.name}'} to the show.
+
+Embedded Markup
+====================================
+
+You can embed plim markup right into literal blocks:
+
+.. code-block:: plim
+
+    a href="#" Embedded `strong string` everywhere
+
+is rendered as
+
+.. code-block:: html
+
+    <a href="#">Embedded <strong>string</strong> everywhere</a>
+
+If you want to put two embedded strings next to each other, add a trailing underscore
+character after the first embedded string:
+
+.. code-block:: plim
+
+    a href="#" Embedded `strong string`_`i s` everywhere
+
+is rendered as
+
+.. code-block:: html
+
+    <a href="#">Embedded <strong>string</strong><i>s</i> everywhere</a>
+
+The embedding mechanism is recursive so you can embed plim markup into embedded plim markup:
+
+.. code-block:: plim
+
+    Another `a href="#" very ``strong funny ````i recursive``````` test
+
+is rendered as
+
+.. code-block:: html
+
+    Another <a href="#">very <strong>funny <i>recursive</i></strong></a> test
 
 
 Skip HTML Escaping

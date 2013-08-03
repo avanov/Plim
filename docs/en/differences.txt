@@ -1,0 +1,89 @@
+Syntactic Differences
+=====================
+
+Plim is *not the exact* port of Slim. Here is the full list of differences.
+
+
+#.  Slim has the ( ``'`` ), ( ``='`` ), and ( ``=='`` ) `line indicators <https://github.com/stonean/slim#line-indicators>`_.
+    In Plim, single quote has been replaced by the comma char ( ``,`` ):
+
+    .. code-block:: slim
+
+        , value
+        =, value
+        ==, value
+
+
+    The change was made in order to get rid of the syntactic ambiguities like these:
+
+    .. code-block:: plim
+
+        / Is this an empty python string or a syntax error caused by the unclosed single quote?
+        =''
+
+        / Is this a python string 'u' ('u''' is the correct python syntax) or
+          a syntax error caused by the unclosed unicode docstring?
+        ='u'''
+
+    Meanwhile, the comma char is not allowed at the beginning of python expression,
+    therefore the following code samples are consistent:
+
+    .. code-block:: plim
+
+        / Syntax error at mako runtime caused by the unclosed single quote
+        =,'
+
+        / Correct and consistent. Produces an empty unicode string followed by an
+          explicit trailing whitespace
+        =,u''
+
+
+    In addition, the comma syntax seems more natural, since in formal writing we also add a whitespace
+    between a comma and the following word (in contrast to apostrophes, which may be written
+    together with some parts of words - "I'm", "it's" etc).
+
+
+
+#.  Unlike Slim, Plim does not support square or curly braces for wrapping tag attributes.
+    You can use only parentheses ``()``:
+
+    .. code-block:: slim
+
+        / For attributes wrapping we can use only parentheses
+        p(title="Link Title")
+          h1 class=(item.id == 1 and 'one' or 'unknown') Title
+
+          / Square and curly braces are allowed only in Python and Mako expressions
+          a#idx-${item.id} href=item.get_link(
+                       **{'argument': 'value'}) = item.attrs['title']
+
+
+#.  In Plim, all html tags **MUST** be written in lowercase.
+
+    This restriction was introduced to support
+    :ref:`Implicit Litaral Blocks <implicit-literals>` feature.
+
+    .. code-block:: slim
+
+        doctype 5
+        html
+          head
+            title Page Title
+          body
+            p
+              | Hello, Explicit Literal Block!
+            p
+              Hello, Implicit Literal Block!
+
+
+#. You do not have to use the ``|`` (pipe) indicator in ``style`` and ``script`` tags.
+
+#.  Plim does not make distinctions between control structures and embedded filters.
+
+    For example, in Slim you would write ``-if``, ``-for``, and ``coffee:`` (without 
+    preceding dash, but with the colon sign at the tail).
+    But in Plim, you must write ``-if``, ``-for``, and ``-coffee``.
+
+#. In contrast to Slim, Plim does not support the ``/!`` line indicator 
+   `which is used as an HTML-comment <https://github.com/stonean/slim#-7>`_. You can use
+   raw HTML-comments instead.
