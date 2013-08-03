@@ -15,3 +15,12 @@
 
 -py
     a = u'Привет Мир!'
+
+-py
+    for i in i_list:
+        for j in j_list:
+            print i, j
+        if i == j:
+            print "Equal"
+    if True:
+        print "True"

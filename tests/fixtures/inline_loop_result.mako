@@ -21,4 +21,8 @@
 %for link in ['About','Blog','Sitemap']:
 <li><a href="${route_to(link)}">${link}</a></li>
 %endfor
-</ul>
+</ul><table>
+%for item in items:
+<tr><td>${item.name}</td><td>${item.price}</td></tr>
+%endfor
+</table>

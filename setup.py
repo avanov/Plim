@@ -11,7 +11,7 @@ readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='Plim',
-    version='0.8.1',
+    version='0.8.2',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.8.0',
@@ -43,7 +43,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'plimc = plim.console:plim_compiler',
+            'plimc = plim.console:plimc',
         ]
     },
 

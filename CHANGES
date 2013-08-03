@@ -5,9 +5,14 @@ Changelog
 Version 0.8
 ------------
 
+- 0.8.2
+
+  - Feature: added support for `Embedded Markup <http://plim.readthedocs.org/en/latest/en/syntax.html#embedded-markup>`_.
+  - Feature: plimc utility is now able to output plain HTML.
+
 - 0.8.1
 
-  - Feature: added support for `Inline Statements <http://plim.readthedocs.org/en/latest/en/syntax.html#inline-statements>`_
+  - Feature: added support for `Inline Statements <http://plim.readthedocs.org/en/latest/en/syntax.html#inline-statements>`_.
 
 - 0.8.0
 

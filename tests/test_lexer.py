@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plim import lexer as l
+from plim.errors import PlimSyntaxError
 from . import TestCaseBase
 
 
@@ -387,6 +388,55 @@ class TestLexerFunctions(TestCaseBase):
                     self.assertEqual(line + close_buf, result_line.rstrip())
 
         test_case('plim_multiline_tag_test.plim', 'plim_multiline_tag_result.mako')
+
+    def test_extract_embedding_quotes(self):
+        result = l.extract_embedding_quotes('Test `abc`')
+        self.assertEqual(result, None)
+
+        embedded, original, content = l.extract_embedding_quotes('`abc`')
+        self.assertEqual(embedded, 'abc')
+        self.assertEqual(original, '`abc`')
+        self.assertEqual(content, '')
+
+        embedded, original, content = l.extract_embedding_quotes('`abc`_')
+        self.assertEqual(embedded, 'abc')
+        self.assertEqual(original, '`abc`_')
+        self.assertEqual(content, '')
+
+        embedded, original, content = l.extract_embedding_quotes('`abc`_Test')
+        self.assertEqual(embedded, 'abc')
+        self.assertEqual(original, '`abc`_')
+        self.assertEqual(content, 'Test')
+
+        embedded, original, content = l.extract_embedding_quotes('`abc`Test')
+        self.assertEqual(embedded, 'abc')
+        self.assertEqual(original, '`abc`')
+        self.assertEqual(content, 'Test')
+
+        embedded, original, content = l.extract_embedding_quotes('``abc Test')
+        self.assertEqual(embedded, '')
+        self.assertEqual(original, '``')
+        self.assertEqual(content, 'abc Test')
+
+        self.assertRaises(PlimSyntaxError, l.extract_embedding_quotes, '`abc``Test')
+
+
+    def test_parse_embedded_markup(self):
+        result = l._parse_embedded_markup("this is a `test`")
+        self.assertEqual(result, "this is a <test></test>")
+
+        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a `test")
+
+        result = l._parse_embedded_markup("this is a ``test")
+        self.assertEqual(result, "this is a `test")
+
+        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a ```test")
+
+        result = l._parse_embedded_markup("this is a ````test")
+        self.assertEqual(result, "this is a ``test")
+
+        result = l._parse_embedded_markup("this is a `recursive Test ``recursive Test```test")
+        self.assertEqual(result, "this is a <recursive>Test <recursive>Test</recursive></recursive>test")
 
 
     def test_parse_markdown(self):

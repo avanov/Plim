@@ -1,0 +1,15 @@
+a href="#" Embedded `strong string` everywhere
+
+a href="#" Embedded `strong string`_`i s` everywhere
+
+This is a `a href="#" link` embedded `br` into a literal block.
+
+| another `a href="#" very ``strong funny ````i recursive``````` test
+
+Embed everything `#even statements``-for word in ['like', 'this']:= word```.
+
+Try using multi-line embedded markup `a(
+                                        href="#"
+                            ): Like this ``strong(
+                                    data-something="true"
+                             ) test```
