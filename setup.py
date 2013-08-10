@@ -11,7 +11,7 @@ readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='Plim',
-    version='0.8.3',
+    version='0.8.4',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.8.1',
@@ -56,8 +56,8 @@ setup(
     description="Plim is a Python port of Ruby's Slim template language built on top of Mako Templates",
     long_description=readme,
     license="MIT",
-    url="https://github.com/2nd/Plim",
-    download_url="https://github.com/2nd/Plim",
+    url="https://github.com/avanov/Plim",
+    download_url="https://github.com/avanov/Plim",
     keywords="mako templates ruby slim jade pyjade pyramid flask haml pyhaml",
     classifiers=[
         'Development Status :: 4 - Beta',
