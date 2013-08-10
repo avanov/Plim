@@ -29,3 +29,7 @@ for i in i_list:
 if True:
     print "True"
 %>
+<%
+# Test that `embedded markup` is not parsed
+a = "`test test`"
+%>

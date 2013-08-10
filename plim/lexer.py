@@ -773,7 +773,7 @@ def parse_style_script(indent_level, current_line, matched, source):
     """
     extracted_html_line, close_buf, _, tail, source = extract_tag_line(current_line, source)
     buf = [extracted_html_line, '\n']
-    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source)
+    parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source, False)
     buf.extend([parsed_data, close_buf])
     return joined(buf), tail_indent, tail_line, source
 
