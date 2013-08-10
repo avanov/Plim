@@ -24,3 +24,7 @@
             print "Equal"
     if True:
         print "True"
+
+-py
+    # Test that `embedded markup` is not parsed
+    a = "`test test`"

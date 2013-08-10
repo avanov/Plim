@@ -11,10 +11,10 @@ readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='Plim',
-    version='0.8.2',
+    version='0.8.3',
     packages=find_packages(exclude=['tests']),
     install_requires=[
-        'Mako>=0.8.0',
+        'Mako>=0.8.1',
         'babel',
         # We use reStructuredText (docutils' component) for both supporting
         # the "-rest" extension and project documenting. So, ensure that the docutils
@@ -58,7 +58,7 @@ setup(
     license="MIT",
     url="https://github.com/2nd/Plim",
     download_url="https://github.com/2nd/Plim",
-    keywords="mako templates ruby slim jade pyjade pyramid flask",
+    keywords="mako templates ruby slim jade pyjade pyramid flask haml pyhaml",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
