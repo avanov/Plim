@@ -5,6 +5,10 @@ Changelog
 Version 0.8
 ------------
 
+- 0.8.4
+
+  - Hotfix: updated links to github.
+
 - 0.8.3
 
   - Hotfix: prevent lexer from parsing embedded markup inside ``style`` and ``script`` blocks.
