@@ -623,7 +623,7 @@ This is the shortcut form of the ``- if not (<EXPR>)`` statement.
           td = item.price
 
 
-You can use the ``-continue`` and ``-break`` commands inside the ``-while`` block.
+You can use the ``-continue`` and ``-break`` commands inside the ``-for`` block.
 See the section :ref:`Returning Early from a Template <return-early>`.
 
 
@@ -658,7 +658,7 @@ This is the shortcut form of the ``- while not (<EXPR>)`` statement.
      -py i -= 1
 
 
-You can use the ``-continue`` and ``-break`` commands inside the ``-while`` block.
+You can use the ``-continue`` and ``-break`` commands inside the ``-until`` block.
 See the section :ref:`Returning Early from a Template <return-early>`.
 
 
