@@ -2,7 +2,6 @@ Extensions
 ===========
 
 
-
 CoffeeScript
 ~~~~~~~~~~~~
 
@@ -244,3 +243,17 @@ produces
           <td>body row 4
         </td></tr>
     </tbody></table>
+
+
+Handlebars
+~~~~~~~~~~
+
+Plim supports a special tag ``handlebars`` that is translated to a handlebars section declaration:
+
+.. code-block:: html
+
+    <script type="text/x-handlebars"></script>
+
+
+This is particularly useful to developers using `Ember.js <http://emberjs.com/guides/templates/handlebars-basics/>`_.
+

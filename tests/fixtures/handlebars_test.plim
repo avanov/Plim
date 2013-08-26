@@ -1,0 +1,4 @@
+handlebars#testapp
+    .container {{outlet}}
+
+handlebars#about: .container {{outlet}}
