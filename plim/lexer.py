@@ -55,6 +55,7 @@ NUMERIC_VALUE_RE = re.compile(
 )
 
 PARSE_TAG_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
+PARSE_HANDLEBARS_RE = re.compile('(?:handlebars).*')
 PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
 PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
 STATEMENT_CONVERT = {
@@ -792,6 +793,19 @@ def parse_doctype(indent_level, current_line, ___, source):
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
+def parse_handlebars(indent_level, current_line, ___, source):
+    processed_tag, tail_indent, tail_line, source = parse_tag_tree(indent_level, current_line, ___, source)
+    assert processed_tag.startswith("<handlebars ") and processed_tag.endswith("</handlebars>")
+    # We don't want to use str.replace() here, therefore
+    # len("<handlebars") == len("handlebars>") == 11
+    processed_tag = as_unicode(
+        '<script type="text/x-handlebars"{content}script>'
+    ).format(
+        content=processed_tag[11:-11]
+    )
+    return processed_tag, tail_indent, tail_line, source
+
+
 def parse_tag_tree(indent_level, current_line, ___, source):
     """
 
@@ -1440,6 +1454,7 @@ def compile_plim_source(source, strip=True):
 PARSERS = ( # Order matters
     (PARSE_STYLE_SCRIPT_RE, parse_style_script),
     (PARSE_DOCTYPE_RE, parse_doctype),
+    (PARSE_HANDLEBARS_RE, parse_handlebars),
     (PARSE_TAG_TREE_RE, parse_tag_tree),
     (PARSE_EXPLICIT_LITERAL_RE, parse_explicit_literal),
     (PARSE_IMPLICIT_LITERAL_RE, parse_implicit_literal),

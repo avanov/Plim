@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 from .lexer import compile_plim_source
-
 
 
 # ``preprocessor`` is a public object that always follows Mako's preprocessor API.

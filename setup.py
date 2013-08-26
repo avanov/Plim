@@ -1,3 +1,4 @@
+import io
 import os
 import sys
 
@@ -5,17 +6,32 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-
 PY3K = sys.version_info >= (3,0)
-readme = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
+
+
+def read(*filenames, **kwargs):
+    encoding = kwargs.get('encoding', 'utf-8')
+    sep = kwargs.get('sep', '\n')
+    buf = []
+    for filename in filenames:
+        with io.open(filename, encoding=encoding) as f:
+            buf.append(f.read())
+    return sep.join(buf)
+
+
+long_description = read(
+    os.path.join(os.path.dirname(__file__), 'README.rst'),
+    os.path.join(os.path.dirname(__file__), 'CHANGES'),
+)
+
 
 setup(
     name='Plim',
-    version='0.8.4',
+    version='0.8.5',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.8.1',
-        'babel',
+        'babel>=1.3',
         # We use reStructuredText (docutils' component) for both supporting
         # the "-rest" extension and project documenting. So, ensure that the docutils
         # get installed or upgraded on the target machine
@@ -54,7 +70,7 @@ setup(
     maintainer="Maxim Avanov",
     maintainer_email="maxim.avanov@gmail.com",
     description="Plim is a Python port of Ruby's Slim template language built on top of Mako Templates",
-    long_description=readme,
+    long_description=long_description,
     license="MIT",
     url="https://github.com/avanov/Plim",
     download_url="https://github.com/avanov/Plim",

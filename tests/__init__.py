@@ -51,7 +51,8 @@ class TestPreprocessorSyntax(TestCaseBase):
             'linebreak',
             'explicit_space',
             'unicode_attributes',
-            'inline_conditions'
+            'inline_conditions',
+            'handlebars',
         ]
         for test_case in cases:
             source = self.get_file_contents(test_case + '_test.plim')
