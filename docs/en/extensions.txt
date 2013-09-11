@@ -257,3 +257,29 @@ Plim supports a special tag ``handlebars`` that is translated to a handlebars se
 
 This is particularly useful to developers using `Ember.js <http://emberjs.com/guides/templates/handlebars-basics/>`_.
 
+Here is an example. The following plim document
+
+.. code-block:: plim
+
+    html
+        body
+            handlebars#testapp
+                .container {{outlet}}
+
+            handlebars#about: .container {{outlet}}
+
+
+will be rendered as
+
+.. code-block:: html
+
+    <html>
+        <body>
+            <script type="text/x-handlebars" id="testapp">
+                <div class="container">{{outlet}}</div>
+            </script>
+            <script type="text/x-handlebars" id="about">
+                <div class="container">{{outlet}}</div>
+            </script>
+        </body>
+    </html>

@@ -795,7 +795,7 @@ def parse_doctype(indent_level, current_line, ___, source):
 
 def parse_handlebars(indent_level, current_line, ___, source):
     processed_tag, tail_indent, tail_line, source = parse_tag_tree(indent_level, current_line, ___, source)
-    assert processed_tag.startswith("<handlebars ") and processed_tag.endswith("</handlebars>")
+    assert processed_tag.startswith("<handlebars") and processed_tag.endswith("</handlebars>")
     # We don't want to use str.replace() here, therefore
     # len("<handlebars") == len("handlebars>") == 11
     processed_tag = as_unicode(
