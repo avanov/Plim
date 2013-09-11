@@ -1,4 +1,6 @@
-handlebars#testapp
-    .container {{outlet}}
+html
+    body
+        handlebars
+            .container {{outlet}}
 
-handlebars#about: .container {{outlet}}
+        handlebars#about: .container {{outlet}}
