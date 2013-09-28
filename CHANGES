@@ -5,6 +5,10 @@ Changelog
 Version 0.8
 ------------
 
+- 0.8.8
+
+  - Hotfix: Make Plim working with a development version of pyScss for Python-3.x setups.
+
 - 0.8.7
 
   - Bugfix: Pyramid adapter is now compatible with the 1.5a2+ version of the framework.
