@@ -27,7 +27,7 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.8.6',
+    version='0.8.7',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.8.1',

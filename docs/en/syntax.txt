@@ -4,7 +4,7 @@
 
 
 Some relevant parts of this section were copied from 
-the `official Slim documentation <https://github.com/stonean/slim>`_.
+the `official Slim documentation <https://github.com/slim-template/slim>`_.
 
 Line Indicators
 ==================
@@ -345,7 +345,7 @@ This is the same as:
 
 
 
-`In contrast to Slim <https://github.com/stonean/slim#shortcut-form-for-id-and-class-attributes>`_,
+`In contrast to Slim <https://github.com/slim-template/slim#id-shortcut--and-class-shortcut->`_,
 Plim allows you to insert dynamic expressions right into the shortcuts:
 
 .. code-block:: plim
