@@ -17,9 +17,11 @@ Add the following lines into your .ini configuration file
 
     
     # Templates options
+    # -----------------
     # ... (a number of mako.* options)
-    # file extension of plim templates (.plm by default)
-    plim.file_extension = .plm
+    # -----------------
+    # file extension of plim templates (.plim by default)
+    plim.file_extension = .plim
 
 
 Syntax Highlighters
@@ -28,7 +30,7 @@ Syntax Highlighters
 At this moment, Plim doesn't have syntax highlighters.
 
 But, at a starting point you can use
-`Slim syntax highlighters <https://github.com/stonean/slim#syntax-highlighters>`_,
+`Slim syntax highlighters <https://github.com/slim-template/slim#syntax-highlighters>`_,
 since most of Plim syntax is the same as of Slim.
 
 Editors support
