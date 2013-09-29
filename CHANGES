@@ -5,6 +5,10 @@ Changelog
 Version 0.8
 ------------
 
+- 0.8.9
+
+  - Bugfix: Use sys.maxsize instead of unavailable sys.maxint on Python 3.
+
 - 0.8.8
 
   - Hotfix: Make Plim working with a development version of pyScss for Python-3.x setups.
