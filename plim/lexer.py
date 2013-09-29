@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """Plim lexer"""
 import re
-import sys
 
 import markdown2
 
 from . import errors
-from .util import StringIO, PY3K, joined, space_separated, as_unicode
+from .util import StringIO, PY3K, MAXSIZE, joined, space_separated, as_unicode
 from .extensions import rst_to_html
 from .extensions import coffee_to_js
 from .extensions import scss_to_css
@@ -1158,7 +1157,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, parse_embedd
     # Add line and trailing newline character
     buf = [current_line.strip(), striped_line and "\n" or ""]
 
-    align = sys.maxint
+    align = MAXSIZE
     while True:
         try:
             lineno, current_line = next(source)

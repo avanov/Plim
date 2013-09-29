@@ -27,7 +27,7 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.8.8',
+    version='0.8.9',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.8.1',
@@ -89,6 +89,7 @@ setup(
         'Operating System :: POSIX',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
