@@ -29,3 +29,8 @@ in \
         4,5]
     = i
 
+
+- for i in []
+    = i
+- else
+	Oh my else

@@ -26,3 +26,9 @@
 %for i in  [1,2,3,4,5]:
 ${i}
 %endfor
+
+%for i in []:
+${i}
+%else:
+Oh my else
+%endfor
