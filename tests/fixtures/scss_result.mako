@@ -2,5 +2,5 @@
   display: block;
 }
 .selector strong {
-  color: #0000ff;
+  color: blue;
 }</style>

@@ -1,5 +1,5 @@
 -scss
-    @option compress: no;
+    @option style: expanded;
     .selector {
         a {
             display: block;

@@ -27,10 +27,10 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.8.9',
+    version='0.9.0',
     packages=find_packages(exclude=['tests']),
     install_requires=[
-        'Mako>=0.8.1',
+        'Mako>=0.9.0',
         'babel>=1.3',
         # We use reStructuredText (docutils' component) for both supporting
         # the "-rest" extension and project documenting. So, ensure that the docutils
@@ -41,10 +41,7 @@ setup(
         # We use CoffeeScript for "-coffee" extension
         'CoffeeScript',
         # We use SCSS for "-scss/sass" extension
-        # There is a SyntaxError during pySCSS==1.1.3 installation
-        # https://github.com/Kronuz/pyScss/issues/87
-        # TODO: remove exact version marker when the issue will be fixed.
-        PY3K and 'pyScss>=1.1.1' or 'pyScss',
+        'pyScss>=1.2.0.post3',
         # We use the stylus package for "-stylus" extension
         # https://github.com/bkad/python-stylus
         'stylus'
