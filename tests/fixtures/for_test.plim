@@ -33,4 +33,14 @@ in \
 - for i in []
     = i
 - else
-	Oh my else
+    -for i in []: -if i is not None: =i
+    -else
+        / This -else belongs to -if!!!
+        / Controversially, but that's the way it's handled now (1)
+        -if True
+            Always
+        -else
+            Never
+    -else
+        / This -else should belong to -for (2)
+        Oh my else
