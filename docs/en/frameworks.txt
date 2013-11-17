@@ -6,7 +6,7 @@
 Pyramid
 =========
 
-Add the following lines into your .ini configuration file
+Add ``plim.adapters.pyramid_renderer`` into the ``pyramid.includes`` list of your .ini configuration file
 
 .. code-block:: ini
 
@@ -15,13 +15,15 @@ Add the following lines into your .ini configuration file
         # ... (other packages)
         plim.adapters.pyramid_renderer
 
-    
-    # Templates options
-    # -----------------
-    # ... (a number of mako.* options)
-    # -----------------
-    # file extension of plim templates (.plim by default)
-    plim.file_extension = .plim
+The adapter will add the ``.plim`` renderer for use in Pyramid. This can be overridden and more may be
+added via the ``config.add_plim_renderer()`` directive:
+
+.. code-block:: python
+
+    config.add_plim_renderer('.plm', mako_settings_prefix='mako.')
+
+The renderer will load its configuration from a provided mako prefix in the Pyramid
+settings dictionary. The default prefix is 'mako.'.
 
 
 Syntax Highlighters
