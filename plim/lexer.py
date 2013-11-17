@@ -62,6 +62,7 @@ STATEMENT_CONVERT = {
     'until': 'while not ('
 }
 
+PARSE_ELSE_RE = re.compile('-\s*(?P<control>else)(?P<expr>.*)')
 PARSE_ELIF_ELSE_RE = re.compile('-\s*(?P<control>elif|else)(?P<expr>.*)')
 PARSE_EXCEPT_ELSE_FINALLY_RE = re.compile('-\s*(?P<control>except|else|finally)(?P<expr>.*)')
 
@@ -1090,7 +1091,28 @@ def parse_statements(indent_level, __, matched, source):
                 parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source)
                 buf.append(parsed_data)
 
-            else: # stmnt == for/while
+            elif stmnt == 'for':
+                if tail_indent == indent_level:
+                    match = PARSE_ELSE_RE.match(tail_line)
+                    if match:
+                        if match.group('control') == 'else':
+                            buf.append('\n%else:\n')
+                            break
+                    else:
+                        # else is not found, finalize and return the buffer
+                        buf.append('\n%end{statement}\n'.format(statement=stmnt))
+                        return joined(buf), tail_indent, tail_line, source
+
+                elif tail_indent < indent_level:
+                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
+                    return joined(buf), tail_indent, tail_line, source
+
+                # tail_indent > indent_level
+                matched_obj, parse = search_parser(lineno, tail_line)
+                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source)
+                buf.append(parsed_data)
+
+            else:  # stmnt == while
                 if tail_indent <= indent_level:
                     buf.append('\n%end{statement}\n'.format(statement=stmnt))
                     return joined(buf), tail_indent, tail_line, source
