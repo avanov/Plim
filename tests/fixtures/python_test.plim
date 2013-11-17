@@ -43,3 +43,7 @@ div
 
 -------- # Inline feature is primarily for placing comments as here ------------------
     var = 1
+/ Emtpy python blocks are not rendered
+--------------------------------------------------------------------------------------
+--------------------------
+---

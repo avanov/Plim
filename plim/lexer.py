@@ -894,9 +894,12 @@ def parse_python(indent_level, __, matched, source):
         buf.extend([inline_statement.strip(), '\n'])
 
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source, False)
-    if parsed_data:
-        buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
-    buf.append('%>\n')
+
+    # do not render a python block if it's empty
+    if not inline_statement and not parsed_data:
+        return as_unicode(''), tail_indent, tail_line, source
+
+    buf.extend([as_unicode('{literal}\n').format(literal=parsed_data.rstrip()), '%>\n'])
     return joined(buf), tail_indent, tail_line, source
 
 

@@ -4,10 +4,15 @@ Changelog
 Version 0.9
 -------------
 
+- 0.9.1
+
+  - New Syntax: `New-style Python Blocks <http://plim.readthedocs.org/en/latest/en/syntax.html#new-style-blocks>`_.
+
+
 - 0.9.0
 
   - Change: Pyramid adapter now relies on Pyramid>=1.5a2 and pyramid_mako>=0.3.1.
-  - Change: The package now depends on Mako>=0.9.0
+  - Change: The package now depends on Mako>=0.9.0.
   - Change: Sass/Scss extension now requires PyScss>=1.2.0.post3.
   - Change: Pyramid adapter's ``plim.file_extension`` configuration option is deprecated.
             The ``config.add_plim_renderer()`` `directive is provided instead <http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_.
