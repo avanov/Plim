@@ -65,7 +65,10 @@ STATEMENT_CONVERT = {
 PARSE_ELIF_ELSE_RE = re.compile('-\s*(?P<control>elif|else)(?P<expr>.*)')
 PARSE_EXCEPT_ELSE_FINALLY_RE = re.compile('-\s*(?P<control>except|else|finally)(?P<expr>.*)')
 
-PARSE_PYTHON_RE = re.compile('-\s*(?P<python>py(?:thon)?(?P<excl>\!?))(?P<expr>\s+.*)?')
+PARSE_PYTHON_CLASSIC_RE = re.compile('-\s*(?P<python>py(?:thon)?(?P<excl>\!?))(?P<expr>\s+.*)?')
+PARSE_PYTHON_NEW_RE = re.compile('---[-]*\s*(?P<expr>[^-].*)?')
+INLINE_PYTHON_TERMINATOR = '---'
+
 PARSE_DEF_BLOCK_RE = re.compile('-\s*(?P<line>(?:def|block)(?:\s+.*)?)')
 PARSE_MAKO_ONE_LINERS_RE = re.compile('-\s*(?P<line>(?:include|inherit|page|namespace)(?:\s+.*)?)')
 
@@ -366,6 +369,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
     :type source: str
     :param identifier_start:
     :param terminators:
+    :type terminators: tuple or set
     """
     if not line or not line.startswith(identifier_start):
         return None
@@ -374,9 +378,9 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
     buf = [identifier_start]
     tail = line[pos:]
     while tail:
-        current_char = tail[0]
-        if current_char in terminators:
-            return joined(buf).rstrip(), tail, source
+        for terminator in terminators:
+            if tail.startswith(terminator):
+                return joined(buf).rstrip(), tail, source
 
         # Let's try to find "mako variable" part of possible css-identifier
         result = extract_mako_expression(tail, source)
@@ -390,6 +394,7 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
             result, tail, source = result
             buf.append(result)
             continue
+        current_char = tail[0]
         buf.append(current_char)
         tail = tail[1:]
     return joined(buf).rstrip(), tail, source
@@ -884,15 +889,30 @@ def parse_python(indent_level, __, matched, source):
         buf = ['<%!\n']
     else:
         buf = ['<%\n']
-    inlined = matched.group('expr')
-    if inlined:
-        buf.extend([inlined.strip(), '\n'])
+    inline_statement = matched.group('expr')
+    if inline_statement:
+        buf.extend([inline_statement.strip(), '\n'])
 
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal(indent_level, LITERAL_CONTENT_PREFIX, matched, source, False)
-    if parsed_data:
-        buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
-    buf.append('%>\n')
+
+    # do not render a python block if it's empty
+    if not inline_statement and not parsed_data:
+        return as_unicode(''), tail_indent, tail_line, source
+
+    buf.extend([as_unicode('{literal}\n').format(literal=parsed_data.rstrip()), '%>\n'])
     return joined(buf), tail_indent, tail_line, source
+
+
+def parse_python_new_style(indent_level, __, matched, source):
+    buf = ['-py ']
+    inline_statement = matched.group('expr')
+    if inline_statement:
+        inline_statement, _tail_line_, source = extract_identifier(inline_statement, source, '', {INLINE_PYTHON_TERMINATOR, NEWLINE})
+        buf.append(inline_statement)
+    converted_line = joined(buf).strip()
+    match = PARSE_PYTHON_CLASSIC_RE.match(converted_line)
+    return parse_python(indent_level, __, match, source)
+
 
 
 def parse_mako_text(indent, __, matched, source):
@@ -1462,7 +1482,8 @@ PARSERS = ( # Order matters
     (PARSE_COMMENT_RE, parse_comment),
     (PARSE_STATEMENTS_RE, parse_statements),
     (PARSE_FOREIGN_STATEMENTS_RE, parse_foreign_statements),
-    (PARSE_PYTHON_RE, parse_python),
+    (PARSE_PYTHON_NEW_RE, parse_python_new_style),
+    (PARSE_PYTHON_CLASSIC_RE, parse_python),
     (PARSE_DEF_BLOCK_RE, parse_def_block),
     (PARSE_MAKO_ONE_LINERS_RE, parse_mako_one_liners),
     (PARSE_MAKO_TEXT_RE, parse_mako_text),

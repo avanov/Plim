@@ -33,3 +33,20 @@ if True:
 # Test that `embedded markup` is not parsed
 a = "`test test`"
 %>
+<%
+text = 'new-style python blocks'
+%>
+<div><%
+count = 10
+for i in range(count):
+    print i
+%>
+</div><%
+count = 1
+for i in range(count):
+    print i
+%>
+<%
+# Inline feature is primarily for placing comments as here
+var = 1
+%>

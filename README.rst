@@ -7,6 +7,10 @@ Plim
 .. image:: https://pypip.in/d/Plim/badge.png
         :target: https://crate.io/packages/Plim
 
+.. image:: https://api.travis-ci.org/avanov/Plim.png
+        :target: https://travis-ci.org/avanov/Plim
+
+
 Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
 built on top of `Mako Templates <http://www.makotemplates.org/>`_.
 It uses `Mako's preprocessor feature <http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor#api-reference>`_

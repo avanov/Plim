@@ -846,19 +846,21 @@ Literal blocks can be implicitly specified by the following starting sequences:
 Python Blocks
 ========================
 
+Classic Blocks
+--------------
 Use ``-py`` or ``-python`` to insert the 
 `<% %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#python-blocks>`_.
 
 For example
 
-.. code-block:: slim
+.. code-block:: plim
 
    - python x = 1
 
 
 or
 
-.. code-block:: slim
+.. code-block:: plim
 
    -py
        x = 1
@@ -866,7 +868,7 @@ or
 
 or even
 
-.. code-block:: slim
+.. code-block:: plim
 
    - python x = 1
        y = x + 1
@@ -877,6 +879,75 @@ or even
 
 
 In latter case, the first line ``x = 1`` will be aligned with the second line ``y = x + 1``.
+
+New-style blocks
+----------------
+
+.. versionadded:: 0.9.1
+   New-style blocks were introduced for better readability of embedded python code.
+
+Use a sequence of at least three dashes to start a new-style python block.
+
+Here are the overwritten examples of the classic ones. The results are the same:
+
+.. code-block:: plim
+
+   --- x = 1
+
+.. code-block:: plim
+
+   -------------
+       x = 1
+
+.. code-block:: plim
+
+   --- x = 1
+       y = x + 1
+       if True:
+           y += 1
+       else:
+           y -= 1
+
+And here's an example of how we can use an inline statement for providing a block description
+
+.. code-block:: plim
+
+   ul#userlist
+       ---------- # prepare a list of users ---------------
+           users = UsersService.get_many(max=100, offset=0)
+           friends = UsersService.get_friends_for(users)
+       ----------------------------------------------------
+       -for user in users: li
+           h4: a#user-${user.id} href='#' = user.name
+           ul: -for friend in friends[user.id]: li
+               a#friend-${friend.id} href='#' = friend.name
+
+the result (indentation will be stripped out):
+
+.. code-block:: mako
+
+    <ul id="userlist">
+        <%
+            # prepare a list of users
+            users = UsersService.get_many(max=100, offset=0)
+            friends = UsersService.get_friends_for(users)
+        %>
+
+        %for user in users:
+            <li>
+                <h4>
+                    <a href="#" id="user-${user.id}">${user.name}</a>
+                </h4>
+                <ul>
+                    %for friend in friends[user.id]:
+                        <li>
+                            <a href="#" id="friend-${friend.id}">${friend.name}</a>
+                        </li>
+                    %endfor
+                </ul>
+            </li>
+        %endfor
+    </ul>
 
 
 Module-level Blocks
