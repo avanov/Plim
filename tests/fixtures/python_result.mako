@@ -41,6 +41,13 @@ count = 10
 for i in range(count):
     print i
 %>
+</div><div><%
+count = 0
+count += 1
+%>
+</div><div><%
+under_the_line = True
+%>
 </div><%
 count = 1
 for i in range(count):
