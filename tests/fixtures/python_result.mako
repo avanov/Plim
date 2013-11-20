@@ -57,3 +57,9 @@ for i in range(count):
 # Inline feature is primarily for placing comments as here
 var = 1
 %>
+<%!
+from datetime import datetime
+%>
+<%!
+from json import dumps
+%>

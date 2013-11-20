@@ -66,7 +66,7 @@ PARSE_ELIF_ELSE_RE = re.compile('-\s*(?P<control>elif|else)(?P<expr>.*)')
 PARSE_EXCEPT_ELSE_FINALLY_RE = re.compile('-\s*(?P<control>except|else|finally)(?P<expr>.*)')
 
 PARSE_PYTHON_CLASSIC_RE = re.compile('-\s*(?P<python>py(?:thon)?(?P<excl>\!?))(?P<expr>\s+.*)?')
-PARSE_PYTHON_NEW_RE = re.compile('---[-]*\s*(?P<expr>[^-].*)?')
+PARSE_PYTHON_NEW_RE = re.compile('---[-]*(?P<excl>\!)?\s*(?P<expr>[^-].*)?')
 INLINE_PYTHON_TERMINATOR = '---'
 
 PARSE_DEF_BLOCK_RE = re.compile('-\s*(?P<line>(?:def|block)(?:\s+.*)?)')
@@ -904,7 +904,7 @@ def parse_python(indent_level, __, matched, source):
 
 
 def parse_python_new_style(indent_level, __, matched, source):
-    buf = ['-py ']
+    buf = [matched.group('excl') and '-py! ' or '-py ']
     inline_statement = matched.group('expr')
     if inline_statement:
         inline_statement, _tail_line_, source = extract_identifier(inline_statement, source, '', {INLINE_PYTHON_TERMINATOR, NEWLINE})
