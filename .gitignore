@@ -12,5 +12,7 @@ docs/_build
 
 # Ignore all test-related files (see setup.py -> setup(tests_require=[]))
 *coverage*
+# but keep the .coveragerc (for TravisCI/Coveralls services)
+!.coveragerc
 *nose*
 *node_modules*
