@@ -169,8 +169,8 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 # There are three different types of functions below: searchers, parsers, and extractors.
 # They are grouped together by API and task similarity.
 #
-# -- SEARCHERS are helper functions that tries to figure out the next step of parsing process
-#    based on the current chunk of parsing data.
+# -- SEARCHERS are helper functions that try to figure out the next step of parsing process
+#    based on the current chunk of data.
 #    Each searcher MUST accept one required first positional argument *line*.
 # ------------------------------
 #
@@ -178,12 +178,12 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 #    input and return values.
 #
 #    Every parser MUST accept four input arguments:
-#    1) ``indent_level`` - an indentation level of current line. When the parser reaches a line
+#    1) ``indent_level`` - an indentation level of the current line. When the parser reaches a line
 #       which indentation is lower or equal to `indent_level``, it returns control to a top-level function.
-#    2) ``current_line`` - currently parsing line. This is the line that has been matched by
-#       ``matched`` object at previous parsing step.
+#    2) ``current_line`` - a line which is being parsed. This is the line that has been matched by
+#       ``matched`` object at the previous parsing step.
 #    3) ``matched`` - an instance of re.MatchObject of the regex associated with the current parser.
-#    4) ``source`` - an instance of enumerated object returned by :func:`enumerate_source`.
+#    4) ``source`` - an instance of an enumerated object returned by :func:`enumerate_source`.
 #
 #    Every parser MUST return a 4-tuple of:
 #    1) parsed_data - a string of successfully parsed data
