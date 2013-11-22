@@ -32,24 +32,7 @@ You can run the tests with the following command
 
     python setup.py nosetests
 
-Currently we have 99% code coverage
-
-.. code-block:: plain
-
-    Name                        Stmts   Miss  Cover   Missing
-    ---------------------------------------------------------
-    plim                            2      0   100%
-    plim.adapters                   0      0   100%
-    plim.adapters.babelplugin       8      0   100%
-    plim.errors                    18      0   100%
-    plim.extensions                16      0   100%
-    plim.lexer                    772      1    99%   73
-    plim.unportable                 2      0   100%
-    plim.util                      11      4    64%   8-12
-    ---------------------------------------------------------
-    TOTAL                         829      5    99%
-    ----------------------------------------------------------------------
-    Ran 23 tests in 0.996s
+Coverage statistics are `available online <https://coveralls.io/r/avanov/Plim?branch=develop>`_.
 
 
 Detailed example
