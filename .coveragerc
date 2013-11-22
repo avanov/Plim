@@ -6,3 +6,4 @@ omit =
     */python?.?/*
     *.egg/*
     */site-packages/*
+    tests/*
