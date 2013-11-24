@@ -7,6 +7,7 @@ Version 0.9
 - 0.9.1
 
   - New Syntax: `New-style Python Blocks <http://plim.readthedocs.org/en/latest/en/syntax.html#new-style-blocks>`_.
+  - New Syntax: `New-style Module-level Blocks <http://plim.readthedocs.org/en/latest/en/syntax.html#module-level-blocks>`_.
 
 
 - 0.9.0

@@ -956,11 +956,25 @@ Module-level Blocks
 Use ``-py!`` or ``-python!`` block to insert the 
 `<%! %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#module-level-blocks>`_.
 
-.. code-block:: slim
+.. code-block:: plim
 
     -py!
-        from module_one import func_one
-        from module_two import func_two
+        import mylib
+        import re
+
+        def filter(text):
+            return re.sub(r'^@', '', text)
+
+.. versionadded:: 0.9.1
+   The same example with a new-style syntax:
+
+.. code-block:: plim
+
+    ---! import mylib
+         import re
+
+         def filter(text):
+             return re.sub(r'^@', '', text)
 
 
 Mako Tags
