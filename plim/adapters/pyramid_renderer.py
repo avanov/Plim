@@ -10,7 +10,7 @@ except ImportError:
     )
 
 
-def add_plim_renderer(config, extension, mako_settings_prefix='mako.'):
+def add_plim_renderer(config, extension, mako_settings_prefix='mako.', preprocessor='plim.preprocessor'):
     """
     Register a Plim renderer for a template extension.
 
@@ -35,7 +35,7 @@ def add_plim_renderer(config, extension, mako_settings_prefix='mako.'):
 
     def register():
         settings = copy.copy(config.registry.settings)
-        settings['{prefix}preprocessor'.format(prefix=mako_settings_prefix)] = 'plim.preprocessor'
+        settings['{prefix}preprocessor'.format(prefix=mako_settings_prefix)] = preprocessor
 
         opts = parse_options_from_settings(settings, mako_settings_prefix, config.maybe_dotted)
         lookup = PkgResourceTemplateLookup(**opts)
