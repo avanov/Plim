@@ -615,6 +615,8 @@ def extract_tag_line(line, source, parsers):
     :type line: str
     :param source:
     :type source: enumerate
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     """
     buf = []
     close_buf = []
@@ -777,6 +779,8 @@ def parse_style_script(indent_level, current_line, matched, source, parsers):
     :type current_line: str
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     extracted_html_line, close_buf, _, tail, source = extract_tag_line(current_line, source, parsers)
@@ -799,6 +803,8 @@ def parse_doctype(indent_level, current_line, ___, source, parsers):
     :param current_line:
     :param ___:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     match = PARSE_DOCTYPE_RE.match(current_line.strip())
@@ -807,6 +813,16 @@ def parse_doctype(indent_level, current_line, ___, source, parsers):
 
 
 def parse_handlebars(indent_level, current_line, ___, source, parsers):
+    """
+
+    :param indent_level:
+    :param current_line:
+    :param ___:
+    :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
+    :return:
+    """
     processed_tag, tail_indent, tail_line, source = parse_tag_tree(indent_level, current_line, ___, source, parsers)
     assert processed_tag.startswith("<handlebars") and processed_tag.endswith("</handlebars>")
     # We don't want to use str.replace() here, therefore
@@ -826,6 +842,8 @@ def parse_tag_tree(indent_level, current_line, ___, source, parsers):
     :param current_line:
     :param ___:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return: 4-tuple
     """
     buf = []
@@ -874,6 +892,8 @@ def parse_markup_languages(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     markup_parser = MARKUP_LANGUAGES[matched.group('lang')]
@@ -896,7 +916,7 @@ def parse_python(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
-    :param parsers:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
     :type parsers: tuple
     :return:
     """
@@ -925,6 +945,16 @@ def parse_python(indent_level, __, matched, source, parsers):
 
 
 def parse_python_new_style(indent_level, __, matched, source, parsers):
+    """
+
+    :param indent_level:
+    :param __:
+    :param matched:
+    :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
+    :return:
+    """
     buf = [matched.group('excl') and '-py! ' or '-py ']
     inline_statement = matched.group('expr')
     if inline_statement:
@@ -942,7 +972,8 @@ def parse_mako_text(indent, __, matched, source, parsers):
     :param indent:
     :param __:
     :param matched:
-    :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, parsers)
@@ -973,6 +1004,8 @@ def parse_call(indent_level, current_line, matched, source, parsers):
     :param current_line:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return: :raise:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, parsers)
@@ -1015,6 +1048,8 @@ def parse_comment(indent_level, __, ___, source, parsers):
     :param __:
     :param ___:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     while True:
@@ -1037,6 +1072,8 @@ def parse_statements(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     stmnt = matched.group('stmnt')
@@ -1165,6 +1202,8 @@ def parse_foreign_statements(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     stmnt = STATEMENT_CONVERT[matched.group('stmnt')]
@@ -1237,6 +1276,14 @@ parse_explicit_literal_no_embedded = functools.partial(parse_explicit_literal, p
 
 
 def _parse_embedded_markup(content, parsers):
+    """
+
+    :param content:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
+    :return:
+    :rtype: str
+    """
     buf = []
     tail = content
     while tail:
@@ -1290,6 +1337,8 @@ def parse_variable(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     explicit_space = matched.group('explicit_space') and ' ' or ''
@@ -1326,6 +1375,8 @@ def parse_early_return(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     return as_unicode('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
@@ -1338,6 +1389,8 @@ def parse_implicit_literal(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     return parse_explicit_literal_with_embedded_markup(
@@ -1356,6 +1409,8 @@ def parse_raw_html(indent_level, current_line, ___, source, parsers):
     :param current_line:
     :param ___:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     buf = [current_line.strip(), '\n']
@@ -1388,6 +1443,8 @@ def parse_mako_one_liners(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, parsers)
@@ -1407,6 +1464,8 @@ def parse_def_block(indent_level, __, matched, source, parsers):
     :param __:
     :param matched:
     :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line'), source, parsers)
@@ -1443,6 +1502,16 @@ def parse_def_block(indent_level, __, matched, source, parsers):
 
 
 def parse_plim_tail(lineno, indent_level, tail_line, source, parsers):
+    """
+
+    :param lineno:
+    :param indent_level:
+    :param tail_line:
+    :param source:
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
+    :return:
+    """
     buf = []
     tail_indent = indent_level
     while tail_line:
@@ -1466,10 +1535,10 @@ def enumerate_source(source):
 
 
 def scan_line(line):
-    """
-    Returns a 2-tuple of (length_of_the_indentation, line_without_preceding_indentation)
+    """ Returns a 2-tuple of (length_of_the_indentation, line_without_preceding_indentation)
 
     :param line:
+    :type line: str
     """
     match = LINE_PARTS_RE.match(line)
     return len(match.group('indent')), match.group('line')
@@ -1481,6 +1550,8 @@ def compile_plim_source(source, strip=True, parsers=None):
     :param source:
     :param strip: for embedded markup we don't want to strip whitespaces from result
     :type strip: bool
+    :param parsers: 2-tuple of (parser_regex, parser_callable)
+    :type parsers: tuple
     :return:
     """
     source = enumerate_source(source)
