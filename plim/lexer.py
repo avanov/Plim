@@ -1297,7 +1297,7 @@ def _parse_embedded_markup(content, parsers):
             embedded = embedded.strip()
             if embedded:
                 try:
-                    embedded = compile_plim_source(embedded, False, parsers)
+                    embedded = compile_plim_source(embedded, parsers, False)
                 except errors.ParserNotFound:
                     # invalid plim markup, leave things as is
                     buf.append(original)
@@ -1544,14 +1544,14 @@ def scan_line(line):
     return len(match.group('indent')), match.group('line')
 
 
-def compile_plim_source(source, strip=True, parsers=None):
+def compile_plim_source(source, parsers, strip=True):
     """
 
     :param source:
-    :param strip: for embedded markup we don't want to strip whitespaces from result
-    :type strip: bool
     :param parsers: 2-tuple of (parser_regex, parser_callable)
     :type parsers: tuple
+    :param strip: for embedded markup we don't want to strip whitespaces from result
+    :type strip: bool
     :return:
     """
     source = enumerate_source(source)
