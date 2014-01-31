@@ -21,6 +21,6 @@ def extract(fileobj, keywords, comment_tags, options):
     if not PY3K:
         encoding = options.get('input_encoding', options.get('encoding', 'utf-8'))
         raw_data = raw_data.decode(encoding)
-    data = lexer.compile_plim_source(raw_data)
+    data = lexer.compile_plim_source(raw_data, parsers=lexer.STANDARD_PARSERS)
     for extracted in _extract_mako(StringIO(data), keywords, comment_tags, options):
         yield extracted

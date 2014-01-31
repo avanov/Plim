@@ -10,7 +10,7 @@ from pkg_resources import get_distribution
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
-from .lexer import compile_plim_source
+from .lexer import compile_plim_source, STANDARD_PARSERS
 
 
 def plimc():
@@ -29,7 +29,7 @@ def plimc():
     # Get mako source
     # ------------------------------------
     with codecs.open(args.source, 'rb', args.encoding) as fd:
-        content = compile_plim_source(fd.read())
+        content = compile_plim_source(fd.read(), parsers=STANDARD_PARSERS)
 
     # Get html source if requested
     # ------------------------------------
