@@ -1,6 +1,8 @@
 Extensions
 ===========
 
+Standard extensions
+-------------------
 
 CoffeeScript
 ~~~~~~~~~~~~
@@ -281,5 +283,84 @@ will be rendered as
             <script type="text/x-handlebars" id="about">
                 <div class="container">{{outlet}}</div>
             </script>
+        </body>
+    </html>
+
+
+Extending Plim with custom parsers
+----------------------------------
+
+.. versionadded:: 0.9.2
+
+It is possible to extend standard Plim markup with your own directives. This feature allows you
+to build your own DSL on top of Plim. For instance, the following example adds a new directive
+for parsing HTTP links present in a form of ``http_url > title``.
+
+.. code-block:: python
+    :linenos:
+
+    # my_module.py
+    import re
+    from plim import preprocessor_factory
+
+
+    PARSE_HTTP_LINKS_RE = re.compile('(?P<url>https?://[^>]+)+\s+>\s+(?P<title>.*)')
+
+
+    def parse_http_link(indent_level, current_line, matched, source, parsers):
+        match = PARSE_HTTP_LINKS_RE.match(current_line.strip())
+        url = match.group('url')
+        url_title = match.group('title')
+        rt = '<a href="{}">{}</a>'.format(url, url_title)
+        return rt, indent_level, '', source
+
+
+    CUSTOM_PARSERS = [
+        (PARSE_HTTP_LINKS_RE, parse_http_link)
+    ]
+
+
+    custom_preprocessor = preprocessor_factory(custom_parsers=CUSTOM_PARSERS)
+
+
+From now on, we can use ``custom_preprocessor`` in exactly the same manner as the standard
+``plim.preprocessor``.
+
+Let's create a plim document with extended syntax:
+
+.. code-block:: plim
+    :linenos:
+
+    / hamilton.html
+    ---------------
+    html
+        head:title Alexander Hamilton
+        body
+            h1 Alexander Hamilton
+            ul
+                li: http://en.wikipedia.org/wiki/Alexander_Hamilton > Wikipedia Article
+                li: http://www.amazon.com/Alexander-Hamilton-Ron-Chernow/dp/0143034758 > Full-length Biography
+
+Here is how we can compile this document into a valid HTML (note the ``-p`` argument):
+
+.. code-block:: bash
+
+    $ plimc -H -p my_module:custom_preprocessor hamilton.plim
+
+The result:
+
+.. code-block:: html
+    :linenos:
+
+    <html>
+        <head>
+            <title>Alexander Hamilton</title>
+        </head>
+        <body>
+            <h1>Alexander Hamilton</h1>
+            <ul>
+                <li><a href="http://en.wikipedia.org/wiki/Alexander_Hamilton">Wikipedia Article</a></li>
+                <li><a href="http://www.amazon.com/Alexander-Hamilton-Ron-Chernow/dp/0143034758">Full-length Biography</a></li>
+            </ul>
         </body>
     </html>
