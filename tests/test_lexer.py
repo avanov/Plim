@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 from plim import lexer as l
-from plim.errors import PlimSyntaxError
+from plim.errors import PlimSyntaxError, ParserNotFound
 from . import TestCaseBase
 
 
 
 class TestLexerFunctions(TestCaseBase):
+
+    def test_incorrect_directive(self):
+        self.assertRaises(ParserNotFound, l.search_parser, 1, "-icorrect_directive", l.STANDARD_PARSERS)
+
 
     def test_control_re(self):
         m = l.PARSE_STATEMENTS_RE.match("- if 1")
