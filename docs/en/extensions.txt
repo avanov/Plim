@@ -308,9 +308,8 @@ for parsing HTTP links present in a form of ``http_url > title``.
 
 
     def parse_http_link(indent_level, current_line, matched, source, parsers):
-        match = PARSE_HTTP_LINKS_RE.match(current_line.strip())
-        url = match.group('url')
-        url_title = match.group('title')
+        url = matched.group('url')
+        url_title = matched.group('title')
         rt = '<a href="{}">{}</a>'.format(url, url_title)
         return rt, indent_level, '', source
 
