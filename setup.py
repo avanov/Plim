@@ -27,7 +27,7 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.9.1',
+    version='0.9.2',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'Mako>=0.9.0',
@@ -44,7 +44,7 @@ setup(
         'pyScss>=1.2.0.post3',
         # We use the stylus package for "-stylus" extension
         # https://github.com/bkad/python-stylus
-        'stylus'
+        'stylus>=0.1.1'
     ],
     setup_requires=['nose>=1.1.2'],
     tests_require=['coverage'],

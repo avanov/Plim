@@ -6,11 +6,10 @@ import os
 import argparse
 import codecs
 from pkg_resources import get_distribution
+from pkg_resources import EntryPoint
 
 from mako.template import Template
 from mako.lookup import TemplateLookup
-
-from .lexer import compile_plim_source
 
 
 def plimc():
@@ -21,6 +20,8 @@ def plimc():
     cli_parser.add_argument('source', help="path to source plim template")
     cli_parser.add_argument('-o', '--output', help="write result to FILE.")
     cli_parser.add_argument('-e', '--encoding', default='utf-8', help="content encoding")
+    cli_parser.add_argument('-p', '--preprocessor', default='plim:preprocessor',
+                            help="Preprocessor instance that will be used for parsing the template")
     cli_parser.add_argument('-H', '--html', action='store_true', help="Render HTML output instead of Mako template")
     cli_parser.add_argument('-V', '--version', action='version',
                             version='Plim {}'.format(get_distribution("Plim").version))
@@ -28,8 +29,10 @@ def plimc():
 
     # Get mako source
     # ------------------------------------
+    preprocessor_path = args.preprocessor
+    preprocessor = EntryPoint.parse('x={}'.format(preprocessor_path)).load(False)
     with codecs.open(args.source, 'rb', args.encoding) as fd:
-        content = compile_plim_source(fd.read())
+        content = preprocessor(fd.read())
 
     # Get html source if requested
     # ------------------------------------

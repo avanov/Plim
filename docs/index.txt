@@ -7,6 +7,19 @@
  Plim Documentation
 =========================
 
+.. image:: https://pypip.in/v/Plim/badge.png
+        :target: https://crate.io/packages/Plim
+
+.. image:: https://pypip.in/d/Plim/badge.png
+        :target: https://crate.io/packages/Plim
+
+.. image:: https://api.travis-ci.org/avanov/Plim.png
+        :target: https://travis-ci.org/avanov/Plim
+
+.. image:: https://coveralls.io/repos/avanov/Plim/badge.png?branch=develop
+        :target: https://coveralls.io/r/avanov/Plim?branch=develop
+
+
 Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
 built on top of `Mako Templates <http://www.makotemplates.org/>`_.
 It uses `Mako's preprocessor feature <http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor#api-reference>`_
@@ -41,7 +54,7 @@ Detailed example
 .. code-block:: plim
 
     / base.html
-     -------------------------
+    --------------------------
     doctype html
     html = next.body()
 
@@ -49,7 +62,7 @@ Detailed example
 .. code-block:: plim
 
     / helpers.html
-     -------------------------
+    --------------------------
     -def other_headers()
         meta charset="utf-8"
         link rel="stylesheet" href="/static/css/main.css"
@@ -58,7 +71,7 @@ Detailed example
 .. code-block:: plim
 
     / layout.html
-     -------------------------
+    --------------------------
     -inherit base.html
     -namespace name="helper" helpers.html
 
@@ -131,21 +144,19 @@ Detailed example
       -else
         p Welcome, ${user.name}!
         ul
-          -python
-            i = 0
-            limit = 5
+          --- i = 0
+              limit = 5
 
           -while i < limit
             li#idx-${i}.up: a href='#' title="Title" == i
-            -py i += 1
+            --- i += 1
 
           -until i < 0
             li#idx-${i}.down-${i}: a href='''#''' title="""Title""" ==, i
-            -python
-              i -= 1
+            --- i -= 1
 
       #footer
-        Copyright &copy; 2010 Andrew Stone.
+        Copyright &copy; 2014.
         -include footer_links.html
 
     = render('tracking_code')
