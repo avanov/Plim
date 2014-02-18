@@ -180,10 +180,10 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 #
 #    Every parser MUST accept five input arguments:
 #    1) ``indent_level`` - an indentation level of the current line. When the parser reaches a line
-#       which indentation is lower or equal to `indent_level``, it returns control to a top-level function.
+#       which indentation is lower or equal to ``indent_level``, it returns control to a top-level function.
 #    2) ``current_line`` - a line which is being parsed. This is the line that has been matched by
 #       ``matched`` object at the previous parsing step.
-#    3) ``matched`` - an instance of re.MatchObject of the regex associated with the current parser.
+#    3) ``matched`` - an instance of ``re.MatchObject`` of the regex associated with the current parser.
 #    4) ``source`` - an instance of an enumerated object returned by :func:`enumerate_source`.
 #    5) ``parsers`` - a tuple of 2-tuples of (parser_regex, parser_callable). Plim uses ``STANDARD_PARSERS``
 #                     as a default collection of parsers that can be extended by third-party packages.
@@ -192,7 +192,7 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 #    1) parsed_data - a string of successfully parsed data
 #    2) tail_indent - an indentation level of the ``tail line``
 #    3) tail_line - a line which indentation level (``tail_indent``) is lower or equal to
-#       the input `indent_level``.
+#       the input ``indent_level``.
 #    4) ``source`` - an instance of enumerated object returned by :func:`enumerate_source`
 #       which represents the remaining (untouched) plim markup.
 # ------------------------------
