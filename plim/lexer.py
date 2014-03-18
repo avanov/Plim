@@ -545,13 +545,21 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
                 value = value.rstrip()
                 if tail.startswith(BOOLEAN_ATTRIBUTE_MARKER):
                     # selected=dynamic_variable?
-                    value = as_unicode("""${{({value}) and '{attr_name}="{attr_name}"' or ''|n}}""").format(
-                        value=value, attr_name=attr_name
+                    value = as_unicode("""{start_var}({value}) and '{attr_name}="{attr_name}"' or ''|n{end_var}""").format(
+                        value=value,
+                        attr_name=attr_name,
+                        start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                        end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
                     )
                     attribute = value
                     tail = tail[1:]
                 else:
-                    attribute = as_unicode('{attr_name}="${{{value}}}"').format(attr_name=attr_name, value=value)
+                    attribute = as_unicode('{attr_name}="{start_var}{value}{end_var}"').format(
+                        attr_name=attr_name,
+                        value=value,
+                        start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                        end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                    )
                 return attribute, tail, source
             return None
 
@@ -745,18 +753,34 @@ def extract_tag_line(line, source, parsers):
                     if tail.startswith(DYNAMIC_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
                         tail, source = extract_statement_expression(tail[2:], source)
-                        buf.append("${{{content}}} ".format(content=tail))
+                        buf.append(as_unicode("{start_var}{content}{end_var} ").format(
+                            content=tail,
+                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
                     else:
                         tail, source = extract_statement_expression(tail[1:], source)
-                        buf.append("${{{content}}}".format(content=tail))
+                        buf.append("{start_var}{content}{end_var}".format(
+                            content=tail,
+                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
                 else:
                     if tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
                         tail, source = extract_statement_expression(tail[1:], source)
-                        buf.append("${{{content}}} ".format(content=tail))
+                        buf.append("{start_var}{content}{end_var} ".format(
+                            content=tail,
+                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
                     else:
                         tail, source = extract_statement_expression(tail, source)
-                        buf.append("${{{content}}}".format(content=tail))
+                        buf.append("{start_var}{content}{end_var}".format(
+                            content=tail,
+                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
 
             elif tail.startswith(LITERAL_CONTENT_PREFIX):
                 tail = _parse_embedded_markup(tail[1:].strip(), parsers)
@@ -1362,7 +1386,7 @@ def parse_variable(indent_level, __, matched, source, parsers):
             buf = joined(buf)
             if prevent_escape:
                 buf = _inject_n_filter(buf)
-            # add a closing brace to complete mako expression syntax ${}
+            # add a closing brace to complete variable expression syntax ("${}" in case of mako).
             buf += VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
