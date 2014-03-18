@@ -154,6 +154,8 @@ STATEMENT_TERMINATORS = {INLINE_TAG_SEPARATOR, NEWLINE}
 
 PYTHON_EXPR_OPEN_BRACES_RE = re.compile('(?P<start_brace>\(|\{|\[).*')
 PYTHON_EXPR_CLOSING_BRACES_RE = re.compile('\)|\}|\].*')
+VARIABLE_PLACEHOLDER_START_SEQUENCE = '${'
+VARIABLE_PLACEHOLDER_END_SEQUENCE = '}'
 MAKO_EXPR_START_BRACE_RE = re.compile('(?P<start_brace>\$\{).*')
 MAKO_EXPR_COUNT_OPEN_BRACES_RE = re.compile('\{')
 MAKO_EXPR_COUNT_CLOSING_BRACES_RE = re.compile('\}')
@@ -441,9 +443,9 @@ def extract_dynamic_attr_value(line, source, terminators):
     if result is None:
         return None
     result, tail, source = result
-    if line.startswith('${'):
-        # remove "${" and "}" from variable
-        value = result[2:-1]
+    if MAKO_EXPR_START_BRACE_RE.match(line):
+        # remove VARIABLE_PLACEHOLDER_START_SEQUENCE and VARIABLE_PLACEHOLDER_END_SEQUENCE from variable
+        value = result[len(VARIABLE_PLACEHOLDER_START_SEQUENCE):-len(VARIABLE_PLACEHOLDER_END_SEQUENCE)]
     elif line.startswith(OPEN_BRACE):
         # remove "(" and ")" from variable
         value = result[1:-1]
@@ -483,11 +485,15 @@ def extract_dynamic_tag_attributes(line, source, inside_parentheses=False):
         return None
 
     expr, tail, source = result
-    attributes = (
+    attributes = as_unicode(
         '\n%for __plim_key__, __plim_value__ in {expr}.items():\n'
-        '${{__plim_key__}}="${{__plim_value__}}"\n'
+        '{var_start}__plim_key__{var_end}="{var_start}__plim_value__{var_end}"\n'
         '%endfor\n'
-    ).format(expr=expr)
+    ).format(
+        expr=expr,
+        var_start=VARIABLE_PLACEHOLDER_START_SEQUENCE,
+        var_end=VARIABLE_PLACEHOLDER_END_SEQUENCE
+    )
     return attributes, tail, source
 
 
@@ -1343,7 +1349,7 @@ def parse_variable(indent_level, __, matched, source, parsers):
     """
     explicit_space = matched.group('explicit_space') and ' ' or ''
     prevent_escape = matched.group('prevent_escape')
-    buf = ['${', matched.group('line')]
+    buf = [VARIABLE_PLACEHOLDER_START_SEQUENCE, matched.group('line')]
     while True:
         try:
             lineno, current_line = next(source)
@@ -1357,14 +1363,14 @@ def parse_variable(indent_level, __, matched, source, parsers):
             if prevent_escape:
                 buf = _inject_n_filter(buf)
             # add a closing brace to complete mako expression syntax ${}
-            buf += '}' + explicit_space
+            buf += VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
 
     buf = joined(buf)
     if prevent_escape:
         buf = _inject_n_filter(buf)
-    buf += '}' + explicit_space
+    buf += VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
     return buf, 0, '', source
 
 
