@@ -13,7 +13,7 @@ class TestLexerFunctions(TestCaseBase):
         self.mako_syntax = syntax.Mako()
 
     def test_incorrect_directive(self):
-        self.assertRaises(ParserNotFound, l.search_parser, 1, "-icorrect_directive", l.STANDARD_PARSERS, self.mako_syntax)
+        self.assertRaises(ParserNotFound, l.search_parser, 1, "-icorrect_directive", self.mako_syntax)
 
 
     def test_control_re(self):

@@ -12,7 +12,7 @@ def preprocessor_factory(custom_parsers=None):
     :return: preprocessor instance
     """
     mako_syntax = syntax.Mako(custom_parsers)
-    return functools.partial(compile_plim_source, parsers=mako_syntax.parsers, syntax=mako_syntax)
+    return functools.partial(compile_plim_source, syntax=mako_syntax)
 
 
 # ``preprocessor`` is a public object that always follows Mako's preprocessor API.

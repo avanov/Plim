@@ -1,6 +1,7 @@
 from . import lexer as l
 
-class Mako:
+
+class BaseSyntax(object):
     VARIABLE_PLACEHOLDER_START_SEQUENCE = '${'
     VARIABLE_PLACEHOLDER_END_SEQUENCE = '}'
     STANDARD_PARSERS = l.STANDARD_PARSERS
@@ -14,3 +15,7 @@ class Mako:
             custom_parsers = []
         custom_parsers.extend(self.STANDARD_PARSERS)
         self.parsers = tuple(custom_parsers)
+
+
+class Mako(BaseSyntax):
+    pass

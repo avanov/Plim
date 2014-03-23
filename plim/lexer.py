@@ -240,13 +240,13 @@ def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
     return None
 
 
-def search_parser(lineno, line, parsers, syntax):
+def search_parser(lineno, line, syntax):
     """Finds a proper parser function for a given line or raises an error
 
     :param lineno:
     :param line:
     """
-    for template, parser in parsers:
+    for template, parser in syntax.parsers:
         matched = template.match(line)
         if matched:
             return matched, parser
@@ -904,7 +904,7 @@ def parse_tag_tree(indent_level, current_line, ___, source, parsers, syntax):
 
         # ----------------------------------------------------------
         while tail_line:
-            matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
             buf.append(parsed_data)
             if tail_indent <= indent_level:
@@ -1068,7 +1068,7 @@ def parse_call(indent_level, current_line, matched, source, parsers, syntax):
                 return joined(buf), tail_indent, tail_line, source
 
             # tail_indent > indent_level
-            matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
             buf.append(parsed_data)
     buf.append('</%{tag}>\n'.format(tag=tag))
@@ -1174,7 +1174,7 @@ def parse_statements(indent_level, __, matched, source, parsers, syntax):
                     return joined(buf), tail_indent, tail_line, source
 
                 # tail_indent > indent_level
-                matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+                matched_obj, parse = search_parser(lineno, tail_line, syntax)
                 parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
                 buf.append(parsed_data)
 
@@ -1204,7 +1204,7 @@ def parse_statements(indent_level, __, matched, source, parsers, syntax):
                     return joined(buf), tail_indent, tail_line, source
 
                 # tail_indent > indent_level
-                matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+                matched_obj, parse = search_parser(lineno, tail_line, syntax)
                 parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
                 buf.append(parsed_data)
 
@@ -1214,7 +1214,7 @@ def parse_statements(indent_level, __, matched, source, parsers, syntax):
                     return joined(buf), tail_indent, tail_line, source
 
                 # tail_indent > indent_level
-                matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+                matched_obj, parse = search_parser(lineno, tail_line, syntax)
                 parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
                 buf.append(parsed_data)
 
@@ -1331,7 +1331,7 @@ def _parse_embedded_markup(content, parsers, syntax):
             embedded = embedded.strip()
             if embedded:
                 try:
-                    embedded = compile_plim_source(embedded, parsers, syntax, False)
+                    embedded = compile_plim_source(embedded, syntax, False)
                 except errors.ParserNotFound:
                     # invalid plim markup, leave things as is
                     buf.append(original)
@@ -1464,7 +1464,7 @@ def parse_raw_html(indent_level, current_line, ___, source, parsers, syntax):
                 return joined(buf), tail_indent, tail_line, source
 
             # tail_indent > indent_level
-            matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
             buf.append(parsed_data)
 
@@ -1528,7 +1528,7 @@ def parse_def_block(indent_level, __, matched, source, parsers, syntax):
                 return joined(buf), tail_indent, tail_line, source
 
             # tail_indent > indent_level
-            matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
             buf.append(parsed_data)
 
@@ -1550,7 +1550,7 @@ def parse_plim_tail(lineno, indent_level, tail_line, source, parsers, syntax):
     buf = []
     tail_indent = indent_level
     while tail_line:
-        matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
+        matched_obj, parse = search_parser(lineno, tail_line, syntax)
         parsed_data, tail_indent, tail_line, source = parse(indent_level, tail_line, matched_obj, source, parsers, syntax)
         buf.append(parsed_data)
         if tail_indent <= indent_level:
@@ -1579,12 +1579,12 @@ def scan_line(line):
     return len(match.group('indent')), match.group('line')
 
 
-def compile_plim_source(source, parsers, syntax, strip=True):
+def compile_plim_source(source, syntax, strip=True):
     """
 
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: a syntax instance
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :param strip: for embedded markup we don't want to strip whitespaces from result
     :type strip: bool
     :return:
@@ -1601,8 +1601,8 @@ def compile_plim_source(source, parsers, syntax, strip=True):
         if not line:
             continue
         while tail_line:
-            matched_obj, parse = search_parser(lineno, tail_line, parsers, syntax)
-            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers, syntax)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
+            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax.parsers, syntax)
             result.append(parsed_data)
 
     result = joined(result)
