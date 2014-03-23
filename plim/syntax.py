@@ -19,3 +19,8 @@ class BaseSyntax(object):
 
 class Mako(BaseSyntax):
     pass
+
+
+class Django(BaseSyntax):
+    VARIABLE_PLACEHOLDER_START_SEQUENCE = '{{'
+    VARIABLE_PLACEHOLDER_END_SEQUENCE = '}}'

@@ -1,17 +1,23 @@
 import functools
 
 from .lexer import compile_plim_source, STANDARD_PARSERS
-from . import syntax
+from . import syntax as available_syntax
 
 
-def preprocessor_factory(custom_parsers=None):
+def preprocessor_factory(custom_parsers=None, syntax='mako'):
     """
 
     :param custom_parsers: a list of 2-tuples of (parser_regex, parser_callable) or None
     :type custom_parsers: list or None
+    :param syntax: name of the target template engine ('mako' by default)
+    :type syntax: str or None
     :return: preprocessor instance
     """
-    mako_syntax = syntax.Mako(custom_parsers)
+    syntax_choices = {
+        'mako': available_syntax.Mako,
+        'django': available_syntax.Django,
+    }
+    mako_syntax = syntax_choices[syntax](custom_parsers)
     return functools.partial(compile_plim_source, syntax=mako_syntax)
 
 
