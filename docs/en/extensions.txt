@@ -307,7 +307,7 @@ for parsing HTTP links present in a form of ``http_url > title``.
     PARSE_HTTP_LINKS_RE = re.compile('(?P<url>https?://[^>]+)+\s+>\s+(?P<title>.*)')
 
 
-    def parse_http_link(indent_level, current_line, matched, source, parsers):
+    def parse_http_link(indent_level, current_line, matched, source, syntax):
         url = matched.group('url')
         url_title = matched.group('title')
         rt = '<a href="{}">{}</a>'.format(url, url_title)
@@ -319,7 +319,7 @@ for parsing HTTP links present in a form of ``http_url > title``.
     ]
 
 
-    custom_preprocessor = preprocessor_factory(custom_parsers=CUSTOM_PARSERS)
+    custom_preprocessor = preprocessor_factory(custom_parsers=CUSTOM_PARSERS, syntax='mako')
 
 
 The ``parse_http_link()`` function is defined according to the strict API.
@@ -332,8 +332,7 @@ Every parser accepts five input arguments:
    ``matched`` object at the previous parsing step.
 3) ``matched`` - an instance of :class:`re.MatchObject` of the regex associated with the current parser.
 4) ``source`` - an instance of an enumerated object returned by :func:`plim.lexer.enumerate_source`.
-5) ``parsers`` - a tuple of 2-tuples of (parser_regex, parser_callable). Plim uses ``plim.lexer.STANDARD_PARSERS``
-   as a default collection of parsers that can be extended by third-party packages.
+5) ``syntax`` - an instance of one of :class:`plim.syntax.BaseSyntax` children.
 
 Every parser returns a 4-tuple of:
 
