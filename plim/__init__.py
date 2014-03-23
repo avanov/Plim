@@ -11,10 +11,8 @@ def preprocessor_factory(custom_parsers=None):
     :type custom_parsers: list or None
     :return: preprocessor instance
     """
-    if custom_parsers is None:
-        custom_parsers = []
-    custom_parsers.extend(STANDARD_PARSERS)
-    return functools.partial(compile_plim_source, parsers=tuple(custom_parsers), syntax=syntax.Mako)
+    mako_syntax = syntax.Mako(custom_parsers)
+    return functools.partial(compile_plim_source, parsers=mako_syntax.parsers, syntax=mako_syntax)
 
 
 # ``preprocessor`` is a public object that always follows Mako's preprocessor API.
