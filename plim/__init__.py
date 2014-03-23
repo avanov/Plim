@@ -17,8 +17,8 @@ def preprocessor_factory(custom_parsers=None, syntax='mako'):
         'mako': available_syntax.Mako,
         'django': available_syntax.Django,
     }
-    mako_syntax = syntax_choices[syntax](custom_parsers)
-    return functools.partial(compile_plim_source, syntax=mako_syntax)
+    selected_syntax = syntax_choices[syntax](custom_parsers)
+    return functools.partial(compile_plim_source, syntax=selected_syntax)
 
 
 # ``preprocessor`` is a public object that always follows Mako's preprocessor API.
