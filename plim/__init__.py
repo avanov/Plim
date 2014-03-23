@@ -1,6 +1,7 @@
 import functools
 
 from .lexer import compile_plim_source, STANDARD_PARSERS
+from . import syntax
 
 
 def preprocessor_factory(custom_parsers=None):
@@ -13,7 +14,7 @@ def preprocessor_factory(custom_parsers=None):
     if custom_parsers is None:
         custom_parsers = []
     custom_parsers.extend(STANDARD_PARSERS)
-    return functools.partial(compile_plim_source, parsers=tuple(custom_parsers))
+    return functools.partial(compile_plim_source, parsers=tuple(custom_parsers), syntax=syntax.Mako)
 
 
 # ``preprocessor`` is a public object that always follows Mako's preprocessor API.
