@@ -154,8 +154,7 @@ STATEMENT_TERMINATORS = {INLINE_TAG_SEPARATOR, NEWLINE}
 
 PYTHON_EXPR_OPEN_BRACES_RE = re.compile('(?P<start_brace>\(|\{|\[).*')
 PYTHON_EXPR_CLOSING_BRACES_RE = re.compile('\)|\}|\].*')
-VARIABLE_PLACEHOLDER_START_SEQUENCE = '${'
-VARIABLE_PLACEHOLDER_END_SEQUENCE = '}'
+
 MAKO_EXPR_START_BRACE_RE = re.compile('(?P<start_brace>\$\{).*')
 MAKO_EXPR_COUNT_OPEN_BRACES_RE = re.compile('\{')
 MAKO_EXPR_COUNT_CLOSING_BRACES_RE = re.compile('\}')
@@ -438,14 +437,14 @@ def extract_quoted_attr_value(line, search_quotes=search_quotes, remove_escape_s
     return None
 
 
-def extract_dynamic_attr_value(line, source, terminators):
+def extract_dynamic_attr_value(line, source, terminators, syntax):
     result = extract_identifier(line, source, '', terminators)
     if result is None:
         return None
     result, tail, source = result
     if MAKO_EXPR_START_BRACE_RE.match(line):
         # remove VARIABLE_PLACEHOLDER_START_SEQUENCE and VARIABLE_PLACEHOLDER_END_SEQUENCE from variable
-        value = result[len(VARIABLE_PLACEHOLDER_START_SEQUENCE):-len(VARIABLE_PLACEHOLDER_END_SEQUENCE)]
+        value = result[len(syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE):-len(syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE)]
     elif line.startswith(OPEN_BRACE):
         # remove "(" and ")" from variable
         value = result[1:-1]
@@ -454,7 +453,7 @@ def extract_dynamic_attr_value(line, source, terminators):
     return value, tail, source
 
 
-def extract_dynamic_tag_attributes(line, source, inside_parentheses=False):
+def extract_dynamic_tag_attributes(line, source, syntax, inside_parentheses=False):
     """
     Extract one occurrence of ``**dynamic_attributes``
     :param line:
@@ -491,14 +490,14 @@ def extract_dynamic_tag_attributes(line, source, inside_parentheses=False):
         '%endfor\n'
     ).format(
         expr=expr,
-        var_start=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-        var_end=VARIABLE_PLACEHOLDER_END_SEQUENCE
+        var_start=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+        var_end=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
     )
     return attributes, tail, source
 
 
 
-def extract_tag_attribute(line, source, inside_parentheses=False):
+def extract_tag_attribute(line, source, syntax, inside_parentheses=False):
     """
 
     :param line:
@@ -537,7 +536,7 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
             # 3. Try to parse dynamic value
             # -------------------------------------
             terminators = inside_parentheses and ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_VALUE_TERMINATORS
-            result = extract_dynamic_attr_value(tail, source, terminators)
+            result = extract_dynamic_attr_value(tail, source, terminators, syntax)
 
             if result:
                 value, tail, source = result
@@ -548,8 +547,8 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
                     value = as_unicode("""{start_var}({value}) and '{attr_name}="{attr_name}"' or ''|n{end_var}""").format(
                         value=value,
                         attr_name=attr_name,
-                        start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-                        end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                        end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                     )
                     attribute = value
                     tail = tail[1:]
@@ -557,8 +556,8 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
                     attribute = as_unicode('{attr_name}="{start_var}{value}{end_var}"').format(
                         attr_name=attr_name,
                         value=value,
-                        start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-                        end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                        end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                     )
                 return attribute, tail, source
             return None
@@ -683,14 +682,14 @@ def extract_tag_line(line, source, parsers, syntax):
             _, tail, source = extract_line_break(tail.lstrip(), source)
 
             # 3.1 try to get and unpack dynamic attributes
-            result = extract_dynamic_tag_attributes(tail, source, inside_parentheses)
+            result = extract_dynamic_tag_attributes(tail, source, syntax, inside_parentheses)
             if result:
                 dynamic_attrs, tail, source = result
                 attributes.append(dynamic_attrs)
                 continue
 
             # 3.2. get attribute-value pairs until the end of the section (indicated by terminators)
-            result = extract_tag_attribute(tail, source, inside_parentheses)
+            result = extract_tag_attribute(tail, source, syntax, inside_parentheses)
             if result:
                 attribute_pair, tail, source = result
                 if attribute_pair.startswith('id="') and css_id:
@@ -755,15 +754,15 @@ def extract_tag_line(line, source, parsers, syntax):
                         tail, source = extract_statement_expression(tail[2:], source)
                         buf.append(as_unicode("{start_var}{content}{end_var} ").format(
                             content=tail,
-                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                         ))
                     else:
                         tail, source = extract_statement_expression(tail[1:], source)
                         buf.append("{start_var}{content}{end_var}".format(
                             content=tail,
-                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                         ))
                 else:
                     if tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
@@ -771,15 +770,15 @@ def extract_tag_line(line, source, parsers, syntax):
                         tail, source = extract_statement_expression(tail[1:], source)
                         buf.append("{start_var}{content}{end_var} ".format(
                             content=tail,
-                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                         ))
                     else:
                         tail, source = extract_statement_expression(tail, source)
                         buf.append("{start_var}{content}{end_var}".format(
                             content=tail,
-                            start_var=VARIABLE_PLACEHOLDER_START_SEQUENCE,
-                            end_var=VARIABLE_PLACEHOLDER_END_SEQUENCE
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                         ))
 
             elif tail.startswith(LITERAL_CONTENT_PREFIX):
@@ -1378,7 +1377,7 @@ def parse_variable(indent_level, __, matched, source, parsers, syntax):
     """
     explicit_space = matched.group('explicit_space') and ' ' or ''
     prevent_escape = matched.group('prevent_escape')
-    buf = [VARIABLE_PLACEHOLDER_START_SEQUENCE, matched.group('line')]
+    buf = [syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE, matched.group('line')]
     while True:
         try:
             lineno, current_line = next(source)
@@ -1392,14 +1391,14 @@ def parse_variable(indent_level, __, matched, source, parsers, syntax):
             if prevent_escape:
                 buf = _inject_n_filter(buf)
             # add a closing brace to complete variable expression syntax ("${}" in case of mako).
-            buf += VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
+            buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
 
     buf = joined(buf)
     if prevent_escape:
         buf = _inject_n_filter(buf)
-    buf += VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
+    buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
     return buf, 0, '', source
 
 

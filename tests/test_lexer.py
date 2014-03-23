@@ -118,19 +118,19 @@ class TestLexerFunctions(TestCaseBase):
     def test_parse_tag_attribute(self):
         def assert_this(str_, parentheses, attr_, tail):
             source = l.enumerate_source('')
-            result = l.extract_tag_attribute(str_, source, parentheses)
+            result = l.extract_tag_attribute(str_, source, syntax.Mako, parentheses)
             self.assertEqual(result[0], attr_)
             self.assertEqual(tail, result[1])
 
         source = l.enumerate_source('')
-        self.assertEqual(l.extract_tag_attribute("", source), None)
-        self.assertEqual(l.extract_tag_attribute(" ", source), None)
-        self.assertEqual(l.extract_tag_attribute("=", source), None)
-        self.assertEqual(l.extract_tag_attribute(" = ", source), None)
-        self.assertEqual(l.extract_tag_attribute("|", source), None)
-        self.assertEqual(l.extract_tag_attribute("'", source), None)
-        self.assertEqual(l.extract_tag_attribute("()", source, True), None)
-        self.assertEqual(l.extract_tag_attribute(")", source, True), None)
+        self.assertEqual(l.extract_tag_attribute("", source, syntax.Mako), None)
+        self.assertEqual(l.extract_tag_attribute(" ", source, syntax.Mako), None)
+        self.assertEqual(l.extract_tag_attribute("=", source, syntax.Mako), None)
+        self.assertEqual(l.extract_tag_attribute(" = ", source, syntax.Mako), None)
+        self.assertEqual(l.extract_tag_attribute("|", source, syntax.Mako), None)
+        self.assertEqual(l.extract_tag_attribute("'", source, syntax.Mako), None)
+        self.assertEqual(l.extract_tag_attribute("()", source, syntax.Mako, True), None)
+        self.assertEqual(l.extract_tag_attribute(")", source, syntax.Mako, True), None)
 
         assert_this('attr="value"', False, 'attr="value"', '')
         assert_this('attr=${val}', False,  'attr="${val}"', '')
@@ -193,25 +193,25 @@ class TestLexerFunctions(TestCaseBase):
     def test_extract_dynamic_attr_value(self):
         for terminators in (l.ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES, l.ATTRIBUTE_VALUE_TERMINATORS):
             source = l.enumerate_source('')
-            value, tail, _ = l.extract_dynamic_attr_value("(value in func('test') and 'yes' or 'no')", source, terminators)
+            value, tail, _ = l.extract_dynamic_attr_value("(value in func('test') and 'yes' or 'no')", source, terminators, syntax.Mako)
             assert value == "value in func('test') and 'yes' or 'no'"
             assert tail == ''
 
 
     def test_extract_dynamic_tag_attributes(self):
         source = l.enumerate_source('')
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test", source, syntax.Mako, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test.items()"))
 
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(**values)", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(**values)", source, syntax.Mako, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
 
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test**test2", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test**test2", source, syntax.Mako, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test.items()"))
 
         # Test multi-line expression
         source = l.enumerate_source('**values\n)')
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(\n", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(\n", source, syntax.Mako, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
 
     def test_inline_extract_plim_line(self):
