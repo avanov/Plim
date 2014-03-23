@@ -1108,17 +1108,20 @@ def parse_statements(indent_level, __, matched, source, syntax):
     """
     stmnt = matched.group('stmnt')
     expr = matched.group('expr')
-    buf = ['\n%{statement}'.format(statement=stmnt)]
+    buf = ['\n{statement_start}{statement}'.format(
+        statement_start=syntax.STATEMENT_START_START_SEQUENCE,
+        statement=stmnt
+    )]
     if expr:
         expr, source = extract_statement_expression(expr, source)
         expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
         expr = expr.lstrip()
         tail_line = tail_line[1:].lstrip()
         parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
-        buf.append(joined([' ', expr, ':\n', joined(parsed)]))
+        buf.append(joined([' ', expr, syntax.STATEMENT_START_END_SEQUENCE, '\n', joined(parsed)]))
     else:
         # So far only the "-try" statement has empty ``expr`` part
-        buf.append(':\n')
+        buf.extend([syntax.STATEMENT_START_END_SEQUENCE, '\n'])
         try:
             lineno, tail_line = next(source)
         except StopIteration:
@@ -1142,7 +1145,14 @@ def parse_statements(indent_level, __, matched, source, syntax):
                             expr = expr.lstrip()
                             tail_line = tail_line[1:].lstrip()
                             parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
-                            buf.append(joined(['\n%elif {expr}:\n'.format(expr=expr), joined(parsed)]))
+                            buf.append(joined([
+                                '\n',
+                                syntax.STATEMENT_START_START_SEQUENCE,
+                                'elif {expr}'.format(expr=expr),
+                                syntax.STATEMENT_START_END_SEQUENCE,
+                                '\n',
+                                joined(parsed)
+                            ]))
                             if tail_line:
                                 continue
                             break
@@ -1155,18 +1165,43 @@ def parse_statements(indent_level, __, matched, source, syntax):
                                 expr = expr.lstrip()
                                 tail_line = tail_line[1:].lstrip()
                                 parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
-                                buf.append(joined(['\n%else:\n'.format(expr=expr), joined(parsed)]))
+                                buf.append(joined([
+                                    '\n',
+                                    syntax.STATEMENT_START_START_SEQUENCE,
+                                    'else',
+                                    syntax.STATEMENT_START_END_SEQUENCE,
+                                    '\n',
+                                    joined(parsed)
+                                ]))
                                 if tail_line:
                                     continue
-                            buf.append(joined(['\n%else:\n'.format(expr=expr)]))
+                            buf.append(joined([
+                                '\n',
+                                syntax.STATEMENT_START_START_SEQUENCE,
+                                'else',
+                                syntax.STATEMENT_START_END_SEQUENCE,
+                                '\n'
+                            ]))
                             break
                     else:
                         # elif/else is not found, finalize and return buffer
-                        buf.append('\n%end{statement}\n'.format(statement=stmnt))
+                        buf.extend([
+                            '\n',
+                            syntax.STATEMENT_END_START_SEQUENCE,
+                            'end{statement}'.format(statement=stmnt),
+                            syntax.STATEMENT_END_END_SEQUENCE,
+                            '\n'
+                        ])
                         return joined(buf), tail_indent, tail_line, source
 
                 elif tail_indent < indent_level:
-                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
+                    buf.extend([
+                        '\n',
+                        syntax.STATEMENT_END_START_SEQUENCE,
+                        'end{statement}'.format(statement=stmnt),
+                        syntax.STATEMENT_END_END_SEQUENCE,
+                        '\n'
+                    ])
                     return joined(buf), tail_indent, tail_line, source
 
                 # tail_indent > indent_level
@@ -1220,8 +1255,13 @@ def parse_statements(indent_level, __, matched, source, syntax):
             break
         tail_indent, tail_line = scan_line(tail_line)
 
-
-    buf.append('\n%end{statement}\n'.format(statement=stmnt))
+    buf.extend([
+        '\n',
+        syntax.STATEMENT_END_START_SEQUENCE,
+        'end{statement}'.format(statement=stmnt),
+        syntax.STATEMENT_END_END_SEQUENCE,
+        '\n'
+    ])
     return joined(buf), 0, '', source
 
 
@@ -1361,7 +1401,7 @@ def _inject_n_filter(line):
 
 
 def parse_variable(indent_level, __, matched, source, syntax):
-    """
+    """ = variable or == variable
 
     :param indent_level:
     :param __:
