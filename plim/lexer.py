@@ -1222,12 +1222,10 @@ def parse_statements(indent_level, __, matched, source, syntax):
                             break
                     else:
                         # elif/else is not found, finalize and return the buffer
-                        buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                        return joined(buf), tail_indent, tail_line, source
+                        return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 elif tail_indent < indent_level:
-                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                    return joined(buf), tail_indent, tail_line, source
+                    return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 # tail_indent > indent_level
                 matched_obj, parse = search_parser(lineno, tail_line, syntax)
