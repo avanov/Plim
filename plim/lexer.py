@@ -1241,7 +1241,13 @@ def parse_statements(indent_level, __, matched, source, syntax):
 
             else: # stmnt == for/while
                 if tail_indent <= indent_level:
-                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
+                    buf.extend([
+                        '\n',
+                        syntax.STATEMENT_END_START_SEQUENCE,
+                        'end{statement}'.format(statement=stmnt),
+                        syntax.STATEMENT_END_END_SEQUENCE,
+                        '\n'
+                    ])
                     return joined(buf), tail_indent, tail_line, source
 
                 # tail_indent > indent_level
