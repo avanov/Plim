@@ -1130,7 +1130,7 @@ def parse_statements(indent_level, __, matched, source, syntax):
         else:
             tail_indent, tail_line = scan_line(tail_line)
 
-    def complete_statement(buf, statement, tail_indent, tail_line, source):
+    def complete_statement(buf, tail_indent, tail_line, source, statement, syntax):
         buf.extend([
             '\n',
             syntax.STATEMENT_END_START_SEQUENCE,
@@ -1195,10 +1195,10 @@ def parse_statements(indent_level, __, matched, source, syntax):
                             break
                     else:
                         # elif/else is not found, finalize and return buffer
-                        return complete_statement(buf, stmnt, tail_indent, tail_line, source)
+                        return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 elif tail_indent < indent_level:
-                    return complete_statement(buf, stmnt, tail_indent, tail_line, source)
+                    return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 # tail_indent > indent_level
                 matched_obj, parse = search_parser(lineno, tail_line, syntax)
@@ -1237,7 +1237,7 @@ def parse_statements(indent_level, __, matched, source, syntax):
 
             else: # stmnt == for/while
                 if tail_indent <= indent_level:
-                    return complete_statement(buf, stmnt, tail_indent, tail_line, source)
+                    return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 # tail_indent > indent_level
                 matched_obj, parse = search_parser(lineno, tail_line, syntax)
@@ -1250,7 +1250,7 @@ def parse_statements(indent_level, __, matched, source, syntax):
             break
         tail_indent, tail_line = scan_line(tail_line)
 
-    return complete_statement(buf, stmnt, 0, '', source)
+    return complete_statement(buf, 0, '', source, stmnt, syntax)
 
 
 
