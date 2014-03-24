@@ -8,7 +8,6 @@ from plim.errors import PlimSyntaxError, ParserNotFound
 from .. import TestCaseBase
 
 
-
 class TestDjangoSyntax(TestCaseBase):
 
     def setUp(self):
