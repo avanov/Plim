@@ -1172,7 +1172,6 @@ def parse_statements(indent_level, __, matched, source, syntax):
                             result = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
                             if result:
                                 expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
-                                expr = expr.lstrip()
                                 tail_line = tail_line[1:].lstrip()
                                 parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
                                 buf.append(joined([
