@@ -4,6 +4,10 @@ Changelog
 Version 0.9
 -------------
 
+- 0.9.3
+
+  - Hotfix: Fix UnicodeEncodeError in ``plimc`` when it writes to STDOUT.
+
 - 0.9.2
 
   - Feature: added support for `Custom Parsers <http://plim.readthedocs.org/en/latest/en/extensions.html#extending-plim-with-custom-parsers>`_.

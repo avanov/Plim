@@ -43,7 +43,11 @@ def plimc():
 
     # Output
     # ------------------------------------
-    fd = sys.stdout if args.output is None else codecs.open(args.output, 'wb', args.encoding)
+    if args.output is None:
+        fd = sys.stdout
+        content = codecs.encode(content, 'utf-8')
+    else:
+        fd = codecs.open(args.output, 'wb', args.encoding)
     try:
         fd.write(content)
     finally:
