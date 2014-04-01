@@ -1,6 +1,6 @@
 import functools
 
-from .lexer import compile_plim_source, STANDARD_PARSERS
+from .lexer import compile_plim_source
 from . import syntax as available_syntax
 
 

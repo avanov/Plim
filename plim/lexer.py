@@ -1634,27 +1634,6 @@ def compile_plim_source(source, syntax, strip=True):
 
 # Acknowledgements
 # ============================================================================================
-STANDARD_PARSERS = ( # Order matters
-    (PARSE_STYLE_SCRIPT_RE, parse_style_script),
-    (PARSE_DOCTYPE_RE, parse_doctype),
-    (PARSE_HANDLEBARS_RE, parse_handlebars),
-    (PARSE_TAG_TREE_RE, parse_tag_tree),
-    (PARSE_EXPLICIT_LITERAL_RE, parse_explicit_literal_with_embedded_markup),
-    (PARSE_IMPLICIT_LITERAL_RE, parse_implicit_literal),
-    (PARSE_RAW_HTML_RE, parse_raw_html),
-    (PARSE_VARIABLE_RE, parse_variable),
-    (PARSE_COMMENT_RE, parse_comment),
-    (PARSE_STATEMENTS_RE, parse_statements),
-    (PARSE_FOREIGN_STATEMENTS_RE, parse_foreign_statements),
-    (PARSE_PYTHON_NEW_RE, parse_python_new_style),
-    (PARSE_PYTHON_CLASSIC_RE, parse_python),
-    (PARSE_DEF_BLOCK_RE, parse_def_block),
-    (PARSE_MAKO_ONE_LINERS_RE, parse_mako_one_liners),
-    (PARSE_MAKO_TEXT_RE, parse_mako_text),
-    (PARSE_CALL_RE, parse_call),
-    (PARSE_EARLY_RETURN_RE, parse_early_return),
-    (PARSE_EXTENSION_LANGUAGES_RE, parse_markup_languages)
-)
 
 EMPTY_TAGS = {'meta', 'img', 'link', 'input', 'area', 'base', 'col', 'br', 'hr'}
 
