@@ -54,38 +54,12 @@ NUMERIC_VALUE_RE = re.compile(
     '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+%?))'
 )
 
-
-
-PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
-PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
 STATEMENT_CONVERT = {
     'unless': 'if not (',
     'until': 'while not ('
 }
 
-PARSE_ELIF_ELSE_RE = re.compile('-\s*(?P<control>elif|else)(?P<expr>.*)')
-PARSE_EXCEPT_ELSE_FINALLY_RE = re.compile('-\s*(?P<control>except|else|finally)(?P<expr>.*)')
-
-PARSE_PYTHON_CLASSIC_RE = re.compile('-\s*(?P<python>py(?:thon)?(?P<excl>\!?))(?P<expr>\s+.*)?')
-PARSE_PYTHON_NEW_RE = re.compile('---[-]*(?P<excl>\!)?\s*(?P<expr>[^-].*)?')
 INLINE_PYTHON_TERMINATOR = '---'
-
-PARSE_DEF_BLOCK_RE = re.compile('-\s*(?P<line>(?:def|block)(?:\s+.*)?)')
-PARSE_MAKO_ONE_LINERS_RE = re.compile('-\s*(?P<line>(?:include|inherit|page|namespace)(?:\s+.*)?)')
-
-
-
-PARSE_RAW_HTML_RE = re.compile('\<.*')
-PARSE_MAKO_TEXT_RE = re.compile('-\s*(?P<line>text(?:\s+.*)?)')
-PARSE_CALL_RE = re.compile('-\s*(?P<line>call(?:\s+.*)?)')
-PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue|break)\s*')
-
-
-
-PARSE_VARIABLE_RE = re.compile("=(?P<prevent_escape>=)?(?P<explicit_space>,)?\s*(?P<line>.*)", re.IGNORECASE)
-PARSE_COMMENT_RE = re.compile('/.*')
-
-PARSE_EXTENSION_LANGUAGES_RE = re.compile('-\s*(?P<lang>md|markdown|rst|rest|coffee|scss|sass|stylus)\s*')
 
 CSS_ID_SHORTCUT_TERMINATORS = (
     CSS_CLASS_SHORTCUT_DELIMITER,
@@ -230,6 +204,7 @@ def search_parser(lineno, line, syntax):
 
     :param lineno:
     :param line:
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     """
     for template, parser in syntax.parsers:
         matched = template.match(line)
@@ -976,7 +951,7 @@ def parse_python_new_style(indent_level, __, matched, source, syntax):
         inline_statement, _tail_line_, source = extract_identifier(inline_statement, source, '', {INLINE_PYTHON_TERMINATOR, NEWLINE})
         buf.append(inline_statement)
     converted_line = joined(buf).strip()
-    match = PARSE_PYTHON_CLASSIC_RE.match(converted_line)
+    match = syntax.PARSE_PYTHON_CLASSIC_RE.match(converted_line)
     return parse_python(indent_level, __, match, source, syntax)
 
 
@@ -1132,7 +1107,7 @@ def parse_statements(indent_level, __, matched, source, syntax):
             if stmnt == 'if':
                 if tail_indent == indent_level:
                     # Check for elif/else
-                    match = PARSE_ELIF_ELSE_RE.match(tail_line)
+                    match = syntax.PARSE_ELIF_ELSE_RE.match(tail_line)
                     if match:
                         if match.group('control') == 'elif':
                             expr, source = extract_statement_expression(match.group('expr'), source)
@@ -1192,7 +1167,7 @@ def parse_statements(indent_level, __, matched, source, syntax):
             elif stmnt == 'try':
                 if tail_indent == indent_level:
                     # Check for except/else/finally
-                    match = PARSE_EXCEPT_ELSE_FINALLY_RE.match(tail_line)
+                    match = syntax.PARSE_EXCEPT_ELSE_FINALLY_RE.match(tail_line)
                     if match:
                         if match.group('control') == 'except':
                             expr, source = extract_statement_expression(match.group('expr'), source)
@@ -1253,7 +1228,7 @@ def parse_foreign_statements(indent_level, __, matched, source, syntax):
     expr, source = extract_statement_expression(expr, source)
     buf.append(joined([expr, ')']))
 
-    matched = PARSE_STATEMENTS_RE.match(joined(buf))
+    matched = syntax.PARSE_STATEMENTS_RE.match(joined(buf))
     return parse_statements(indent_level, __, matched, source, syntax)
 
 

@@ -17,10 +17,10 @@ class TestLexerFunctions(TestCaseBase):
 
 
     def test_control_re(self):
-        m = l.PARSE_STATEMENTS_RE.match("- if 1")
+        m = self.syntax.PARSE_STATEMENTS_RE.match("- if 1")
         assert m.group('expr') == ' 1'
 
-        m = l.PARSE_STATEMENTS_RE.match("-for i in [1,2,3,4,5]")
+        m = self.syntax.PARSE_STATEMENTS_RE.match("-for i in [1,2,3,4,5]")
         assert m.group('expr') == ' i in [1,2,3,4,5]'
 
 
@@ -456,7 +456,7 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('markdown_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
 
 
@@ -465,7 +465,7 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('reST_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
 
 
@@ -474,7 +474,7 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('scss_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
 
         
@@ -483,7 +483,12 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('coffee_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
+        data, _, __, ___ = l.parse_markup_languages(
+            0,
+            '',
+            self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line),
+            source,
+            self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
         
         
@@ -492,5 +497,5 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('stylus_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())

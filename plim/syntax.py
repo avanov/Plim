@@ -38,28 +38,23 @@ class BaseSyntax(object):
     # This constant uses l.LITERAL_CONTENT_PREFIX and l.LITERAL_CONTENT_SPACE_PREFIX
     PARSE_EXPLICIT_LITERAL_RE = re.compile("(?:\||,).*", re.IGNORECASE)
     PARSE_IMPLICIT_LITERAL_RE = PARSE_IMPLICIT_LITERAL_RE
+    PARSE_RAW_HTML_RE = re.compile('\<.*')
+    PARSE_VARIABLE_RE = re.compile("=(?P<prevent_escape>=)?(?P<explicit_space>,)?\s*(?P<line>.*)", re.IGNORECASE)
+    PARSE_COMMENT_RE = re.compile('/.*')
 
-    STANDARD_PARSERS = ( # Order matters
-        (PARSE_STYLE_SCRIPT_RE, l.parse_style_script),
-        (PARSE_DOCTYPE_RE, l.parse_doctype),
-        (PARSE_HANDLEBARS_RE, l.parse_handlebars),
-        (PARSE_TAG_TREE_RE, l.parse_tag_tree),
-        (PARSE_EXPLICIT_LITERAL_RE, l.parse_explicit_literal_with_embedded_markup),
-        (PARSE_IMPLICIT_LITERAL_RE, l.parse_implicit_literal),
-        (l.PARSE_RAW_HTML_RE, l.parse_raw_html),
-        (l.PARSE_VARIABLE_RE, l.parse_variable),
-        (l.PARSE_COMMENT_RE, l.parse_comment),
-        (l.PARSE_STATEMENTS_RE, l.parse_statements),
-        (l.PARSE_FOREIGN_STATEMENTS_RE, l.parse_foreign_statements),
-        (l.PARSE_PYTHON_NEW_RE, l.parse_python_new_style),
-        (l.PARSE_PYTHON_CLASSIC_RE, l.parse_python),
-        (l.PARSE_DEF_BLOCK_RE, l.parse_def_block),
-        (l.PARSE_MAKO_ONE_LINERS_RE, l.parse_mako_one_liners),
-        (l.PARSE_MAKO_TEXT_RE, l.parse_mako_text),
-        (l.PARSE_CALL_RE, l.parse_call),
-        (l.PARSE_EARLY_RETURN_RE, l.parse_early_return),
-        (l.PARSE_EXTENSION_LANGUAGES_RE, l.parse_markup_languages)
-    )
+    PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
+    PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
+    PARSE_PYTHON_NEW_RE = re.compile('---[-]*(?P<excl>\!)?\s*(?P<expr>[^-].*)?')
+    PARSE_PYTHON_CLASSIC_RE = re.compile('-\s*(?P<python>py(?:thon)?(?P<excl>\!?))(?P<expr>\s+.*)?')
+    PARSE_DEF_BLOCK_RE = re.compile('-\s*(?P<line>(?:def|block)(?:\s+.*)?)')
+    PARSE_MAKO_ONE_LINERS_RE = re.compile('-\s*(?P<line>(?:include|inherit|page|namespace)(?:\s+.*)?)')
+    PARSE_MAKO_TEXT_RE = re.compile('-\s*(?P<line>text(?:\s+.*)?)')
+    PARSE_CALL_RE = re.compile('-\s*(?P<line>call(?:\s+.*)?)')
+    PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue|break)\s*')
+    PARSE_EXTENSION_LANGUAGES_RE = re.compile('-\s*(?P<lang>md|markdown|rst|rest|coffee|scss|sass|stylus)\s*')
+
+    PARSE_ELIF_ELSE_RE = re.compile('-\s*(?P<control>elif|else)(?P<expr>.*)')
+    PARSE_EXCEPT_ELSE_FINALLY_RE = re.compile('-\s*(?P<control>except|else|finally)(?P<expr>.*)')
 
     def __init__(self, custom_parsers=None):
         """
@@ -68,12 +63,42 @@ class BaseSyntax(object):
         """
         if custom_parsers is None:
             custom_parsers = []
-        custom_parsers.extend(self.STANDARD_PARSERS)
-        self.parsers = tuple(custom_parsers)
+
+        # We initialize standard parsers here rather than in a class' scope, because
+        # we would like to be able to discard parsers in some syntax implementations by
+        # replacing them with None (see Django syntax vs. Mako syntax definitions below).
+        standard_parsers = ( # Order matters
+            (self.PARSE_STYLE_SCRIPT_RE, l.parse_style_script),
+            (self.PARSE_DOCTYPE_RE, l.parse_doctype),
+            (self.PARSE_HANDLEBARS_RE, l.parse_handlebars),
+            (self.PARSE_TAG_TREE_RE, l.parse_tag_tree),
+            (self.PARSE_EXPLICIT_LITERAL_RE, l.parse_explicit_literal_with_embedded_markup),
+            (self.PARSE_IMPLICIT_LITERAL_RE, l.parse_implicit_literal),
+            (self.PARSE_RAW_HTML_RE, l.parse_raw_html),
+            (self.PARSE_VARIABLE_RE, l.parse_variable),
+            (self.PARSE_COMMENT_RE, l.parse_comment),
+            (self.PARSE_STATEMENTS_RE, l.parse_statements),
+            (self.PARSE_FOREIGN_STATEMENTS_RE, l.parse_foreign_statements),
+            (self.PARSE_PYTHON_NEW_RE, l.parse_python_new_style),
+            (self.PARSE_PYTHON_CLASSIC_RE, l.parse_python),
+            (self.PARSE_DEF_BLOCK_RE, l.parse_def_block),
+            (self.PARSE_MAKO_ONE_LINERS_RE, l.parse_mako_one_liners),
+            (self.PARSE_MAKO_TEXT_RE, l.parse_mako_text),
+            (self.PARSE_CALL_RE, l.parse_call),
+            (self.PARSE_EARLY_RETURN_RE, l.parse_early_return),
+            (self.PARSE_EXTENSION_LANGUAGES_RE, l.parse_markup_languages)
+        )
+        custom_parsers.extend(standard_parsers)
+        # discard parsers with None pattern
+        self.parsers = tuple([p for p in custom_parsers if p[0]])
+
+    def __str__(self):
+        return 'Base Syntax'
 
 
 class Mako(BaseSyntax):
-    pass
+    def __str__(self):
+        return 'Mako Syntax'
 
 
 class Django(BaseSyntax):
@@ -83,3 +108,6 @@ class Django(BaseSyntax):
     STATEMENT_START_END_SEQUENCE = ' %}'
     STATEMENT_END_START_SEQUENCE = STATEMENT_START_START_SEQUENCE
     STATEMENT_END_END_SEQUENCE = STATEMENT_START_END_SEQUENCE
+
+    def __str__(self):
+        return 'Django Syntax'
