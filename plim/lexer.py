@@ -6,7 +6,7 @@ import re
 import markdown2
 
 from . import errors
-from .util import StringIO, PY3K, MAXSIZE, joined, space_separated, as_unicode
+from .util import StringIO, MAXSIZE, joined, space_separated, as_unicode
 from .extensions import rst_to_html
 from .extensions import coffee_to_js
 from .extensions import scss_to_css
@@ -54,8 +54,8 @@ NUMERIC_VALUE_RE = re.compile(
     '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+%?))'
 )
 
-PARSE_TAG_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
-PARSE_HANDLEBARS_RE = re.compile('(?:handlebars).*')
+
+
 PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
 PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
 STATEMENT_CONVERT = {
@@ -73,33 +73,18 @@ INLINE_PYTHON_TERMINATOR = '---'
 PARSE_DEF_BLOCK_RE = re.compile('-\s*(?P<line>(?:def|block)(?:\s+.*)?)')
 PARSE_MAKO_ONE_LINERS_RE = re.compile('-\s*(?P<line>(?:include|inherit|page|namespace)(?:\s+.*)?)')
 
-if PY3K:
-    PARSE_IMPLICIT_LITERAL_RE = re.compile(
-        # Order matters
-        '(?P<line>(?:'
-            '\$?\{|\(|\[|&.+;|[0-9]+|'
-            '(?:'
-                '[^\u0021-\u007E]'  # not ASCII 33 - 126
-                '|'                 # or
-                '[A-Z]'             # uppercase latin letters (ASCII 65 - 90)
-            ')'                     # It is possible because TAG_RE can match only lowercase tag names
-        ').*)\s*'
-    )
-else:
-    from .unportable import PARSE_IMPLICIT_LITERAL_RE
+
 
 PARSE_RAW_HTML_RE = re.compile('\<.*')
 PARSE_MAKO_TEXT_RE = re.compile('-\s*(?P<line>text(?:\s+.*)?)')
 PARSE_CALL_RE = re.compile('-\s*(?P<line>call(?:\s+.*)?)')
 PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue|break)\s*')
 
-# This constant uses LITERAL_CONTENT_PREFIX and LITERAL_CONTENT_SPACE_PREFIX
-PARSE_EXPLICIT_LITERAL_RE = re.compile("(?:\||,).*", re.IGNORECASE)
+
 
 PARSE_VARIABLE_RE = re.compile("=(?P<prevent_escape>=)?(?P<explicit_space>,)?\s*(?P<line>.*)", re.IGNORECASE)
 PARSE_COMMENT_RE = re.compile('/.*')
-PARSE_DOCTYPE_RE = re.compile('doctype\s+(?P<type>[0-9a-z\.]+)', re.IGNORECASE)
-PARSE_STYLE_SCRIPT_RE = re.compile('(?:style|script).*', re.IGNORECASE)
+
 PARSE_EXTENSION_LANGUAGES_RE = re.compile('-\s*(?P<lang>md|markdown|rst|rest|coffee|scss|sass|stylus)\s*')
 
 CSS_ID_SHORTCUT_TERMINATORS = (
@@ -836,7 +821,7 @@ def parse_doctype(indent_level, current_line, ___, source, syntax):
     :type parsers: tuple
     :return:
     """
-    match = PARSE_DOCTYPE_RE.match(current_line.strip())
+    match = syntax.PARSE_DOCTYPE_RE.match(current_line.strip())
     doctype = match.group('type')
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 

@@ -1,4 +1,23 @@
+import re
+
 from . import lexer as l
+from .util import PY3K
+
+
+if PY3K:
+    PARSE_IMPLICIT_LITERAL_RE = re.compile(
+        # Order matters
+        '(?P<line>(?:'
+            '\$?\{|\(|\[|&.+;|[0-9]+|'
+            '(?:'
+                '[^\u0021-\u007E]'  # not ASCII 33 - 126
+                '|'                 # or
+                '[A-Z]'             # uppercase latin letters (ASCII 65 - 90)
+            ')'                     # It is possible because TAG_RE can match only lowercase tag names
+        ').*)\s*'
+    )
+else:
+    from .unportable import PARSE_IMPLICIT_LITERAL_RE
 
 
 class BaseSyntax(object):
@@ -10,13 +29,23 @@ class BaseSyntax(object):
     STATEMENT_END_START_SEQUENCE = '%'
     STATEMENT_END_END_SEQUENCE = ''
 
+    # Parsers
+    # ----------------------------------
+    PARSE_DOCTYPE_RE = re.compile('doctype\s+(?P<type>[0-9a-z\.]+)', re.IGNORECASE)
+    PARSE_STYLE_SCRIPT_RE = re.compile('(?:style|script).*', re.IGNORECASE)
+    PARSE_HANDLEBARS_RE = re.compile('(?:handlebars).*')
+    PARSE_TAG_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=l.TAG_RULE))
+    # This constant uses l.LITERAL_CONTENT_PREFIX and l.LITERAL_CONTENT_SPACE_PREFIX
+    PARSE_EXPLICIT_LITERAL_RE = re.compile("(?:\||,).*", re.IGNORECASE)
+    PARSE_IMPLICIT_LITERAL_RE = PARSE_IMPLICIT_LITERAL_RE
+
     STANDARD_PARSERS = ( # Order matters
-        (l.PARSE_STYLE_SCRIPT_RE, l.parse_style_script),
-        (l.PARSE_DOCTYPE_RE, l.parse_doctype),
-        (l.PARSE_HANDLEBARS_RE, l.parse_handlebars),
-        (l.PARSE_TAG_TREE_RE, l.parse_tag_tree),
-        (l.PARSE_EXPLICIT_LITERAL_RE, l.parse_explicit_literal_with_embedded_markup),
-        (l.PARSE_IMPLICIT_LITERAL_RE, l.parse_implicit_literal),
+        (PARSE_STYLE_SCRIPT_RE, l.parse_style_script),
+        (PARSE_DOCTYPE_RE, l.parse_doctype),
+        (PARSE_HANDLEBARS_RE, l.parse_handlebars),
+        (PARSE_TAG_TREE_RE, l.parse_tag_tree),
+        (PARSE_EXPLICIT_LITERAL_RE, l.parse_explicit_literal_with_embedded_markup),
+        (PARSE_IMPLICIT_LITERAL_RE, l.parse_implicit_literal),
         (l.PARSE_RAW_HTML_RE, l.parse_raw_html),
         (l.PARSE_VARIABLE_RE, l.parse_variable),
         (l.PARSE_COMMENT_RE, l.parse_comment),
