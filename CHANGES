@@ -4,6 +4,11 @@ Changelog
 Version 0.9
 -------------
 
+- 0.9.4
+
+  - Hotfix: ``plimc`` no longer crashes with TypeError in Python3 environments
+            when it writes bytes to sys.stdout.
+
 - 0.9.3
 
   - Hotfix: Fix UnicodeEncodeError in ``plimc`` when it writes to STDOUT.
