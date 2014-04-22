@@ -3,6 +3,7 @@ import os
 import codecs
 import unittest
 import plim
+from plim import syntax
 
 
 
@@ -11,6 +12,7 @@ class TestCaseBase(unittest.TestCase):
         here = os.path.abspath(os.path.dirname(__file__))
         self.templates_dir = os.path.join(here, 'fixtures')
         self.maxDiff = None
+        self.syntax = plim.syntax.Mako()
 
     def tearDown(self):
         pass

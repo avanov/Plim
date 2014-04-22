@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plim import lexer as l
+from plim import syntax
 from plim.errors import PlimSyntaxError, ParserNotFound
 from . import TestCaseBase
 
@@ -7,15 +8,19 @@ from . import TestCaseBase
 
 class TestLexerFunctions(TestCaseBase):
 
+    def setUp(self):
+        super(TestLexerFunctions, self).setUp()
+        self.mako_syntax = syntax.Mako()
+
     def test_incorrect_directive(self):
-        self.assertRaises(ParserNotFound, l.search_parser, 1, "-icorrect_directive", l.STANDARD_PARSERS)
+        self.assertRaises(ParserNotFound, l.search_parser, 1, "-icorrect_directive", self.mako_syntax)
 
 
     def test_control_re(self):
-        m = l.PARSE_STATEMENTS_RE.match("- if 1")
+        m = self.syntax.PARSE_STATEMENTS_RE.match("- if 1")
         assert m.group('expr') == ' 1'
 
-        m = l.PARSE_STATEMENTS_RE.match("-for i in [1,2,3,4,5]")
+        m = self.syntax.PARSE_STATEMENTS_RE.match("-for i in [1,2,3,4,5]")
         assert m.group('expr') == ' i in [1,2,3,4,5]'
 
 
@@ -117,19 +122,19 @@ class TestLexerFunctions(TestCaseBase):
     def test_parse_tag_attribute(self):
         def assert_this(str_, parentheses, attr_, tail):
             source = l.enumerate_source('')
-            result = l.extract_tag_attribute(str_, source, parentheses)
+            result = l.extract_tag_attribute(str_, source, self.mako_syntax, parentheses)
             self.assertEqual(result[0], attr_)
             self.assertEqual(tail, result[1])
 
         source = l.enumerate_source('')
-        self.assertEqual(l.extract_tag_attribute("", source), None)
-        self.assertEqual(l.extract_tag_attribute(" ", source), None)
-        self.assertEqual(l.extract_tag_attribute("=", source), None)
-        self.assertEqual(l.extract_tag_attribute(" = ", source), None)
-        self.assertEqual(l.extract_tag_attribute("|", source), None)
-        self.assertEqual(l.extract_tag_attribute("'", source), None)
-        self.assertEqual(l.extract_tag_attribute("()", source, True), None)
-        self.assertEqual(l.extract_tag_attribute(")", source, True), None)
+        self.assertEqual(l.extract_tag_attribute("", source, self.mako_syntax), None)
+        self.assertEqual(l.extract_tag_attribute(" ", source, self.mako_syntax), None)
+        self.assertEqual(l.extract_tag_attribute("=", source, self.mako_syntax), None)
+        self.assertEqual(l.extract_tag_attribute(" = ", source, self.mako_syntax), None)
+        self.assertEqual(l.extract_tag_attribute("|", source, self.mako_syntax), None)
+        self.assertEqual(l.extract_tag_attribute("'", source, self.mako_syntax), None)
+        self.assertEqual(l.extract_tag_attribute("()", source, self.mako_syntax, True), None)
+        self.assertEqual(l.extract_tag_attribute(")", source, self.mako_syntax, True), None)
 
         assert_this('attr="value"', False, 'attr="value"', '')
         assert_this('attr=${val}', False,  'attr="${val}"', '')
@@ -192,25 +197,25 @@ class TestLexerFunctions(TestCaseBase):
     def test_extract_dynamic_attr_value(self):
         for terminators in (l.ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES, l.ATTRIBUTE_VALUE_TERMINATORS):
             source = l.enumerate_source('')
-            value, tail, _ = l.extract_dynamic_attr_value("(value in func('test') and 'yes' or 'no')", source, terminators)
+            value, tail, _ = l.extract_dynamic_attr_value("(value in func('test') and 'yes' or 'no')", source, terminators, self.mako_syntax)
             assert value == "value in func('test') and 'yes' or 'no'"
             assert tail == ''
 
 
     def test_extract_dynamic_tag_attributes(self):
         source = l.enumerate_source('')
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test", source, self.mako_syntax, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test.items()"))
 
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(**values)", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(**values)", source, self.mako_syntax, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
 
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test**test2", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test**test2", source, self.mako_syntax, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test.items()"))
 
         # Test multi-line expression
         source = l.enumerate_source('**values\n)')
-        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(\n", source, False)
+        attrs, tail, source = l.extract_dynamic_tag_attributes("**test(\n", source, self.mako_syntax, False)
         self.assertTrue(attrs.startswith("\n%for __plim_key__, __plim_value__ in test(**values).items()"))
 
     def test_inline_extract_plim_line(self):
@@ -220,7 +225,7 @@ class TestLexerFunctions(TestCaseBase):
             while True:
                 result = result_list.pop(0)
                 result_tail = result_tail_list.pop(0)
-                line, close_buf, _, tail, __ = l.extract_tag_line(tail, source, l.STANDARD_PARSERS)
+                line, close_buf, _, tail, __ = l.extract_tag_line(tail, source, self.mako_syntax)
                 self.assertEqual(line + close_buf, result)
                 self.assertEqual(result_tail, tail)
                 if not tail:
@@ -371,15 +376,15 @@ class TestLexerFunctions(TestCaseBase):
 
     def test_explicit_literal(self):
         result, _, __, ___ = l.parse_explicit_literal_with_embedded_markup(
-            0, "| Test", None, l.enumerate_source(""), l.STANDARD_PARSERS)
+            0, "| Test", None, l.enumerate_source(""), self.mako_syntax)
         assert result == "Test"
 
         result, _, __, ___ = l.parse_explicit_literal_with_embedded_markup(
-            0, ", Test", None, l.enumerate_source(""), l.STANDARD_PARSERS)
+            0, ", Test", None, l.enumerate_source(""), self.mako_syntax)
         assert result == "Test "
 
         result, _, __, ___ = l.parse_explicit_literal_with_embedded_markup(
-            0, ",Test\n Test", None, l.enumerate_source(""), l.STANDARD_PARSERS)
+            0, ",Test\n Test", None, l.enumerate_source(""), self.mako_syntax)
         assert result == "Test\n Test "
 
 
@@ -391,7 +396,7 @@ class TestLexerFunctions(TestCaseBase):
             for lineno, line in template:
                 if line.strip():
                     _, result_line = next(result)
-                    line, close_buf, _, tail, __ = l.extract_tag_line(line, template, l.STANDARD_PARSERS)
+                    line, close_buf, _, tail, __ = l.extract_tag_line(line, template, self.mako_syntax)
                     self.assertEqual(line + close_buf, result_line.rstrip())
 
         test_case('plim_multiline_tag_test.plim', 'plim_multiline_tag_result.mako')
@@ -429,20 +434,20 @@ class TestLexerFunctions(TestCaseBase):
 
 
     def test_parse_embedded_markup(self):
-        result = l._parse_embedded_markup("this is a `test`", l.STANDARD_PARSERS)
+        result = l._parse_embedded_markup("this is a `test`", self.mako_syntax)
         self.assertEqual(result, "this is a <test></test>")
 
-        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a `test", l.STANDARD_PARSERS)
+        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a `test", self.mako_syntax)
 
-        result = l._parse_embedded_markup("this is a ``test", l.STANDARD_PARSERS)
+        result = l._parse_embedded_markup("this is a ``test", self.mako_syntax)
         self.assertEqual(result, "this is a `test")
 
-        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a ```test", l.STANDARD_PARSERS)
+        self.assertRaises(PlimSyntaxError, l._parse_embedded_markup, "this is a ```test", self.mako_syntax)
 
-        result = l._parse_embedded_markup("this is a ````test", l.STANDARD_PARSERS)
+        result = l._parse_embedded_markup("this is a ````test", self.mako_syntax)
         self.assertEqual(result, "this is a ``test")
 
-        result = l._parse_embedded_markup("this is a `recursive Test ``recursive Test```test", l.STANDARD_PARSERS)
+        result = l._parse_embedded_markup("this is a `recursive Test ``recursive Test```test", self.mako_syntax)
         self.assertEqual(result, "this is a <recursive>Test <recursive>Test</recursive></recursive>test")
 
 
@@ -451,7 +456,7 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('markdown_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, l.STANDARD_PARSERS)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
 
 
@@ -460,7 +465,7 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('reST_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, l.STANDARD_PARSERS)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
 
 
@@ -469,7 +474,7 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('scss_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, l.STANDARD_PARSERS)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
 
         
@@ -478,7 +483,12 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('coffee_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, l.STANDARD_PARSERS)
+        data, _, __, ___ = l.parse_markup_languages(
+            0,
+            '',
+            self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line),
+            source,
+            self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())
         
         
@@ -487,5 +497,5 @@ class TestLexerFunctions(TestCaseBase):
         source = l.enumerate_source(source)
         _, line = next(source)
         result = self.get_file_contents('stylus_result.mako')
-        data, _, __, ___ = l.parse_markup_languages(0, '', l.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, l.STANDARD_PARSERS)
+        data, _, __, ___ = l.parse_markup_languages(0, '', self.mako_syntax.PARSE_EXTENSION_LANGUAGES_RE.match(line), source, self.mako_syntax)
         self.assertEqual(data.strip(), result.strip())

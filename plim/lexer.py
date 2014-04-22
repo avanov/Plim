@@ -6,7 +6,7 @@ import re
 import markdown2
 
 from . import errors
-from .util import StringIO, PY3K, MAXSIZE, joined, space_separated, as_unicode
+from .util import StringIO, MAXSIZE, joined, space_separated, as_unicode
 from .extensions import rst_to_html
 from .extensions import coffee_to_js
 from .extensions import scss_to_css
@@ -54,53 +54,12 @@ NUMERIC_VALUE_RE = re.compile(
     '(?P<value>(?:[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+%?))'
 )
 
-PARSE_TAG_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=TAG_RULE))
-PARSE_HANDLEBARS_RE = re.compile('(?:handlebars).*')
-PARSE_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>if|for|while|with|try)(?P<expr>.*)')
-PARSE_FOREIGN_STATEMENTS_RE = re.compile('-\s*(?P<stmnt>unless|until)(?P<expr>.*)')
 STATEMENT_CONVERT = {
     'unless': 'if not (',
     'until': 'while not ('
 }
 
-PARSE_ELIF_ELSE_RE = re.compile('-\s*(?P<control>elif|else)(?P<expr>.*)')
-PARSE_EXCEPT_ELSE_FINALLY_RE = re.compile('-\s*(?P<control>except|else|finally)(?P<expr>.*)')
-
-PARSE_PYTHON_CLASSIC_RE = re.compile('-\s*(?P<python>py(?:thon)?(?P<excl>\!?))(?P<expr>\s+.*)?')
-PARSE_PYTHON_NEW_RE = re.compile('---[-]*(?P<excl>\!)?\s*(?P<expr>[^-].*)?')
 INLINE_PYTHON_TERMINATOR = '---'
-
-PARSE_DEF_BLOCK_RE = re.compile('-\s*(?P<line>(?:def|block)(?:\s+.*)?)')
-PARSE_MAKO_ONE_LINERS_RE = re.compile('-\s*(?P<line>(?:include|inherit|page|namespace)(?:\s+.*)?)')
-
-if PY3K:
-    PARSE_IMPLICIT_LITERAL_RE = re.compile(
-        # Order matters
-        '(?P<line>(?:'
-            '\$?\{|\(|\[|&.+;|[0-9]+|'
-            '(?:'
-                '[^\u0021-\u007E]'  # not ASCII 33 - 126
-                '|'                 # or
-                '[A-Z]'             # uppercase latin letters (ASCII 65 - 90)
-            ')'                     # It is possible because TAG_RE can match only lowercase tag names
-        ').*)\s*'
-    )
-else:
-    from .unportable import PARSE_IMPLICIT_LITERAL_RE
-
-PARSE_RAW_HTML_RE = re.compile('\<.*')
-PARSE_MAKO_TEXT_RE = re.compile('-\s*(?P<line>text(?:\s+.*)?)')
-PARSE_CALL_RE = re.compile('-\s*(?P<line>call(?:\s+.*)?)')
-PARSE_EARLY_RETURN_RE = re.compile('-\s*(?P<keyword>return|continue|break)\s*')
-
-# This constant uses LITERAL_CONTENT_PREFIX and LITERAL_CONTENT_SPACE_PREFIX
-PARSE_EXPLICIT_LITERAL_RE = re.compile("(?:\||,).*", re.IGNORECASE)
-
-PARSE_VARIABLE_RE = re.compile("=(?P<prevent_escape>=)?(?P<explicit_space>,)?\s*(?P<line>.*)", re.IGNORECASE)
-PARSE_COMMENT_RE = re.compile('/.*')
-PARSE_DOCTYPE_RE = re.compile('doctype\s+(?P<type>[0-9a-z\.]+)', re.IGNORECASE)
-PARSE_STYLE_SCRIPT_RE = re.compile('(?:style|script).*', re.IGNORECASE)
-PARSE_EXTENSION_LANGUAGES_RE = re.compile('-\s*(?P<lang>md|markdown|rst|rest|coffee|scss|sass|stylus)\s*')
 
 CSS_ID_SHORTCUT_TERMINATORS = (
     CSS_CLASS_SHORTCUT_DELIMITER,
@@ -154,6 +113,7 @@ STATEMENT_TERMINATORS = {INLINE_TAG_SEPARATOR, NEWLINE}
 
 PYTHON_EXPR_OPEN_BRACES_RE = re.compile('(?P<start_brace>\(|\{|\[).*')
 PYTHON_EXPR_CLOSING_BRACES_RE = re.compile('\)|\}|\].*')
+
 MAKO_EXPR_START_BRACE_RE = re.compile('(?P<start_brace>\$\{).*')
 MAKO_EXPR_COUNT_OPEN_BRACES_RE = re.compile('\{')
 MAKO_EXPR_COUNT_CLOSING_BRACES_RE = re.compile('\}')
@@ -239,13 +199,14 @@ def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
     return None
 
 
-def search_parser(lineno, line, parsers):
+def search_parser(lineno, line, syntax):
     """Finds a proper parser function for a given line or raises an error
 
     :param lineno:
     :param line:
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     """
-    for template, parser in parsers:
+    for template, parser in syntax.parsers:
         matched = template.match(line)
         if matched:
             return matched, parser
@@ -436,14 +397,14 @@ def extract_quoted_attr_value(line, search_quotes=search_quotes, remove_escape_s
     return None
 
 
-def extract_dynamic_attr_value(line, source, terminators):
+def extract_dynamic_attr_value(line, source, terminators, syntax):
     result = extract_identifier(line, source, '', terminators)
     if result is None:
         return None
     result, tail, source = result
-    if line.startswith('${'):
-        # remove "${" and "}" from variable
-        value = result[2:-1]
+    if MAKO_EXPR_START_BRACE_RE.match(line):
+        # remove VARIABLE_PLACEHOLDER_START_SEQUENCE and VARIABLE_PLACEHOLDER_END_SEQUENCE from variable
+        value = result[len(syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE):-len(syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE)]
     elif line.startswith(OPEN_BRACE):
         # remove "(" and ")" from variable
         value = result[1:-1]
@@ -452,7 +413,7 @@ def extract_dynamic_attr_value(line, source, terminators):
     return value, tail, source
 
 
-def extract_dynamic_tag_attributes(line, source, inside_parentheses=False):
+def extract_dynamic_tag_attributes(line, source, syntax, inside_parentheses=False):
     """
     Extract one occurrence of ``**dynamic_attributes``
     :param line:
@@ -483,16 +444,20 @@ def extract_dynamic_tag_attributes(line, source, inside_parentheses=False):
         return None
 
     expr, tail, source = result
-    attributes = (
+    attributes = as_unicode(
         '\n%for __plim_key__, __plim_value__ in {expr}.items():\n'
-        '${{__plim_key__}}="${{__plim_value__}}"\n'
+        '{var_start}__plim_key__{var_end}="{var_start}__plim_value__{var_end}"\n'
         '%endfor\n'
-    ).format(expr=expr)
+    ).format(
+        expr=expr,
+        var_start=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+        var_end=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
+    )
     return attributes, tail, source
 
 
 
-def extract_tag_attribute(line, source, inside_parentheses=False):
+def extract_tag_attribute(line, source, syntax, inside_parentheses=False):
     """
 
     :param line:
@@ -531,7 +496,7 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
             # 3. Try to parse dynamic value
             # -------------------------------------
             terminators = inside_parentheses and ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES or ATTRIBUTE_VALUE_TERMINATORS
-            result = extract_dynamic_attr_value(tail, source, terminators)
+            result = extract_dynamic_attr_value(tail, source, terminators, syntax)
 
             if result:
                 value, tail, source = result
@@ -539,13 +504,21 @@ def extract_tag_attribute(line, source, inside_parentheses=False):
                 value = value.rstrip()
                 if tail.startswith(BOOLEAN_ATTRIBUTE_MARKER):
                     # selected=dynamic_variable?
-                    value = as_unicode("""${{({value}) and '{attr_name}="{attr_name}"' or ''|n}}""").format(
-                        value=value, attr_name=attr_name
+                    value = as_unicode("""{start_var}({value}) and '{attr_name}="{attr_name}"' or ''|n{end_var}""").format(
+                        value=value,
+                        attr_name=attr_name,
+                        start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                        end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
                     )
                     attribute = value
                     tail = tail[1:]
                 else:
-                    attribute = as_unicode('{attr_name}="${{{value}}}"').format(attr_name=attr_name, value=value)
+                    attribute = as_unicode('{attr_name}="{start_var}{value}{end_var}"').format(
+                        attr_name=attr_name,
+                        value=value,
+                        start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                        end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
+                    )
                 return attribute, tail, source
             return None
 
@@ -606,7 +579,7 @@ def extract_statement_expression(tail, source):
     return joined(buf).strip(), source
 
 
-def extract_tag_line(line, source, parsers):
+def extract_tag_line(line, source, syntax):
     """
     Returns a 3-tuple of inline tags sequence, closing tags sequence, and a dictionary of
     last tag components (name, attributes, content)
@@ -669,14 +642,14 @@ def extract_tag_line(line, source, parsers):
             _, tail, source = extract_line_break(tail.lstrip(), source)
 
             # 3.1 try to get and unpack dynamic attributes
-            result = extract_dynamic_tag_attributes(tail, source, inside_parentheses)
+            result = extract_dynamic_tag_attributes(tail, source, syntax, inside_parentheses)
             if result:
                 dynamic_attrs, tail, source = result
                 attributes.append(dynamic_attrs)
                 continue
 
             # 3.2. get attribute-value pairs until the end of the section (indicated by terminators)
-            result = extract_tag_attribute(tail, source, inside_parentheses)
+            result = extract_tag_attribute(tail, source, syntax, inside_parentheses)
             if result:
                 attribute_pair, tail, source = result
                 if attribute_pair.startswith('id="') and css_id:
@@ -739,29 +712,45 @@ def extract_tag_line(line, source, parsers):
                     if tail.startswith(DYNAMIC_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
                         tail, source = extract_statement_expression(tail[2:], source)
-                        buf.append("${{{content}}} ".format(content=tail))
+                        buf.append(as_unicode("{start_var}{content}{end_var} ").format(
+                            content=tail,
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
                     else:
                         tail, source = extract_statement_expression(tail[1:], source)
-                        buf.append("${{{content}}}".format(content=tail))
+                        buf.append("{start_var}{content}{end_var}".format(
+                            content=tail,
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
                 else:
                     if tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
                         # ensure that a single whitespace is appended
                         tail, source = extract_statement_expression(tail[1:], source)
-                        buf.append("${{{content}}} ".format(content=tail))
+                        buf.append("{start_var}{content}{end_var} ".format(
+                            content=tail,
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
                     else:
                         tail, source = extract_statement_expression(tail, source)
-                        buf.append("${{{content}}}".format(content=tail))
+                        buf.append("{start_var}{content}{end_var}".format(
+                            content=tail,
+                            start_var=syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE,
+                            end_var=syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE
+                        ))
 
             elif tail.startswith(LITERAL_CONTENT_PREFIX):
-                tail = _parse_embedded_markup(tail[1:].strip(), parsers)
+                tail = _parse_embedded_markup(tail[1:].strip(), syntax)
                 buf.append(tail)
 
             elif tail.startswith(LITERAL_CONTENT_SPACE_PREFIX):
-                tail = _parse_embedded_markup(tail[1:].strip(), parsers)
+                tail = _parse_embedded_markup(tail[1:].strip(), syntax)
                 buf.append("{content} ".format(content=tail))
 
             else:
-                tail = _parse_embedded_markup(tail.strip(), parsers)
+                tail = _parse_embedded_markup(tail.strip(), syntax)
                 buf.append(tail)
             components['content'] = buf[-1]
         tail = ''
@@ -771,7 +760,7 @@ def extract_tag_line(line, source, parsers):
 
 # Parsers
 # ==================================================================================
-def parse_style_script(indent_level, current_line, matched, source, parsers):
+def parse_style_script(indent_level, current_line, matched, source, syntax):
     """
 
     :param indent_level:
@@ -783,20 +772,20 @@ def parse_style_script(indent_level, current_line, matched, source, parsers):
     :type parsers: tuple
     :return:
     """
-    extracted_html_line, close_buf, _, tail, source = extract_tag_line(current_line, source, parsers)
+    extracted_html_line, close_buf, _, tail, source = extract_tag_line(current_line, source, syntax)
     buf = [extracted_html_line, '\n']
     parsed_data, tail_indent, tail_line, source = parse_explicit_literal_no_embedded(
         indent_level,
         LITERAL_CONTENT_PREFIX,
         matched,
         source,
-        parsers
+        syntax
     )
     buf.extend([parsed_data, close_buf])
     return joined(buf), tail_indent, tail_line, source
 
 
-def parse_doctype(indent_level, current_line, ___, source, parsers):
+def parse_doctype(indent_level, current_line, ___, source, syntax):
     """
 
     :param indent_level:
@@ -807,12 +796,12 @@ def parse_doctype(indent_level, current_line, ___, source, parsers):
     :type parsers: tuple
     :return:
     """
-    match = PARSE_DOCTYPE_RE.match(current_line.strip())
+    match = syntax.PARSE_DOCTYPE_RE.match(current_line.strip())
     doctype = match.group('type')
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
-def parse_handlebars(indent_level, current_line, ___, source, parsers):
+def parse_handlebars(indent_level, current_line, ___, source, syntax):
     """
 
     :param indent_level:
@@ -823,7 +812,7 @@ def parse_handlebars(indent_level, current_line, ___, source, parsers):
     :type parsers: tuple
     :return:
     """
-    processed_tag, tail_indent, tail_line, source = parse_tag_tree(indent_level, current_line, ___, source, parsers)
+    processed_tag, tail_indent, tail_line, source = parse_tag_tree(indent_level, current_line, ___, source, syntax)
     assert processed_tag.startswith("<handlebars") and processed_tag.endswith("</handlebars>")
     # We don't want to use str.replace() here, therefore
     # len("<handlebars") == len("handlebars>") == 11
@@ -835,7 +824,7 @@ def parse_handlebars(indent_level, current_line, ___, source, parsers):
     return processed_tag, tail_indent, tail_line, source
 
 
-def parse_tag_tree(indent_level, current_line, ___, source, parsers):
+def parse_tag_tree(indent_level, current_line, ___, source, syntax):
     """
 
     :param indent_level:
@@ -849,11 +838,11 @@ def parse_tag_tree(indent_level, current_line, ___, source, parsers):
     buf = []
     close_buf = []
     current_line = current_line.strip()
-    html_tag, close_seq, _, tail, source = extract_tag_line(current_line, source, parsers)
+    html_tag, close_seq, _, tail, source = extract_tag_line(current_line, source, syntax)
     buf.append(html_tag)
     close_buf.append(close_seq)
     if tail:
-        parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail, source, parsers)
+        parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail, source, syntax)
         # at this point we have tail_indent <= indent_level
         buf.extend(parsed)
         buf.append(joined(close_buf))
@@ -874,8 +863,8 @@ def parse_tag_tree(indent_level, current_line, ___, source, parsers):
 
         # ----------------------------------------------------------
         while tail_line:
-            matched_obj, parse = search_parser(lineno, tail_line, parsers)
-            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
+            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             buf.append(parsed_data)
             if tail_indent <= indent_level:
                 buf.append(joined(close_buf))
@@ -885,7 +874,7 @@ def parse_tag_tree(indent_level, current_line, ___, source, parsers):
     return joined(buf), 0, '', source
 
 
-def parse_markup_languages(indent_level, __, matched, source, parsers):
+def parse_markup_languages(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -902,14 +891,15 @@ def parse_markup_languages(indent_level, __, matched, source, parsers):
         LITERAL_CONTENT_PREFIX,
         matched,
         source,
-        parsers)
+        syntax
+        )
     # This is slow but correct.
     # Trying to remove redundant indentation
     parsed_data = markup_parser(parsed_data)
     return parsed_data.strip(), tail_indent, tail_line, source
 
 
-def parse_python(indent_level, __, matched, source, parsers):
+def parse_python(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -934,7 +924,7 @@ def parse_python(indent_level, __, matched, source, parsers):
         LITERAL_CONTENT_PREFIX,
         matched,
         source,
-        parsers
+        syntax
         )
     # do not render a python block if it's empty
     if not inline_statement and not parsed_data:
@@ -944,7 +934,7 @@ def parse_python(indent_level, __, matched, source, parsers):
     return joined(buf), tail_indent, tail_line, source
 
 
-def parse_python_new_style(indent_level, __, matched, source, parsers):
+def parse_python_new_style(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -961,12 +951,12 @@ def parse_python_new_style(indent_level, __, matched, source, parsers):
         inline_statement, _tail_line_, source = extract_identifier(inline_statement, source, '', {INLINE_PYTHON_TERMINATOR, NEWLINE})
         buf.append(inline_statement)
     converted_line = joined(buf).strip()
-    match = PARSE_PYTHON_CLASSIC_RE.match(converted_line)
-    return parse_python(indent_level, __, match, source, parsers)
+    match = syntax.PARSE_PYTHON_CLASSIC_RE.match(converted_line)
+    return parse_python(indent_level, __, match, source, syntax)
 
 
 
-def parse_mako_text(indent, __, matched, source, parsers):
+def parse_mako_text(indent, __, matched, source, syntax):
     """
 
     :param indent:
@@ -976,7 +966,7 @@ def parse_mako_text(indent, __, matched, source, parsers):
     :type parsers: tuple
     :return:
     """
-    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, parsers)
+    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, syntax)
     buf = ['\n<%text']
     if components['attributes']:
         buf.extend([' ', components['attributes']])
@@ -989,7 +979,7 @@ def parse_mako_text(indent, __, matched, source, parsers):
         LITERAL_CONTENT_PREFIX,
         matched,
         source,
-        parsers
+        syntax
         )
     if parsed_data:
         buf.append(as_unicode('{literal}\n').format(literal=parsed_data.rstrip()))
@@ -997,7 +987,7 @@ def parse_mako_text(indent, __, matched, source, parsers):
     return joined(buf), tail_indent, tail_line, source
 
 
-def parse_call(indent_level, current_line, matched, source, parsers):
+def parse_call(indent_level, current_line, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1008,7 +998,7 @@ def parse_call(indent_level, current_line, matched, source, parsers):
     :type parsers: tuple
     :return: :raise:
     """
-    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, parsers)
+    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, syntax)
     tag = components['content'].strip()
     if not tag:
         raise errors.PlimSyntaxError("-call must contain namespace:defname declaration", current_line)
@@ -1034,14 +1024,14 @@ def parse_call(indent_level, current_line, matched, source, parsers):
                 return joined(buf), tail_indent, tail_line, source
 
             # tail_indent > indent_level
-            matched_obj, parse = search_parser(lineno, tail_line, parsers)
-            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
+            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             buf.append(parsed_data)
     buf.append('</%{tag}>\n'.format(tag=tag))
     return joined(buf), 0, '', source
 
 
-def parse_comment(indent_level, __, ___, source, parsers):
+def parse_comment(indent_level, __, ___, source, syntax):
     """
 
     :param indent_level:
@@ -1065,7 +1055,7 @@ def parse_comment(indent_level, __, ___, source, parsers):
     return '', 0, '', source
 
 
-def parse_statements(indent_level, __, matched, source, parsers):
+def parse_statements(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1078,17 +1068,20 @@ def parse_statements(indent_level, __, matched, source, parsers):
     """
     stmnt = matched.group('stmnt')
     expr = matched.group('expr')
-    buf = ['\n%{statement}'.format(statement=stmnt)]
+    buf = ['\n{statement_start}{statement}'.format(
+        statement_start=syntax.STATEMENT_START_START_SEQUENCE,
+        statement=stmnt
+    )]
     if expr:
         expr, source = extract_statement_expression(expr, source)
         expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
         expr = expr.lstrip()
         tail_line = tail_line[1:].lstrip()
-        parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, parsers)
-        buf.append(joined([' ', expr, ':\n', joined(parsed)]))
+        parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
+        buf.append(joined([' ', expr, syntax.STATEMENT_START_END_SEQUENCE, '\n', joined(parsed)]))
     else:
         # So far only the "-try" statement has empty ``expr`` part
-        buf.append(':\n')
+        buf.extend([syntax.STATEMENT_START_END_SEQUENCE, '\n'])
         try:
             lineno, tail_line = next(source)
         except StopIteration:
@@ -1097,6 +1090,16 @@ def parse_statements(indent_level, __, matched, source, parsers):
         else:
             tail_indent, tail_line = scan_line(tail_line)
 
+    def complete_statement(buf, tail_indent, tail_line, source, statement, syntax):
+        buf.extend([
+            '\n',
+            syntax.STATEMENT_END_START_SEQUENCE,
+            'end{statement}'.format(statement=statement),
+            syntax.STATEMENT_END_END_SEQUENCE,
+            '\n'
+        ])
+        return joined(buf), tail_indent, tail_line, source
+
     while True:
         # Parse tree
         # --------------------------------------------------------
@@ -1104,15 +1107,22 @@ def parse_statements(indent_level, __, matched, source, parsers):
             if stmnt == 'if':
                 if tail_indent == indent_level:
                     # Check for elif/else
-                    match = PARSE_ELIF_ELSE_RE.match(tail_line)
+                    match = syntax.PARSE_ELIF_ELSE_RE.match(tail_line)
                     if match:
                         if match.group('control') == 'elif':
                             expr, source = extract_statement_expression(match.group('expr'), source)
                             expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
                             expr = expr.lstrip()
                             tail_line = tail_line[1:].lstrip()
-                            parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, parsers)
-                            buf.append(joined(['\n%elif {expr}:\n'.format(expr=expr), joined(parsed)]))
+                            parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
+                            buf.append(joined([
+                                '\n',
+                                syntax.STATEMENT_START_START_SEQUENCE,
+                                'elif {expr}'.format(expr=expr),
+                                syntax.STATEMENT_START_END_SEQUENCE,
+                                '\n',
+                                joined(parsed)
+                            ]))
                             if tail_line:
                                 continue
                             break
@@ -1122,32 +1132,42 @@ def parse_statements(indent_level, __, matched, source, parsers):
                             result = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
                             if result:
                                 expr, tail_line, source = extract_identifier(expr, source, '', STATEMENT_TERMINATORS)
-                                expr = expr.lstrip()
                                 tail_line = tail_line[1:].lstrip()
-                                parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, parsers)
-                                buf.append(joined(['\n%else:\n'.format(expr=expr), joined(parsed)]))
+                                parsed, tail_indent, tail_line, source = parse_plim_tail(0, indent_level, tail_line, source, syntax)
+                                buf.append(joined([
+                                    '\n',
+                                    syntax.STATEMENT_START_START_SEQUENCE,
+                                    'else',
+                                    syntax.STATEMENT_START_END_SEQUENCE,
+                                    '\n',
+                                    joined(parsed)
+                                ]))
                                 if tail_line:
                                     continue
-                            buf.append(joined(['\n%else:\n'.format(expr=expr)]))
+                            buf.append(joined([
+                                '\n',
+                                syntax.STATEMENT_START_START_SEQUENCE,
+                                'else',
+                                syntax.STATEMENT_START_END_SEQUENCE,
+                                '\n'
+                            ]))
                             break
                     else:
                         # elif/else is not found, finalize and return buffer
-                        buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                        return joined(buf), tail_indent, tail_line, source
+                        return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 elif tail_indent < indent_level:
-                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                    return joined(buf), tail_indent, tail_line, source
+                    return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 # tail_indent > indent_level
-                matched_obj, parse = search_parser(lineno, tail_line, parsers)
-                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+                matched_obj, parse = search_parser(lineno, tail_line, syntax)
+                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
                 buf.append(parsed_data)
 
             elif stmnt == 'try':
                 if tail_indent == indent_level:
                     # Check for except/else/finally
-                    match = PARSE_EXCEPT_ELSE_FINALLY_RE.match(tail_line)
+                    match = syntax.PARSE_EXCEPT_ELSE_FINALLY_RE.match(tail_line)
                     if match:
                         if match.group('control') == 'except':
                             expr, source = extract_statement_expression(match.group('expr'), source)
@@ -1162,26 +1182,23 @@ def parse_statements(indent_level, __, matched, source, parsers):
                             break
                     else:
                         # elif/else is not found, finalize and return the buffer
-                        buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                        return joined(buf), tail_indent, tail_line, source
+                        return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 elif tail_indent < indent_level:
-                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                    return joined(buf), tail_indent, tail_line, source
+                    return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 # tail_indent > indent_level
-                matched_obj, parse = search_parser(lineno, tail_line, parsers)
-                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+                matched_obj, parse = search_parser(lineno, tail_line, syntax)
+                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
                 buf.append(parsed_data)
 
             else: # stmnt == for/while
                 if tail_indent <= indent_level:
-                    buf.append('\n%end{statement}\n'.format(statement=stmnt))
-                    return joined(buf), tail_indent, tail_line, source
+                    return complete_statement(buf, tail_indent, tail_line, source, stmnt, syntax)
 
                 # tail_indent > indent_level
-                matched_obj, parse = search_parser(lineno, tail_line, parsers)
-                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+                matched_obj, parse = search_parser(lineno, tail_line, syntax)
+                parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
                 buf.append(parsed_data)
 
         try:
@@ -1190,12 +1207,11 @@ def parse_statements(indent_level, __, matched, source, parsers):
             break
         tail_indent, tail_line = scan_line(tail_line)
 
-
-    buf.append('\n%end{statement}\n'.format(statement=stmnt))
-    return joined(buf), 0, '', source
+    return complete_statement(buf, 0, '', source, stmnt, syntax)
 
 
-def parse_foreign_statements(indent_level, __, matched, source, parsers):
+
+def parse_foreign_statements(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1212,11 +1228,11 @@ def parse_foreign_statements(indent_level, __, matched, source, parsers):
     expr, source = extract_statement_expression(expr, source)
     buf.append(joined([expr, ')']))
 
-    matched = PARSE_STATEMENTS_RE.match(joined(buf))
-    return parse_statements(indent_level, __, matched, source, parsers)
+    matched = syntax.PARSE_STATEMENTS_RE.match(joined(buf))
+    return parse_statements(indent_level, __, matched, source, syntax)
 
 
-def parse_explicit_literal(indent_level, current_line, ___, source, parsers, parse_embedded):
+def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded):
     """
     Parses lines and blocks started with the "|" (pipe) or "," (comma) character.
 
@@ -1238,7 +1254,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, parsers, par
         if trailing_space_required:
             result = "{} ".format(result)
         if parse_embedded:
-            result = _parse_embedded_markup(result, parsers)
+            result = _parse_embedded_markup(result, syntax)
         return result
 
     # --------------------------------
@@ -1275,7 +1291,7 @@ parse_explicit_literal_with_embedded_markup = functools.partial(parse_explicit_l
 parse_explicit_literal_no_embedded = functools.partial(parse_explicit_literal, parse_embedded=False)
 
 
-def _parse_embedded_markup(content, parsers):
+def _parse_embedded_markup(content, syntax):
     """
 
     :param content:
@@ -1297,7 +1313,7 @@ def _parse_embedded_markup(content, parsers):
             embedded = embedded.strip()
             if embedded:
                 try:
-                    embedded = compile_plim_source(embedded, parsers, False)
+                    embedded = compile_plim_source(embedded, syntax, False)
                 except errors.ParserNotFound:
                     # invalid plim markup, leave things as is
                     buf.append(original)
@@ -1330,8 +1346,8 @@ def _inject_n_filter(line):
     return line
 
 
-def parse_variable(indent_level, __, matched, source, parsers):
-    """
+def parse_variable(indent_level, __, matched, source, syntax):
+    """ = variable or == variable
 
     :param indent_level:
     :param __:
@@ -1343,7 +1359,7 @@ def parse_variable(indent_level, __, matched, source, parsers):
     """
     explicit_space = matched.group('explicit_space') and ' ' or ''
     prevent_escape = matched.group('prevent_escape')
-    buf = ['${', matched.group('line')]
+    buf = [syntax.VARIABLE_PLACEHOLDER_START_SEQUENCE, matched.group('line')]
     while True:
         try:
             lineno, current_line = next(source)
@@ -1356,19 +1372,19 @@ def parse_variable(indent_level, __, matched, source, parsers):
             buf = joined(buf)
             if prevent_escape:
                 buf = _inject_n_filter(buf)
-            # add a closing brace to complete mako expression syntax ${}
-            buf += '}' + explicit_space
+            # add a closing brace to complete variable expression syntax ("${}" in case of mako).
+            buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
             return buf, indent, line, source
         buf.append(line.strip())
 
     buf = joined(buf)
     if prevent_escape:
         buf = _inject_n_filter(buf)
-    buf += '}' + explicit_space
+    buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
     return buf, 0, '', source
 
 
-def parse_early_return(indent_level, __, matched, source, parsers):
+def parse_early_return(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1382,7 +1398,7 @@ def parse_early_return(indent_level, __, matched, source, parsers):
     return as_unicode('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
 
 
-def parse_implicit_literal(indent_level, __, matched, source, parsers):
+def parse_implicit_literal(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1398,11 +1414,11 @@ def parse_implicit_literal(indent_level, __, matched, source, parsers):
         as_unicode('{}{}').format(LITERAL_CONTENT_PREFIX, matched.group('line')),
         matched,
         source,
-        parsers
+        syntax
     )
 
 
-def parse_raw_html(indent_level, current_line, ___, source, parsers):
+def parse_raw_html(indent_level, current_line, ___, source, syntax):
     """
 
     :param indent_level:
@@ -1429,14 +1445,14 @@ def parse_raw_html(indent_level, current_line, ___, source, parsers):
                 return joined(buf), tail_indent, tail_line, source
 
             # tail_indent > indent_level
-            matched_obj, parse = search_parser(lineno, tail_line, parsers)
-            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
+            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             buf.append(parsed_data)
 
     return joined(buf), 0, '', source
 
 
-def parse_mako_one_liners(indent_level, __, matched, source, parsers):
+def parse_mako_one_liners(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1447,7 +1463,7 @@ def parse_mako_one_liners(indent_level, __, matched, source, parsers):
     :type parsers: tuple
     :return:
     """
-    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, parsers)
+    _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, syntax)
     buf = ['<%{tag}'.format(tag=components['name'])]
     if components['content']:
         buf.append(' file="{name}"'.format(name=components['content']))
@@ -1457,7 +1473,7 @@ def parse_mako_one_liners(indent_level, __, matched, source, parsers):
     return joined(buf), indent_level, '', source
 
 
-def parse_def_block(indent_level, __, matched, source, parsers):
+def parse_def_block(indent_level, __, matched, source, syntax):
     """
 
     :param indent_level:
@@ -1468,7 +1484,7 @@ def parse_def_block(indent_level, __, matched, source, parsers):
     :type parsers: tuple
     :return:
     """
-    _, __, components, tail, source = extract_tag_line(matched.group('line'), source, parsers)
+    _, __, components, tail, source = extract_tag_line(matched.group('line'), source, syntax)
     tag = components['name']
     buf = ['<%{def_or_block}'.format(def_or_block=tag)]
     if components['content']:
@@ -1493,15 +1509,15 @@ def parse_def_block(indent_level, __, matched, source, parsers):
                 return joined(buf), tail_indent, tail_line, source
 
             # tail_indent > indent_level
-            matched_obj, parse = search_parser(lineno, tail_line, parsers)
-            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
+            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             buf.append(parsed_data)
 
     buf.append('</%{def_or_block}>\n'.format(def_or_block=tag))
     return joined(buf), 0, '', source
 
 
-def parse_plim_tail(lineno, indent_level, tail_line, source, parsers):
+def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
     """
 
     :param lineno:
@@ -1515,8 +1531,8 @@ def parse_plim_tail(lineno, indent_level, tail_line, source, parsers):
     buf = []
     tail_indent = indent_level
     while tail_line:
-        matched_obj, parse = search_parser(lineno, tail_line, parsers)
-        parsed_data, tail_indent, tail_line, source = parse(indent_level, tail_line, matched_obj, source, parsers)
+        matched_obj, parse = search_parser(lineno, tail_line, syntax)
+        parsed_data, tail_indent, tail_line, source = parse(indent_level, tail_line, matched_obj, source, syntax)
         buf.append(parsed_data)
         if tail_indent <= indent_level:
             break
@@ -1544,12 +1560,12 @@ def scan_line(line):
     return len(match.group('indent')), match.group('line')
 
 
-def compile_plim_source(source, parsers, strip=True):
+def compile_plim_source(source, syntax, strip=True):
     """
 
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: a syntax instance
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :param strip: for embedded markup we don't want to strip whitespaces from result
     :type strip: bool
     :return:
@@ -1566,8 +1582,8 @@ def compile_plim_source(source, parsers, strip=True):
         if not line:
             continue
         while tail_line:
-            matched_obj, parse = search_parser(lineno, tail_line, parsers)
-            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, parsers)
+            matched_obj, parse = search_parser(lineno, tail_line, syntax)
+            parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             result.append(parsed_data)
 
     result = joined(result)
@@ -1578,27 +1594,6 @@ def compile_plim_source(source, parsers, strip=True):
 
 # Acknowledgements
 # ============================================================================================
-STANDARD_PARSERS = ( # Order matters
-    (PARSE_STYLE_SCRIPT_RE, parse_style_script),
-    (PARSE_DOCTYPE_RE, parse_doctype),
-    (PARSE_HANDLEBARS_RE, parse_handlebars),
-    (PARSE_TAG_TREE_RE, parse_tag_tree),
-    (PARSE_EXPLICIT_LITERAL_RE, parse_explicit_literal_with_embedded_markup),
-    (PARSE_IMPLICIT_LITERAL_RE, parse_implicit_literal),
-    (PARSE_RAW_HTML_RE, parse_raw_html),
-    (PARSE_VARIABLE_RE, parse_variable),
-    (PARSE_COMMENT_RE, parse_comment),
-    (PARSE_STATEMENTS_RE, parse_statements),
-    (PARSE_FOREIGN_STATEMENTS_RE, parse_foreign_statements),
-    (PARSE_PYTHON_NEW_RE, parse_python_new_style),
-    (PARSE_PYTHON_CLASSIC_RE, parse_python),
-    (PARSE_DEF_BLOCK_RE, parse_def_block),
-    (PARSE_MAKO_ONE_LINERS_RE, parse_mako_one_liners),
-    (PARSE_MAKO_TEXT_RE, parse_mako_text),
-    (PARSE_CALL_RE, parse_call),
-    (PARSE_EARLY_RETURN_RE, parse_early_return),
-    (PARSE_EXTENSION_LANGUAGES_RE, parse_markup_languages)
-)
 
 EMPTY_TAGS = {'meta', 'img', 'link', 'input', 'area', 'base', 'col', 'br', 'hr'}
 
