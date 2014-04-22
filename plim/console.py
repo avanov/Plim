@@ -11,6 +11,8 @@ from pkg_resources import EntryPoint
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
+from .util import PY3K
+
 
 def plimc():
     """This is the `plimc` command line utility"""
@@ -27,24 +29,25 @@ def plimc():
                             version='Plim {}'.format(get_distribution("Plim").version))
     args = cli_parser.parse_args()
 
-    # Get mako source
-    # ------------------------------------
+    # Get custom preprocessor, if specified
+    # -------------------------------------
     preprocessor_path = args.preprocessor
     preprocessor = EntryPoint.parse('x={}'.format(preprocessor_path)).load(False)
-    with codecs.open(args.source, 'rb', args.encoding) as fd:
-        content = preprocessor(fd.read())
 
-    # Get html source if requested
-    # ------------------------------------
+    # Render to html, if requested
+    # ----------------------------
     if args.html:
         root_dir = os.path.dirname(os.path.abspath(args.source))
-        lookup = TemplateLookup(directories=[root_dir])
-        content = Template(content, lookup=lookup).render()
+        lookup = TemplateLookup(directories=[root_dir], preprocessor=preprocessor)
+        content = lookup.get_template(args.source).render_unicode()
+    else:
+        with codecs.open(args.source, 'rb', args.encoding) as fd:
+            content = preprocessor(fd.read())
 
     # Output
     # ------------------------------------
     if args.output is None:
-        fd = sys.stdout
+        fd = PY3K and sys.stdout.buffer or sys.stdout
         content = codecs.encode(content, 'utf-8')
     else:
         fd = codecs.open(args.output, 'wb', args.encoding)
