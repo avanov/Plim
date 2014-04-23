@@ -20,5 +20,4 @@ class TestCLI(TestCaseBase):
         plimc(['tests/fixtures/unicode_attributes_test.plim'], stdout=self.stdout)
 
     def test_cli_html_output(self):
-
         plimc(['--html', 'tests/fixtures/unicode_attributes_test.plim'], stdout=self.stdout)
