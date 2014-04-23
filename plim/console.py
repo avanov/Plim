@@ -14,8 +14,15 @@ from mako.lookup import TemplateLookup
 from .util import PY3K
 
 
-def plimc():
-    """This is the `plimc` command line utility"""
+def plimc(args=None, stdout=None):
+    """This is the `plimc` command line utility
+
+    :param args: list of command-line arguments. If None, then ``sys.argv[1:]`` will be used.
+    :type args: list or None
+    :param stdout: file-like object representing stdout. If None, then ``sys.stdout`` will be used.
+                   Custom stdout is used for testing purposes.
+    :type stdout: None or a file-like object
+    """
     # Parse arguments
     # ------------------------------------
     cli_parser = argparse.ArgumentParser(description='Compile plim source files into mako files.')
@@ -27,7 +34,10 @@ def plimc():
     cli_parser.add_argument('-H', '--html', action='store_true', help="Render HTML output instead of Mako template")
     cli_parser.add_argument('-V', '--version', action='version',
                             version='Plim {}'.format(get_distribution("Plim").version))
-    args = cli_parser.parse_args()
+
+    if args is None:
+        args = sys.argv[1:]
+    args = cli_parser.parse_args(args)
 
     # Get custom preprocessor, if specified
     # -------------------------------------
@@ -38,8 +48,12 @@ def plimc():
     # ----------------------------
     if args.html:
         root_dir = os.path.dirname(os.path.abspath(args.source))
-        lookup = TemplateLookup(directories=[root_dir], preprocessor=preprocessor)
-        content = lookup.get_template(args.source).render_unicode()
+        template_file = os.path.basename(args.source)
+        lookup = TemplateLookup(directories=[root_dir],
+                                input_encoding=args.encoding,
+                                output_encoding=args.encoding,
+                                preprocessor=preprocessor)
+        content = lookup.get_template(template_file).render_unicode()
     else:
         with codecs.open(args.source, 'rb', args.encoding) as fd:
             content = preprocessor(fd.read())
@@ -47,7 +61,9 @@ def plimc():
     # Output
     # ------------------------------------
     if args.output is None:
-        fd = PY3K and sys.stdout.buffer or sys.stdout
+        if stdout is None:
+            stdout = PY3K and sys.stdout.buffer or sys.stdout
+        fd = stdout
         content = codecs.encode(content, 'utf-8')
     else:
         fd = codecs.open(args.output, 'wb', args.encoding)
