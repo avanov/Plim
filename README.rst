@@ -13,6 +13,9 @@ Plim
 .. image:: https://coveralls.io/repos/avanov/Plim/badge.png?branch=develop
         :target: https://coveralls.io/r/avanov/Plim?branch=develop
 
+.. image:: https://gemnasium.com/avanov/Plim.svg
+        :target: https://gemnasium.com/avanov/Plim
+
 
 Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
 built on top of `Mako Templates <http://www.makotemplates.org/>`_.
