@@ -37,7 +37,7 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.9.5',
+    version='0.9.6',
     packages=find_packages(exclude=['tests']),
     install_requires=requires,
     setup_requires=['nose>=1.1.2'],
