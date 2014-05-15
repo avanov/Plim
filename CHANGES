@@ -4,6 +4,10 @@ Changelog
 Version 0.9
 -------------
 
+- 0.9.7
+
+- Hotfix: Include requirements.txt into the distribution.
+
 - 0.9.6
 
 - Hotfix: Conditional statements parser now can handle strings containing inline tag separator sequences (#27).
