@@ -29,3 +29,6 @@ Test
 %elif (e == f):
 Test2
 %endif
+%if "permission:admin" in effective_principals(request):
+<p>Allow</p>
+%endif

@@ -32,3 +32,6 @@ c == d)
         e == f
 )
     |Test2
+
+-if "permission:admin" in effective_principals(request)
+  p Allow

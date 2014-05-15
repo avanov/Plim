@@ -7,6 +7,7 @@ from setuptools import setup
 
 
 PY3K = sys.version_info >= (3,0)
+here = lambda path: os.path.join(os.path.abspath(os.path.dirname(__file__)), path)
 
 
 def read(*filenames, **kwargs):
@@ -19,6 +20,15 @@ def read(*filenames, **kwargs):
     return sep.join(buf)
 
 
+requires = []
+with open(here('requirements.txt')) as f:
+    rows = f.read().strip().split('\n')
+    for row in rows:
+        row = row.strip()
+        if row and not (row.startswith('#') or row.startswith('http')):
+            requires.append(row)
+
+
 long_description = read(
     os.path.join(os.path.dirname(__file__), 'README.rst'),
     os.path.join(os.path.dirname(__file__), 'CHANGES'),
@@ -27,25 +37,9 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.9.5',
+    version='0.9.6',
     packages=find_packages(exclude=['tests']),
-    install_requires=[
-        'Mako>=0.9.0',
-        'babel>=1.3',
-        # We use reStructuredText (docutils' component) for both supporting
-        # the "-rest" extension and project documenting. So, ensure that the docutils
-        # get installed or upgraded on the target machine
-        'docutils>=0.3',
-        # We use Markdown for the "-markdown" extension
-        'markdown2>=1.4.2',
-        # We use CoffeeScript for "-coffee" extension
-        'CoffeeScript',
-        # We use SCSS for "-scss/sass" extension
-        'pyScss>=1.2.0.post3',
-        # We use the stylus package for "-stylus" extension
-        # https://github.com/bkad/python-stylus
-        'stylus>=0.1.1'
-    ],
+    install_requires=requires,
     setup_requires=['nose>=1.1.2'],
     tests_require=['coverage'],
     package_data={

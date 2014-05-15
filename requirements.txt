@@ -1,0 +1,15 @@
+Mako>=0.9.0
+babel>=1.3
+# We use reStructuredText (docutils' component) for both supporting
+# the "-rest" extension and project documenting. So, ensure that the docutils
+# get installed or upgraded on the target machine
+docutils>=0.3
+# We use Markdown for the "-markdown" extension
+markdown2>=1.4.2
+# We use CoffeeScript for "-coffee" extension
+CoffeeScript
+# We use SCSS for "-scss/sass" extension
+pyScss>=1.2.0.post3
+# We use the stylus package for "-stylus" extension
+# https://github.com/bkad/python-stylus
+stylus>=0.1.1

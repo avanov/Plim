@@ -176,9 +176,9 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 # ==================================================================================
 def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
     """
-    ``line`` may be empty
 
-    :param line:
+    :param line: may be empty
+    :type line: str
     :param escape_char:
     """
     match = quotes_re.match(line)
@@ -352,6 +352,14 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
             expr, tail, source = result
             buf.append(expr)
             continue
+
+        # Check for a string object
+        result = search_quotes(tail)
+        if result is not None:
+            buf.append(tail[:result])
+            tail = tail[result:]
+            continue
+
         # Try to search braces of function calls etc
         result = extract_braces(tail, source)
         if result:
