@@ -4,6 +4,10 @@ Changelog
 Version 0.9
 -------------
 
+- 0.9.9
+
+  - Hotfix: Fix UnicodeEncodeError in ``-def`` blocks with unicode strings as default argument values.
+
 - 0.9.8
 
   - Change: Stylus extension no longer depends on the ``nib`` package.
