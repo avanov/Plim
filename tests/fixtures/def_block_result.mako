@@ -6,7 +6,7 @@ Account for ${username}:<br/>
 Value: ${row}<br/>
 %endfor
 </%def>
-<%def name="account(accountname, type='regular')">
+<%def name="account(accountname, type=u'中文')">
 account name: ${accountname}, type: ${type}</%def>
 <%def name="mydef()">
 <%def name="subdef()">

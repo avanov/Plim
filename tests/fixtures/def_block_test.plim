@@ -9,7 +9,7 @@
         | Value: ${row}<br/>
 
 
--def account(accountname, type='regular')
+-def account(accountname, type=u'中文')
     | account name: ${accountname}, type: ${type}
 
 
