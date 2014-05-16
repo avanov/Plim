@@ -24,5 +24,5 @@ def scss_to_css(source):
 
 
 def stylus_to_css(source):
-    compiler = Stylus(plugins={'nib':{}})
+    compiler = Stylus()
     return as_unicode('<style>{css}</style>').format(css=compiler.compile(source).strip())
