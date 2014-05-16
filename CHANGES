@@ -4,17 +4,21 @@ Changelog
 Version 0.9
 -------------
 
+- 0.9.8
+
+  - Change: Stylus extension no longer depends on the ``nib`` package.
+
 - 0.9.7
 
-- Hotfix: Include requirements.txt into the distribution.
+  - Hotfix: Include requirements.txt into the distribution.
 
 - 0.9.6
 
-- Hotfix: Conditional statements parser now can handle strings containing inline tag separator sequences (#27).
+  - Hotfix: Conditional statements parser now can handle strings containing inline tag separator sequences (#27).
 
 - 0.9.5
 
-- Hotfix: Fix ``plimc`` unicode decoding regression introduced by the previous hotfix.
+  - Hotfix: Fix ``plimc`` unicode decoding regression introduced by the previous hotfix.
 
 
 - 0.9.4
