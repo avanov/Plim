@@ -1038,7 +1038,7 @@ def parse_call(indent_level, current_line, matched, source, syntax):
     return joined(buf), 0, '', source
 
 
-def parse_comment(indent_level, __, ___, source, syntax):
+def parse_comment(indent_level, tail_line, __, source, syntax):
     """
 
     :param indent_level:
@@ -1050,15 +1050,20 @@ def parse_comment(indent_level, __, ___, source, syntax):
     :return:
     """
     while True:
-        try:
-            lineno, tail_line = next(source)
-        except StopIteration:
-            break
         tail_indent, tail_line = scan_line(tail_line)
-        if not tail_line:
-            continue
-        if tail_indent <= indent_level:
-            return '', tail_indent, tail_line, source
+        if tail_line.strip().startswith('/!'):
+            tail_line = tail_line[2:]
+            return joined(['<!-- ', tail_line.strip(), ' -->']), indent_level, '', source
+        else:
+            try:
+                lineno, tail_line = next(source)
+            except StopIteration:
+                break
+            tail_indent, tail_line = scan_line(tail_line)
+            if not tail_line:
+                continue
+            if tail_indent <= indent_level:
+                return '', tail_indent, tail_line, source
     return '', 0, '', source
 
 

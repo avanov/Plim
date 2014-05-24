@@ -1,1 +1,1 @@
-<div>Test 1</div><div>Test 2</div><div><nav style="display:inline;margin-left:10px">${_('Interface')}:<span id="more-languages"></span></nav></div>
+<!-- This is a comment can display in html --><div>Test 1</div><div>Test 2</div><div><nav style="display:inline;margin-left:10px"><!-- In nested structure to display in nav --><span id="nested"></span>${_('Interface')}:<span id="more-languages"></span></nav></div>
