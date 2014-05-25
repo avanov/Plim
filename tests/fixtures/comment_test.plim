@@ -1,3 +1,4 @@
+/! This is a comment can display in html
 / This is a comment.
   You can comment-out entire block with indentation
 div Test 1
@@ -12,6 +13,8 @@ div Test 2
 //////////////////////////
 div
     nav style='display:inline;margin-left:10px'
+        /! In nested structure to display in nav
+            span#nested
         /
             Let's test empty-line-after-comment behaviour
 

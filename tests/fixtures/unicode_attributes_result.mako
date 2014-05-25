@@ -1,1 +1,1 @@
-<a title="quick unicode string in 中文"></a><input placeholder="${u"選擇"}"/>
+<!-- This is a comment can display in html include 中文 --><a title="quick unicode string in 中文"></a><input placeholder="${u"選擇"}"/>
