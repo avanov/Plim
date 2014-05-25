@@ -805,6 +805,11 @@ def parse_doctype(indent_level, current_line, ___, source, syntax):
     """
     match = syntax.PARSE_DOCTYPE_RE.match(current_line.strip())
     doctype = match.group('type')
+    if doctype == 'xml':
+        xml_encoding = match.group('xml_encoding')
+        if not xml_encoding:
+            xml_encoding = 'utf-8'
+        return DOCTYPES['xml'].format(xml_encoding), indent_level, '', source
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
@@ -1620,7 +1625,7 @@ DOCTYPES = {
     '5': '<!DOCTYPE html>',
     '1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
     'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-    'xml': '<?xml version="1.0" encoding="utf-8" ?>',
+    'xml': '<?xml version="1.0" encoding="{0}" ?>',
     'transitional': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
     'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
     'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',

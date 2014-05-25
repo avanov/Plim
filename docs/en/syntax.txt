@@ -3,7 +3,7 @@
 =======================
 
 
-Some relevant parts of this section were copied from 
+Some relevant parts of this section were copied from
 the `official Slim documentation <https://github.com/slim-template/slim>`_.
 
 Line Indicators
@@ -51,14 +51,14 @@ Line Indicators
       This line indicator has been considered redundant since Plim supports raw HTML tags:
 
       .. code-block:: plim
-    
+
           / You can use raw HTML comment tags, as well as all other tags
           <!-- HTML comment -->
           <div>
-    
+
             / You can use Plim markup inside the raw HTML
             a href="#" = link.title
-    
+
           / If you use raw HTML, you have to close all tags manually
           </div>
 
@@ -66,7 +66,7 @@ Line Indicators
 Indentation
 ==================
 
-Plim indentation rules are the same as of Slim: indentation matters, but it's not as strict as 
+Plim indentation rules are the same as of Slim: indentation matters, but it's not as strict as
 `Haml <http://haml.info/about.html>`_.
 If you want to first indent 2 spaces, then 5 spaces, it's your choice. To nest markup you only need to
 indent by one space, the rest is gravy.
@@ -89,7 +89,7 @@ For example
 will be rendered as
 
 .. code-block:: html
-    
+
     <input type="text" name="username" value="Max Power" maxlength="32"/>
 
 As in Python string declarations, you must take care of correct quote escaping
@@ -100,7 +100,7 @@ As in Python string declarations, you must take care of correct quote escaping
     input value="It's simple"
     input value='''It's simple'''
     input value="""It's simple"""
-    
+
     input value="He said \"All right!\""
     input value='He said "All right!"'
     input value='''He said "All right!"'''
@@ -128,14 +128,14 @@ Dynamic values can be specified in forms of:
 - Mako expression
 
   .. code-block:: plim
-  
+
       input type="text" name="username" value="${user.name}" maxlength=32
       a href="${request.route_url('user_profile', tagname=user.login, _scheme='https')}"
-  
+
   or
-  
+
   .. code-block:: plim
-  
+
       input type="text" name="username" value=${user.name} maxlength=32
       a href=${request.route_url('user_profile', tagname=user.login, _scheme='https')}
 
@@ -143,21 +143,21 @@ Dynamic values can be specified in forms of:
 - Python expression
 
   .. code-block:: plim
-  
+
       input type="text" name="username" value=user.name maxlength=32
       a href=request.route_url('user_profile', tagname=user.login, _scheme='https')
-  
+
   or with parentheses
-  
+
   .. code-block:: plim
-  
+
       input type="text" name="username" value=(user.name) maxlength=32
       a href=(request.route_url('user_profile', tagname=user.login, _scheme='https'))
 
 All these examples produce the same mako markup:
 
 .. code-block:: mako
-  
+
     <input type="text" name="username" value="${user.name}" maxlength="32"/>
     <a href="${request.route_url('user_profile', tagname=user.login, _scheme='https')}"></a>
 
@@ -173,7 +173,7 @@ Static attribute example:
 
     / Static boolean attribute "disabled"
     input type="text" name="username" disabled="disabled"
-    
+
     / If you wrap your attributes with parentheses, you can use
       shortcut form
     input (type="text" name="username" disabled)
@@ -185,14 +185,14 @@ Dynamic attribute example (note the trailing question mark):
     / Dynamic boolean attribute "disabled"
       will be evaluated to 'disabled="disabled"' if `is_disabled`
       evaluates to True
-      
+
     input type="text" name="username" disabled=${is_disabled}?
-    
+
     / or you can write it that way
     input type="text" name="username" disabled=is_disabled?
-    
+
     / or even that way
-    input type="text" name="username" disabled=(is_disabled or 
+    input type="text" name="username" disabled=(is_disabled or
                                                 is_really_disabled)?
 
 
@@ -510,7 +510,7 @@ Use forward slash ``/`` for code comments
 Raw HTML Tags
 ====================================
 
-Plim allows you to use raw HTML tag lines, and also to mix them with any 
+Plim allows you to use raw HTML tag lines, and also to mix them with any
 available control logic. It is particularly useful in situations like this one:
 
 .. code-block:: plim
@@ -546,11 +546,11 @@ Here is the full list of available doctypes:
 **doctype 5**
 
     ``<!DOCTYPE html>``
-  
+
 **doctype 1.1**
 
     ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">``
-  
+
 **doctype strict**
 
     ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">``
@@ -559,6 +559,10 @@ Here is the full list of available doctypes:
 
     ``<?xml version="1.0" encoding="utf-8" ?>``
 
+**doctype xml ISO-8859-1**
+
+    ``<?xml version="1.0" encoding="ISO-8859-1" ?>``
+
 **doctype transitional**
 
     ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">``
@@ -566,11 +570,11 @@ Here is the full list of available doctypes:
 **doctype frameset**
 
     ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">``
-    
+
 **doctype basic**
 
     ``<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">``
-    
+
 **doctype mobile**
 
     ``<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">``
@@ -635,7 +639,7 @@ See the section :ref:`Returning Early from a Template <return-early>`.
    -python
      i = 0
      limit = 5
-   
+
    ul
      -while i < limit
        li#idx-${i}.up: a href='#' title="Title" == i
@@ -665,14 +669,14 @@ See the section :ref:`Returning Early from a Template <return-early>`.
 **with** statement
 ---------------------
 
-The ``% with`` statement was introduced in 
+The ``% with`` statement was introduced in
 `Mako 0.7.0 <http://www.makotemplates.org/CHANGES>`_.
 
 .. code-block:: plim
 
     -with <EXPR> as <VAR>
       / Do some stuff
-    
+
 
 **try/except** statements
 ---------------------------
@@ -682,10 +686,10 @@ The ``% with`` statement was introduced in
     - try
       div = item[0]
       div = price['usd']
-      
+
     - except IndexError
       div IndexError
-      
+
     - except KeyError as e
       div = e
 
@@ -695,7 +699,7 @@ The ``% with`` statement was introduced in
 Returning Early from a Template
 --------------------------------
 
-Plim provides a shortcut to Mako's 
+Plim provides a shortcut to Mako's
 `<% return %> <http://docs.makotemplates.org/en/latest/syntax.html#returning-early-from-a-template>`_
 template directive.
 
@@ -790,10 +794,10 @@ Literal blocks can be implicitly specified by the following starting sequences:
     p
       | pipe is the explicit literal indicator. It is required if your line starts with
         the non-literal character.
-    
+
     p
       I'm the implicit literal, because my first letter is in uppercase.
-    
+
     p
       1. Digits
       2. are
@@ -801,10 +805,10 @@ Literal blocks can be implicitly specified by the following starting sequences:
       4. implicit
       5. literals
       6. too.
-    
+
     p
       ${raw_mako_expression} indicates the implicit literal line.
-    
+
     p
       If subsequent lines do not start with implicit literal indicator,
         you must indent them
@@ -814,12 +818,12 @@ Literal blocks can be implicitly specified by the following starting sequences:
 .. only:: html
 
     .. code-block:: plim
-    
+
         p
           если ваш блок текста написан на русском, или любом другом языке, не
           использующим символы из ASCII-диапазона, то вам даже не обязательно
           использовать заглавную букву в начале блока.
-        
+
           / if your literal blocks are written in Russian, or any other
             language which uses non-ASCII letters, you can put even the
             lowercase letter at the beginning of the block
@@ -828,19 +832,19 @@ Literal blocks can be implicitly specified by the following starting sequences:
 .. only:: latex
 
     .. code-block:: plim
-    
+
         p
-          / if your literal blocks are written in Russian, or any other 
-            language which uses non-ASCII letters, you can put even the 
+          / if your literal blocks are written in Russian, or any other
+            language which uses non-ASCII letters, you can put even the
             lowercase letter at the beginning of the block
-            
+
             Unfortunately, we cannot provide an example of this feature here,
             because current version of Sphinx Documenting tool cannot automatically
             build PDF documentation with unicode characters.
-            See an explanation on 
+            See an explanation on
             https://groups.google.com/forum/#!topic/sphinx-dev/kUeROyCyX9w/discussion
 
-      
+
 
 
 Python Blocks
@@ -848,7 +852,7 @@ Python Blocks
 
 Classic Blocks
 --------------
-Use ``-py`` or ``-python`` to insert the 
+Use ``-py`` or ``-python`` to insert the
 `<% %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#python-blocks>`_.
 
 For example
@@ -953,7 +957,7 @@ the result (indentation will be stripped out):
 Module-level Blocks
 ========================
 
-Use ``-py!`` or ``-python!`` block to insert the 
+Use ``-py!`` or ``-python!`` block to insert the
 `<%! %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#module-level-blocks>`_.
 
 .. code-block:: plim
@@ -980,12 +984,12 @@ Use ``-py!`` or ``-python!`` block to insert the
 Mako Tags
 ===========================
 
-Plim supports a complete set of 
+Plim supports a complete set of
 `Mako Tags <http://docs.makotemplates.org/en/latest/syntax.html#tags>`_,
 except the ``<%doc>``. The latter has been considered deprecated, since
 Plim itself has built-in support of multi-line comments.
 
-.. note:: As all mako tags start with the ``<`` char, which 
+.. note:: As all mako tags start with the ``<`` char, which
     indicates a :ref:`raw HTML line <raw-html>`, they all can be written
     "as is". The only thing you must remember is to manually close the pair tags.
 
@@ -1003,7 +1007,7 @@ produces
 
     <%page args="x, y, z='default'"/>
 
-See the details of what ``<%page>`` is used for in 
+See the details of what ``<%page>`` is used for in
 `The body() Method <http://docs.makotemplates.org/en/latest/namespaces.html#namespaces-body>`_
 and `Caching <http://docs.makotemplates.org/en/latest/caching.html>`_
 sections of Mako Documentation.
@@ -1014,7 +1018,7 @@ sections of Mako Documentation.
 -------------------
 
 .. code-block:: plim
-    
+
     -include footer.html
 
 or
@@ -1026,7 +1030,7 @@ or
 produce the same output
 
 .. code-block:: mako
-    
+
     <%include file="footer.html"/>
 
 
@@ -1037,13 +1041,13 @@ of Mako Documentation to get more information about this tag.
 -------------------
 
 .. code-block:: plim
-    
+
     -inherit base.html
 
 or
 
 .. code-block:: plim
-    
+
     -inherit file="base.html"
 
 will generate the same
@@ -1051,8 +1055,8 @@ will generate the same
 .. code-block:: mako
 
     <%inherit file="base.html"/>
-    
-See Mako's `inheritance documentation <http://docs.makotemplates.org/en/latest/inheritance.html>`_ 
+
+See Mako's `inheritance documentation <http://docs.makotemplates.org/en/latest/inheritance.html>`_
 to get more information about template inheritance.
 
 **-namespace** tag
@@ -1074,7 +1078,7 @@ produce
 
     <%namespace file="helpers.html" name="helper"/>
 
-See Mako's `namespace documentation <http://docs.makotemplates.org/en/latest/namespaces.html>`_ 
+See Mako's `namespace documentation <http://docs.makotemplates.org/en/latest/namespaces.html>`_
 to get more information about template namespaces.
 
 
@@ -1084,7 +1088,7 @@ to get more information about template namespaces.
 .. code-block:: plim
 
     -def account(accountname, type='regular')
-    
+
 or
 
 .. code-block:: plim
@@ -1098,7 +1102,7 @@ produce
     <%def name="account(accountname, type='regular')">
     </%def>
 
-See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_ 
+See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_
 to get more information about functions and blocks.
 
 
@@ -1141,7 +1145,7 @@ You can also specify other block arguments as well
       html this is some escaped html.
 
 
-See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_ 
+See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_
 to get more information about functions and blocks.
 
 
@@ -1156,13 +1160,13 @@ The following examples
 
     -call expression="${4==4}" self:conditional
       |i'm the result
-    
+
     - call expression=${4==4} self:conditional
       | i'm the result
-    
+
     - call self:conditional
       | i'm the result
-    
+
     - call self:conditional
 
 will produce
@@ -1172,22 +1176,22 @@ will produce
     <%self:conditional expression="${4==4}">
     i'm the result
     </%self:conditional>
-    
+
     <%self:conditional expression="${4==4}">
     i'm the result
     </%self:conditional>
-    
+
     <%self:conditional>
     i'm the result
     </%self:conditional>
-    
+
     <%self:conditional>
     </%self:conditional>
 
 
 Please consult the sections
 `<%nsname:defname> <http://docs.makotemplates.org/en/latest/syntax.html#nsname-defname>`_
-and 
+and
 `Calling a Def with Embedded Content and/or Other Defs <http://docs.makotemplates.org/en/latest/defs.html#defs-with-content>`_
 of Mako Documentation to get more information about custom tags.
 
@@ -1196,10 +1200,10 @@ of Mako Documentation to get more information about custom tags.
 **-text** tag
 ----------------
 
-As it is mentioned in 
-`Mako documentation <http://docs.makotemplates.org/en/latest/syntax.html#text>`_, 
-this tag suspends the Mako lexer’s normal parsing of Mako template directives, 
-and returns its entire body contents as plain text. It is used pretty much to write 
+As it is mentioned in
+`Mako documentation <http://docs.makotemplates.org/en/latest/syntax.html#text>`_,
+this tag suspends the Mako lexer’s normal parsing of Mako template directives,
+and returns its entire body contents as plain text. It is used pretty much to write
 documentation about Mako:
 
 .. code-block:: plim
@@ -1207,16 +1211,16 @@ documentation about Mako:
     -text filter="h"
       here's some fake mako ${syntax}
       <%def name="x()">${x}</%def>
-    
+
     - text filter="h" here's some fake mako ${syntax}
       <%def name="x()">${x}</%def>
-    
+
     - text filter="h" = syntax
       <%def name="x()">${x}</%def>
-    
+
     -text
       here's some fake mako ${syntax}
       <%def name="x()">${x}</%def>
-    
+
     -text , here's some fake mako ${syntax}
       <%def name="x()">${x}</%def>

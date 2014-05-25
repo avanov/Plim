@@ -55,6 +55,7 @@ class TestPreprocessorSyntax(TestCaseBase):
             'unicode_attributes',
             'inline_conditions',
             'handlebars',
+            'xml_doctype',
         ]
         for test_case in cases:
             source = self.get_file_contents(test_case + '_test.plim')
