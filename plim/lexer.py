@@ -145,8 +145,7 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 #       ``matched`` object at the previous parsing step.
 #    3) ``matched`` - an instance of ``re.MatchObject`` of the regex associated with the current parser.
 #    4) ``source`` - an instance of an enumerated object returned by :func:`enumerate_source`.
-#    5) ``parsers`` - a tuple of 2-tuples of (parser_regex, parser_callable). Plim uses ``STANDARD_PARSERS``
-#                     as a default collection of parsers that can be extended by third-party packages.
+#    5) ``syntax`` - an instance of one of :class:`plim.syntax.BaseSyntax` children.
 #
 #    Every parser MUST return a 4-tuple of:
 #    1) parsed_data - a string of successfully parsed data
@@ -775,8 +774,8 @@ def parse_style_script(indent_level, current_line, matched, source, syntax):
     :type current_line: str
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     extracted_html_line, close_buf, _, tail, source = extract_tag_line(current_line, source, syntax)
@@ -799,8 +798,8 @@ def parse_doctype(indent_level, current_line, ___, source, syntax):
     :param current_line:
     :param ___:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     match = syntax.PARSE_DOCTYPE_RE.match(current_line.strip())
@@ -815,8 +814,8 @@ def parse_handlebars(indent_level, current_line, ___, source, syntax):
     :param current_line:
     :param ___:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     processed_tag, tail_indent, tail_line, source = parse_tag_tree(indent_level, current_line, ___, source, syntax)
@@ -838,8 +837,8 @@ def parse_tag_tree(indent_level, current_line, ___, source, syntax):
     :param current_line:
     :param ___:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return: 4-tuple
     """
     buf = []
@@ -888,8 +887,8 @@ def parse_markup_languages(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     markup_parser = MARKUP_LANGUAGES[matched.group('lang')]
@@ -913,8 +912,8 @@ def parse_python(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     # TODO: merge with parse_mako_text()
@@ -948,8 +947,8 @@ def parse_python_new_style(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     buf = [matched.group('excl') and '-py! ' or '-py ']
@@ -969,8 +968,8 @@ def parse_mako_text(indent, __, matched, source, syntax):
     :param indent:
     :param __:
     :param matched:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, syntax)
@@ -1001,8 +1000,8 @@ def parse_call(indent_level, current_line, matched, source, syntax):
     :param current_line:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return: :raise:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, syntax)
@@ -1045,8 +1044,8 @@ def parse_comment(indent_level, __, ___, source, syntax):
     :param __:
     :param ___:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     while True:
@@ -1069,8 +1068,8 @@ def parse_statements(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     stmnt = matched.group('stmnt')
@@ -1225,8 +1224,8 @@ def parse_foreign_statements(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     stmnt = STATEMENT_CONVERT[matched.group('stmnt')]
@@ -1247,8 +1246,8 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
     :param current_line:
     :param ___:
     :param source:
-    :param parsers:
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :param parse_embedded: whether to parse possible embedded Plim markup
     :type parse_embedded: bool
     """
@@ -1302,8 +1301,8 @@ def _parse_embedded_markup(content, syntax):
     """
 
     :param content:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     :rtype: str
     """
@@ -1360,8 +1359,8 @@ def parse_variable(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     explicit_space = matched.group('explicit_space') and ' ' or ''
@@ -1398,8 +1397,8 @@ def parse_early_return(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     return u('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
@@ -1412,8 +1411,8 @@ def parse_implicit_literal(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     return parse_explicit_literal_with_embedded_markup(
@@ -1432,8 +1431,8 @@ def parse_raw_html(indent_level, current_line, ___, source, syntax):
     :param current_line:
     :param ___:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     buf = [current_line.strip(), '\n']
@@ -1466,8 +1465,8 @@ def parse_mako_one_liners(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line').strip(), source, syntax)
@@ -1487,8 +1486,8 @@ def parse_def_block(indent_level, __, matched, source, syntax):
     :param __:
     :param matched:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     _, __, components, tail, source = extract_tag_line(matched.group('line'), source, syntax)
@@ -1531,8 +1530,8 @@ def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
     :param indent_level:
     :param tail_line:
     :param source:
-    :param parsers: 2-tuple of (parser_regex, parser_callable)
-    :type parsers: tuple
+    :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
+    :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     buf = []
