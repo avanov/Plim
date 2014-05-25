@@ -31,7 +31,7 @@ class BaseSyntax(object):
 
     # Parsers
     # ----------------------------------
-    PARSE_DOCTYPE_RE = re.compile('doctype\s+(?P<type>[0-9a-z\.]+)', re.IGNORECASE)
+    PARSE_DOCTYPE_RE = re.compile('doctype\s+(?P<type>[0-9a-z\.]+)\s*(?P<xml_encoding>.*)', re.IGNORECASE)
     PARSE_STYLE_SCRIPT_RE = re.compile('(?:style|script).*', re.IGNORECASE)
     PARSE_HANDLEBARS_RE = re.compile('(?:handlebars).*')
     PARSE_TAG_TREE_RE = re.compile('(?:#|\.|{tag}).*'.format(tag=l.TAG_RULE))
