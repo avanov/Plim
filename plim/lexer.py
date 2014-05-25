@@ -48,6 +48,10 @@ TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
 TAG_RE = re.compile(TAG_RULE)
 LINE_PARTS_RE = re.compile('(?P<indent>\s*)(?P<line>.*)\s*')
 MAKO_FILTERS_TAIL_RE = re.compile('\|\s*(?P<filters>[a-zA-Z][_.a-zA-Z0-9]*(?:,\s*[a-zA-Z][_.a-zA-Z0-9]*)*)\s*$')
+
+# For Internet Explorer
+CONDITIONAL_COMMENT = re.compile('/\[if\s*!?\(?(!|lt|gt|lte|gte)?\s*IE\s*(\d?\.?\d?)?\)?\s*(\||&)?.*\]')
+
 NUMERIC_VALUE_RE = re.compile(
     # Order matters
     # Can parse -NUM, +NUM, NUM, .NUM, NUM% and all its combinations
@@ -1037,27 +1041,45 @@ def parse_call(indent_level, current_line, matched, source, syntax):
     return joined(buf), 0, '', source
 
 
-def parse_comment(indent_level, __, ___, source, syntax):
+def parse_comment(indent_level, tail_line, __, source, syntax):
     """
 
     :param indent_level:
+    :param tail_line:
     :param __:
-    :param ___:
     :param source:
     :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
     :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
     """
     while True:
-        try:
-            lineno, tail_line = next(source)
-        except StopIteration:
-            break
         tail_indent, tail_line = scan_line(tail_line)
-        if not tail_line:
-            continue
-        if tail_indent <= indent_level:
-            return '', tail_indent, tail_line, source
+
+        if CONDITIONAL_COMMENT.match(tail_line):
+            buf = ['<!--{0}>'.format(tail_line[1:])]
+            while True:
+                try:
+                    lineno, tail_line = next(source)
+                except StopIteration:
+                    break
+                new_tail_indent, tail_line = scan_line(tail_line)
+                if new_tail_indent <= indent_level:
+                    buf.append('<![endif]-->')
+                    return joined(buf), tail_indent, '', source
+                if not tail_line:
+                    continue
+                html_tag, close_seq, _, _, source = extract_tag_line(tail_line, source, syntax)
+                buf.extend([html_tag, close_seq])
+        else:
+            try:
+                lineno, tail_line = next(source)
+            except StopIteration:
+                break
+            tail_indent, tail_line = scan_line(tail_line)
+            if not tail_line:
+                continue
+            if tail_indent <= indent_level:
+                return '', tail_indent, tail_line, source
     return '', 0, '', source
 
 

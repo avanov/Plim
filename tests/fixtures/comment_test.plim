@@ -9,6 +9,8 @@ div Test 1
 div Test 2
 /
 /
+/[if IE]
+  p Get a better browser.
 //////////////////////////
 div
     nav style='display:inline;margin-left:10px'

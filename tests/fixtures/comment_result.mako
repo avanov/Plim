@@ -1,1 +1,1 @@
-<div>Test 1</div><div>Test 2</div><div><nav style="display:inline;margin-left:10px">${_('Interface')}:<span id="more-languages"></span></nav></div>
+<div>Test 1</div><div>Test 2</div><!--[if IE]><p>Get a better browser.</p><![endif]--><div><nav style="display:inline;margin-left:10px">${_('Interface')}:<span id="more-languages"></span></nav></div>
