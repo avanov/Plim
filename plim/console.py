@@ -42,6 +42,9 @@ def plimc(args=None, stdout=None):
     # Get custom preprocessor, if specified
     # -------------------------------------
     preprocessor_path = args.preprocessor
+    # Add an empty string path, so modules located at the current working dir
+    # are reachable and considered in the first place (see issue #32).
+    sys.path.insert(0, '')
     preprocessor = EntryPoint.parse('x={}'.format(preprocessor_path)).load(False)
 
     # Render to html, if requested

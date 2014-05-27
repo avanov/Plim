@@ -3,7 +3,7 @@ import coffeescript
 from scss import Scss
 from stylus import Stylus
 
-from .util import as_unicode
+from .util import u
 
 
 
@@ -15,14 +15,14 @@ def rst_to_html(source):
 
 
 def coffee_to_js(source):
-    return as_unicode('<script>{js}</script>').format(js=coffeescript.compile(source))
+    return u('<script>{js}</script>').format(js=coffeescript.compile(source))
 
 
 def scss_to_css(source):
     css = Scss().compile(source).strip()
-    return as_unicode('<style>{css}</style>').format(css=css)
+    return u('<style>{css}</style>').format(css=css)
 
 
 def stylus_to_css(source):
     compiler = Stylus()
-    return as_unicode('<style>{css}</style>').format(css=compiler.compile(source).strip())
+    return u('<style>{css}</style>').format(css=compiler.compile(source).strip())

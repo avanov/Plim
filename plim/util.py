@@ -8,13 +8,13 @@ if PY3K:
 
     joined = lambda buf: ''.join(buf)
     space_separated = lambda buf: ' '.join(buf)
-    as_unicode = str
+    u = str
     MAXSIZE = sys.maxsize
 
 else:
     from StringIO import StringIO
 
-    joined = lambda buf: as_unicode('').join(buf)
-    space_separated = lambda buf: as_unicode(' ').join(buf)
-    as_unicode = unicode
+    joined = lambda buf: u('').join(buf)
+    space_separated = lambda buf: u(' ').join(buf)
+    u = unicode
     MAXSIZE = sys.maxint
