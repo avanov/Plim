@@ -42,6 +42,7 @@ def plimc(args=None, stdout=None):
     # Get custom preprocessor, if specified
     # -------------------------------------
     preprocessor_path = args.preprocessor
+    sys.path.append('')
     preprocessor = EntryPoint.parse('x={}'.format(preprocessor_path)).load(False)
 
     # Render to html, if requested
