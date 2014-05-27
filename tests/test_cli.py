@@ -30,13 +30,8 @@ class TestCLI(TestCaseBase):
         plimc(['--html', 'tests/fixtures/unicode_attributes_test.plim'], stdout=self.stdout)
 
     def test_custom_preprocessor(self):
-        if PY3K:
-            create_tempdir = tempfile.TemporaryDirectory
-        else:
-            create_tempdir = tempfile.mkdtemp
-
         initial_cwd = os.getcwd()
-        tmp_dir = create_tempdir()
+        tmp_dir = tempfile.mkdtemp()
         os.chdir(tmp_dir)
 
         # copy test module into the temporary dir
