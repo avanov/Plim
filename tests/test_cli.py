@@ -53,8 +53,8 @@ class TestCLI(TestCaseBase):
         data = codecs.decode(data, 'utf-8')
 
         self.assertNotEqual(initial_cwd, os.getcwd())
-        self.assertNotIn('', sys.path)
-        self.assertEqual(data, '<html></html>')
+        self.assertIn('', sys.path)
+        self.assertEqual(data.trim(), '<html></html>')
 
         # Cleanup
         os.chdir(initial_cwd)
