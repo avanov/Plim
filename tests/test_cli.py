@@ -54,7 +54,7 @@ class TestCLI(TestCaseBase):
 
         self.assertNotEqual(initial_cwd, os.getcwd())
         self.assertIn('', sys.path)
-        self.assertEqual(data, '<html></html>')
+        self.assertEqual(data, '<!-- But this comment can display in html -->')
 
         # Cleanup
         os.chdir(initial_cwd)
