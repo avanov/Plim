@@ -12,6 +12,13 @@ class TestLexerFunctions(TestCaseBase):
         super(TestLexerFunctions, self).setUp()
         self.mako_syntax = syntax.Mako()
 
+
+    def test_windows_newlines(self):
+        test_str = "-if False\r\n  h2 False\r\n-else\r\n  h2 True\r\n"
+        result_str = "%if False:\n<h2>False</h2>\n%else:\n<h2>True</h2>\n%endif"
+        self.assertEqual(result_str, l.compile_plim_source(test_str, self.mako_syntax))
+
+
     def test_incorrect_directive(self):
         self.assertRaises(ParserNotFound, l.search_parser, 1, "-icorrect_directive", self.mako_syntax)
 

@@ -1,1 +1,3 @@
-html
+/ Regular comment, it is not rendered
+
+/!But this comment will be rendered as an html comment tag

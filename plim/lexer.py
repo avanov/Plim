@@ -1576,6 +1576,9 @@ def compile_plim_source(source, syntax, strip=True):
     :type strip: bool
     :return:
     """
+    # A quick fix for templates with windows-style newlines.
+    # If you see any issues with it, consider altering lexer's NEWLINE.
+    source = source.replace('\r\n', '\n')
     source = enumerate_source(source)
     result = []
     while True:
