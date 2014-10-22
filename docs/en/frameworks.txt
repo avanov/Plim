@@ -25,6 +25,39 @@ added via the ``config.add_plim_renderer()`` directive:
 The renderer will load its configuration from a provided mako prefix in the Pyramid
 settings dictionary. The default prefix is 'mako.'.
 
+Flask
+======
+
+The following code snippet would get Flask working with plim:
+
+.. code-block:: python
+
+    from flask import Flask
+    from flask.ext.mako import MakoTemplates, render_template
+    from plim import preprocessor
+
+    app = Flask(__name__)
+    mako = MakoTemplates(app)
+    app.config['MAKO_PREPROCESSOR'] = preprocessor
+
+    @app.route('/')
+    def hello():
+        return render_template('hello.html', name='mako')
+
+    if __name__ == "__main__":
+        app.run(debug=True)
+
+With hello.html in templates dir:
+
+.. code-block:: html
+    doctype html
+    html
+      head
+        title hello ${name}
+      body
+        p hello ${name}
+
+
 
 Syntax Highlighters
 ======================
