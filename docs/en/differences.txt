@@ -4,7 +4,7 @@ Syntactic Differences
 Plim is *not the exact* port of Slim. Here is the full list of differences.
 
 
-#.  Slim has the ( ``'`` ), ( ``='`` ), and ( ``=='`` ) `line indicators <https://github.com/stonean/slim#line-indicators>`_.
+#.  Slim has the ( ``'`` ), ( ``='`` ), and ( ``=='`` ) `line indicators <https://github.com/slim-template/slim#line-indicators>`_.
     In Plim, single quote has been replaced by the comma char ( ``,`` ):
 
     .. code-block:: slim
