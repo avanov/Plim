@@ -11,7 +11,7 @@ class TestBabelPlugin(TestCaseBase):
     def test_babel_extractor(self):
         fileobj = StringIO(self.get_file_contents('babelplugin_test.plim'))
         keywords = ['_', 'gettext', 'ungettext', 'pluralize']
-        extracted = [(data[1], data[2]) for data in extract(fileobj, keywords, None, {})]
+        extracted = [(data[1], data[2]) for data in extract(fileobj, keywords, [], {})]
         
         assert ('_', 'Test') in extracted
         assert ('_', 'View more') in extracted
