@@ -1,0 +1,227 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../extensions.rst:2
+msgid "Extensions"
+msgstr "扩展"
+
+#: ../extensions.rst:5
+msgid "Standard extensions"
+msgstr "标准扩展"
+
+#: ../extensions.rst:8
+msgid "CoffeeScript"
+msgstr ""
+
+#: ../extensions.rst:10
+msgid ""
+"Plim uses `Python-CoffeeScript <https://github.com/doloopwhile/Python-"
+"CoffeeScript>`_ package as a bridge to the JS `CoffeeScript "
+"<http://coffeescript.org/>`_ compiler. You can start CoffeeScript block with"
+" the ``-coffee`` construct."
+msgstr ""
+"Plim 使用 `Python-CoffeeScript <https://github.com/doloopwhile/Python-CoffeeScript>`_ 包"
+"作为 JS 与 `CoffeeScript <http://coffeescript.org/>`_ 之间的桥梁。"
+"你可以使用 ``-coffee`` 作为 CoffeeScript 代码块标记。"
+
+#: ../extensions.rst:48
+msgid "SCSS/SASS"
+msgstr ""
+
+#: ../extensions.rst:50
+msgid ""
+"Plim uses `pyScss <https://github.com/Kronuz/pyScss>`_ package to translate "
+"`SCSS/SASS <http://sass-lang.com/>`_ markup to plain CSS. You can start "
+"SCSS/SASS block with the ``-scss`` or ``-sass`` construct. The output will "
+"be wrapped with ``<style></style>`` tags."
+msgstr ""
+"Plim 使用 `pyScss <https://github.com/Kronuz/pyScss>`_ 包将 "
+"`SCSS/SASS <http://sass-lang.com/>`_ 翻译为普通的 CSS。"
+"你可以使用 ``-scss`` 或 ``-sass`` 作为 SCSS/SASS 代码块标记。"
+"输出结果中将会自动包裹在 ``<style></style>`` 标签中。"
+
+#: ../extensions.rst:55 ../extensions.rst:90 ../extensions.rst:132
+#: ../extensions.rst:191
+msgid "For example,"
+msgstr "例如："
+
+#: ../extensions.rst:70 ../extensions.rst:107 ../extensions.rst:159
+#: ../extensions.rst:211
+msgid "produces"
+msgstr "输出："
+
+#: ../extensions.rst:83
+msgid "Stylus"
+msgstr ""
+
+#: ../extensions.rst:85
+msgid ""
+"Plim uses `stylus <https://github.com/bkad/python-stylus>`_ package to "
+"translate `stylus <http://learnboost.github.com/stylus/>`_ markup to plain "
+"CSS. You can start Stylus block with the ``-stylus`` construct. The output "
+"will be wrapped with ``<style></style>`` tags."
+msgstr ""
+"Plim 使用 `stylus <https://github.com/bkad/python-stylus>`_ 包来翻译 "
+"`stylus <http://learnboost.github.com/stylus/>`_ 代码。"
+"Stylus 代码使用 ``-stylus`` 标识，输出结果同样会自动添加 ``<style></style>`` 标签。"
+
+#: ../extensions.rst:127
+msgid "Markdown"
+msgstr ""
+
+#: ../extensions.rst:129
+msgid ""
+"Plim uses `python-markdown2 <https://github.com/trentm/python-markdown2>`_ "
+"package for the ``-markdown`` (or ``-md``) extension."
+msgstr ""
+
+#: ../extensions.rst:186
+msgid "reStructuredText"
+msgstr ""
+
+#: ../extensions.rst:188
+msgid ""
+"Plim uses `Docutils <http://docutils.sourceforge.net/>`_ package for both "
+"supporting the ``-rest`` (or ``-rst``) extension and project documenting."
+msgstr ""
+"Plim 使用 `python-markdown2 <https://github.com/trentm/python-markdown2>`_ "
+"作为 ``-markdown`` （或者 ``-md``） 扩展。"
+
+#: ../extensions.rst:251
+msgid "Handlebars"
+msgstr ""
+
+#: ../extensions.rst:253
+msgid ""
+"Plim supports a special tag ``handlebars`` that is translated to a "
+"handlebars section declaration:"
+msgstr ""
+"``handlebars`` 是 Plim 支持的一个特殊标签，将会翻译为 ``handlebars`` ："
+
+#: ../extensions.rst:260
+msgid ""
+"This is particularly useful to developers using `Ember.js "
+"<http://emberjs.com/guides/templates/handlebars-basics/>`_."
+msgstr ""
+"这对 `Ember.js <http://emberjs.com/guides/templates/handlebars-basics/>`_ "
+"开发者来说非常便利。"
+
+#: ../extensions.rst:262
+msgid "Here is an example. The following plim document"
+msgstr "例如，下面的 Plim 文档"
+
+#: ../extensions.rst:274
+msgid "will be rendered as"
+msgstr "将会成为"
+
+#: ../extensions.rst:291
+msgid "Extending Plim with custom parsers"
+msgstr "使用定制的分析器扩展 Plim"
+
+#: ../extensions.rst:295
+msgid ""
+"It is possible to extend standard Plim markup with your own directives. This"
+" feature allows you to build your own DSL on top of Plim. For instance, the "
+"following example adds a new directive for parsing HTTP links present in a "
+"form of ``http_url > title``."
+msgstr ""
+"你也可以自己扩展 Plim 标签，该功能允许你在 Plim 之上定义自己的 DSL。"
+"例如，下面的代码将定义一个新的 HTML 链接解释器，"
+"将会处理 ``http_url > title`` 形式的链接。"
+
+#: ../extensions.rst:325
+msgid ""
+"The ``parse_http_link()`` function is defined according to the strict API."
+msgstr ""
+"``parse_http_link()`` 函数的定义严格地遵循了 Plim API，"
+
+#: ../extensions.rst:327
+msgid "Every parser accepts five input arguments:"
+msgstr "所有扩展解释器都应该接受 5 个参数："
+
+#: ../extensions.rst:329
+msgid ""
+"``indent_level`` - an indentation level of the current line. When the parser"
+" reaches a line which indentation is lower or equal to ``indent_level``, it "
+"returns control to a top-level function."
+msgstr ""
+
+#: ../extensions.rst:331
+msgid ""
+"``current_line`` - a line which is being parsed. This is the line that has "
+"been matched by ``matched`` object at the previous parsing step."
+msgstr ""
+
+#: ../extensions.rst:333
+msgid ""
+"``matched`` - an instance of :class:`re.MatchObject` of the regex associated"
+" with the current parser."
+msgstr ""
+
+#: ../extensions.rst:334
+msgid ""
+"``source`` - an instance of an enumerated object returned by "
+":func:`plim.lexer.enumerate_source`."
+msgstr ""
+
+#: ../extensions.rst:335
+msgid ""
+"``syntax`` - an instance of one of :class:`plim.syntax.BaseSyntax` children."
+msgstr ""
+
+#: ../extensions.rst:337
+msgid "Every parser returns a 4-tuple of:"
+msgstr "并返回 4 位元组："
+
+#: ../extensions.rst:339
+msgid "parsed_data - a string of successfully parsed data"
+msgstr ""
+
+#: ../extensions.rst:340
+msgid "tail_indent - an indentation level of the ``tail line``"
+msgstr ""
+
+#: ../extensions.rst:341
+msgid ""
+"tail_line - a line which indentation level (``tail_indent``) is lower or "
+"equal to the input ``indent_level``."
+msgstr ""
+
+#: ../extensions.rst:343
+msgid ""
+"``source`` - an instance of enumerated object returned by "
+":func:`plim.lexer.enumerate_source` which represents the remaining "
+"(untouched) plim markup."
+msgstr ""
+
+#: ../extensions.rst:347
+msgid ""
+"From now on, we can use ``custom_preprocessor`` in exactly the same manner "
+"as the standard ``plim.preprocessor``."
+msgstr ""
+"现在我们已经可以像使用标准 Plim 预处理器 ``plim.preprocessor`` 一样"
+"使用 ``custom_preprocessor`` 了。"
+
+#: ../extensions.rst:350
+msgid "Let's create a plim document with extended syntax:"
+msgstr "让我们使用新定义的语法来创建一个 plim 文档："
+
+#: ../extensions.rst:365
+msgid ""
+"Here is how we can compile this document into a valid HTML (note the ``-p`` "
+"argument):"
+msgstr "将会输出这样的有效 HTML （注意 ``-p`` 参数）："
+
+#: ../extensions.rst:371
+msgid "The result:"
+msgstr "输出结果："

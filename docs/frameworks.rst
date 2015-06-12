@@ -50,6 +50,7 @@ The following code snippet would get Flask working with plim:
 With hello.html in templates dir:
 
 .. code-block:: html
+
     doctype html
     html
       head

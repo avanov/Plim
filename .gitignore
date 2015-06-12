@@ -16,3 +16,6 @@ docs/_build
 !.coveragerc
 *nose*
 *node_modules*
+*.mo
+*.doctree
+docs/locale/.doctrees/*

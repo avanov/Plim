@@ -168,15 +168,15 @@ Main Documentation
 .. toctree::
    :maxdepth: 3
 
-   en/syntax
-   en/differences
-   en/extensions
-   en/frameworks
-   en/cli
-   en/license
-   en/authors
-   en/related
-   en/changes
+   syntax
+   differences
+   extensions
+   frameworks
+   cli
+   license
+   authors
+   related
+   changes
 
 
 Indices and tables

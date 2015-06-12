@@ -1,0 +1,83 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../frameworks.rst:3
+msgid "Framework Integration"
+msgstr "与 Web 框架集成"
+
+#: ../frameworks.rst:7
+msgid "Pyramid"
+msgstr ""
+
+#: ../frameworks.rst:9
+msgid ""
+"Add ``plim.adapters.pyramid_renderer`` into the ``pyramid.includes`` list of"
+" your .ini configuration file"
+msgstr ""
+"将 ``plim.adapters.pyramid_renderer`` 添加至项目 .ini 配置文件的 "
+"``pyram`id.includes`` 列表中："
+
+#: ../frameworks.rst:18
+msgid ""
+"The adapter will add the ``.plim`` renderer for use in Pyramid. This can be "
+"overridden and more may be added via the ``config.add_plim_renderer()`` "
+"directive:"
+msgstr ""
+
+#: ../frameworks.rst:25
+msgid ""
+"The renderer will load its configuration from a provided mako prefix in the "
+"Pyramid settings dictionary. The default prefix is 'mako.'."
+msgstr ""
+
+#: ../frameworks.rst:29
+msgid "Flask"
+msgstr ""
+
+#: ../frameworks.rst:31
+msgid "The following code snippet would get Flask working with plim:"
+msgstr "想要在 Flask 中使用 plim 只需要在项目中添加下面的代码："
+
+#: ../frameworks.rst:50
+msgid "With hello.html in templates dir:"
+msgstr "templates 目录中的 hello.html 需要写成这样："
+
+#: ../frameworks.rst:64
+msgid "Syntax Highlighters"
+msgstr "代码高亮"
+
+#: ../frameworks.rst:66
+msgid "At this moment, Plim doesn't have syntax highlighters."
+msgstr "现在还没有专门的 plim 语法高亮工具。"
+
+#: ../frameworks.rst:68
+msgid ""
+"But, at a starting point you can use `Slim syntax highlighters "
+"<https://github.com/slim-template/slim#syntax-highlighters>`_, since most of"
+" Plim syntax is the same as of Slim."
+msgstr ""
+"不过，由于 Plim 和 Slim 的语法很相似，你可以使用 "
+"`Slim 的语法高亮工具 <https://github.com/slim-template/slim#syntax-highlighters>`_ "
+"作为替代。"
+
+#: ../frameworks.rst:73
+msgid "Editors support"
+msgstr "编辑器支持"
+
+#: ../frameworks.rst:76
+msgid ""
+"`vim-plim <https://github.com/keitheis/vim-plim>`_ - a Plim port of `vim-"
+"slim <https://github.com/slim-template/vim-slim>`_ plugin."
+msgstr ""
+"`vim-plim <https://github.com/keitheis/vim-plim>`_ —— 一个 Plim 的 "
+"`vim-slim <https://github.com/slim-template/vim-slim>`_ 插件移植版本。"

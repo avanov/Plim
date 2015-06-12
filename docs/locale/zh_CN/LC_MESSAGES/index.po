@@ -1,0 +1,78 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../index.rst:8
+msgid "Plim Documentation"
+msgstr "Plim 中文文档"
+
+#: ../index.rst:23
+msgid ""
+"Plim is a Python port of `Ruby's Slim template language <http://slim-"
+"lang.com/>`_ built on top of `Mako Templates "
+"<http://www.makotemplates.org/>`_. It uses `Mako's preprocessor feature "
+"<http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor"
+"#api-reference>`_ to translate its syntax into a valid HTML/Mako markup."
+msgstr ""
+"Plim 是 `Ruby Slim 模版 <http://slim-lang.com/>`_ 的 Python 移植版本，
+"基于 `Mako Templates <http://www.makotemplates.org/>`_ ，并使用 `Mako 预处理特性 "
+"<http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor"
+"#api-reference>`_ 将其语法转换为符合 HTML/Mako 标准的标签。"
+
+#: ../index.rst:30
+msgid "Installation"
+msgstr "安装指南"
+
+#: ../index.rst:38
+msgid "Tests"
+msgstr "运行测试"
+
+#: ../index.rst:40
+msgid ""
+"Plim provides an extensive test suite based on `nosetests "
+"<http://nose.readthedocs.org/en/latest/>`_. You can run the tests with the "
+"following command"
+msgstr ""
+"Plim 的测试依赖于 `nosetests "
+"<http://nose.readthedocs.org/en/latest/>`_ ，你可以输入下面的命令来运行测试"
+
+#: ../index.rst:48
+msgid ""
+"Coverage statistics are `available online "
+"<https://coveralls.io/r/avanov/Plim?branch=develop>`_."
+msgstr ""
+"你可以在 `这里 "
+"<https://coveralls.io/r/avanov/Plim?branch=develop>`_ 看到覆盖率统计。"
+
+#: ../index.rst:52
+msgid "Detailed example"
+msgstr "示例"
+
+#: ../index.rst:166
+msgid "Main Documentation"
+msgstr "主要文档"
+
+#: ../index.rst:183
+msgid "Indices and tables"
+msgstr ""
+
+#: ../index.rst:185
+msgid ":ref:`genindex`"
+msgstr ""
+
+#: ../index.rst:186
+msgid ":ref:`modindex`"
+msgstr ""
+
+#: ../index.rst:187
+msgid ":ref:`search`"
+msgstr ""
