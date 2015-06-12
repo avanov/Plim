@@ -1,3 +1,0 @@
-.. module:: plim
-
-.. include:: ../../CHANGES
