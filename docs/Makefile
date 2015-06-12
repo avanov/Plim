@@ -37,6 +37,19 @@ help:
 	@echo "  changes    to make an overview of all changed/added/deprecated items"
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
+	@echo "  chs        to make Chinese .mo translation based on the related po files"
+
+.PHONY: init-chs chs update
+
+init-chs: gettext update
+
+update:
+	sphinx-intl update -p locale -l zh_CN
+
+chs:
+	sphinx-intl build
+	$(SPHINXBUILD) -b html -D language='zh_CN' $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)."
 
 clean:
 	-rm -rf $(BUILDDIR)/*
@@ -132,7 +145,7 @@ info:
 	@echo "makeinfo finished; the Info files are in $(BUILDDIR)/texinfo."
 
 gettext:
-	$(SPHINXBUILD) -b gettext $(I18NSPHINXOPTS) $(BUILDDIR)/locale
+	$(SPHINXBUILD) -b gettext $(I18NSPHINXOPTS) locale
 	@echo
 	@echo "Build finished. The message catalogs are in $(BUILDDIR)/locale."
 
