@@ -1,0 +1,102 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../differences.rst:2
+msgid "Syntactic Differences"
+msgstr "语法区别"
+
+#: ../differences.rst:4
+msgid ""
+"Plim is *not the exact* port of Slim. Here is the full list of differences."
+msgstr "Plim *不是完整的* Slim 移植，两者区别在于："
+
+#: ../differences.rst:7
+msgid ""
+"Slim has the ( ``'`` ), ( ``='`` ), and ( ``=='`` ) `line indicators "
+"<https://github.com/slim-template/slim#line-indicators>`_. In Plim, single "
+"quote has been replaced by the comma char ( ``,`` ):"
+msgstr ""
+"Slim 中有 ( ``'`` )、( ``='`` )、( ``=='`` ) ` 三种行内指示符（line indicators）"
+"<https://github.com/stonean/slim#line-indicators>`_ 。Plim 使用 ``,`` 代替 ``'``。"
+
+#: ../differences.rst:17
+msgid ""
+"The change was made in order to get rid of the syntactic ambiguities like "
+"these:"
+msgstr ""
+"之所以这样改动，是为了避免这种情况下的语法歧义："
+
+#: ../differences.rst:28
+msgid ""
+"Meanwhile, the comma char is not allowed at the beginning of python "
+"expression, therefore the following code samples are consistent:"
+msgstr ""
+"然而 Python 表达式不允许以逗号起始，因此下面的例子并不会产生歧义"
+
+#: ../differences.rst:41
+msgid ""
+"In addition, the comma syntax seems more natural, since in formal writing we"
+" also add a whitespace between a comma and the following word (in contrast "
+"to apostrophes, which may be written together with some parts of words - "
+"\"I'm\", \"it's\" etc)."
+msgstr ""
+"另外，使用逗号相比引号也更自然，因为我们在书写普通英文单词，如 “I'm”、“it's” 时也会使用单引号。"
+
+#: ../differences.rst:47
+msgid ""
+"Unlike Slim, Plim does not support square or curly braces for wrapping tag "
+"attributes. You can use only parentheses ``()``:"
+msgstr ""
+"和 Slim 不同的是，Plim 并不支持方括号或者花括号作为标签属性标记，只允许小括号 ``()`` ："
+
+#: ../differences.rst:61
+msgid "In Plim, all html tags **MUST** be written in lowercase."
+msgstr "Plim 中，所有 HTML 标签 **必须** 完全小写："
+
+#: ../differences.rst:63
+msgid ""
+"This restriction was introduced to support :ref:`Implicit Litaral Blocks "
+"<implicit-literals>` feature."
+msgstr ""
+"该限制是为了提供 :ref:`隐式纯文本块（Implicit Litaral Blocks） <implicit-literals>` 功能。"
+
+#: ../differences.rst:79
+msgid ""
+"You do not have to use the ``|`` (pipe) indicator in ``style`` and "
+"``script`` tags."
+msgstr "不必在 ``style`` and ``script`` 标签中使用 ``|`` （管道符）。"
+
+#: ../differences.rst:81
+msgid ""
+"Plim does not make distinctions between control structures and embedded "
+"filters."
+msgstr "Plim 并不对结构控制和内嵌的过滤器之间加以区别。"
+
+#: ../differences.rst:83
+msgid ""
+"For example, in Slim you would write ``-if``, ``-for``, and ``coffee:`` "
+"(without preceding dash, but with the colon sign at the tail). But in Plim, "
+"you must write ``-if``, ``-for``, and ``-coffee``."
+msgstr ""
+"在 Slim 中你需要写 ``-if``、``-for`` 以及 ``coffee:`` ，"
+"但是在 Plim 中你不可以在结尾添加冒号： ``-if``、``-for``、``-coffee``。"
+
+#: ../differences.rst:87
+msgid ""
+"In contrast to Slim, Plim does not support the ``/!`` line indicator `which "
+"is used as an HTML-comment <https://github.com/stonean/slim#-7>`_. You can "
+"use raw HTML-comments instead."
+msgstr ""
+"和 Slim 不同，Plim 并不支持 ``/!`` 这样的 `HTML 批量注释 <https://github.com/stonean/slim#-7>`_  ，"
+"在 Plim 中你只能使用原生 HTML 注释符。"
+
