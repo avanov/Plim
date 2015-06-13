@@ -1,0 +1,940 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../syntax.rst:3
+msgid "Syntax"
+msgstr "语法"
+
+#: ../syntax.rst:6
+msgid ""
+"Some relevant parts of this section were copied from the `official Slim "
+"documentation <https://github.com/slim-template/slim>`_."
+msgstr ""
+"文档的某些部分直接复制自 `Slim 官方文档 <https://github.com/slim-template/slim>`_ 。"
+
+#: ../syntax.rst:10
+msgid "Line Indicators"
+msgstr "行内标识符（Line Indicator）"
+
+#: ../syntax.rst:13
+msgid "``|``"
+msgstr ""
+
+#: ../syntax.rst:13
+msgid ""
+"The pipe tells Plim to just copy the line. It essentially escapes any "
+"processing."
+msgstr "管道符告诉 Plim 只需要复制整行即可，不需要做任何转换。"
+
+#: ../syntax.rst:18
+msgid "``,``"
+msgstr ""
+
+#: ../syntax.rst:16
+msgid ""
+"The comma tells Plim to copy the line (similar to ``|``), but makes sure "
+"that a single trailing space is appended."
+msgstr "逗号告诉 Plim 复制整行（与管道符类似），但是在行尾添加一个空格字符。"
+
+#: ../syntax.rst:18
+msgid "Slim syntax instead has the single quote ( ``'`` ) line indicator."
+msgstr "在 Slim 中对应的是单引号（``'``）。"
+
+#: ../syntax.rst:22
+msgid "``-``"
+msgstr ""
+
+#: ../syntax.rst:21
+msgid ""
+"The dash denotes control code. Examples of control code are loops, "
+"conditionals, mako tags, and extensions."
+msgstr "横线表示控制模块，包括循环、条件、mako 标签以及扩展。"
+
+#: ../syntax.rst:25
+msgid "``=``"
+msgstr ""
+
+#: ../syntax.rst:25
+msgid ""
+"The equal sign tells Plim it's a Python call that produces output to add to "
+"the buffer."
+msgstr "等号表示 Python 调用，并会将代码的输出添加到 HTML 输出缓冲区中。"
+
+#: ../syntax.rst:29
+msgid "``=,``"
+msgstr ""
+
+#: ../syntax.rst:28
+msgid ""
+"Same as the single equal sign ( ``=`` ), except that it adds an explicit "
+"single trailing whitespace after the python expression."
+msgstr "与等号类似，但是会在 Python 代码的输出后添加一个空格字符。"
+
+#: ../syntax.rst:40
+msgid "``==``"
+msgstr ""
+
+#: ../syntax.rst:32
+msgid ""
+"Same as the single equal sign ( ``=`` ), but adds `the \"n\" filter "
+"<http://docs.makotemplates.org/en/latest/filtering.html>`_ to mako "
+"expression."
+msgstr ""
+"与等号类似，但是会在输出为 mako 时添加 "
+"'过滤器 \"n\" <http://docs.makotemplates.org/en/latest/filtering.html>`_ 。"
+
+#: ../syntax.rst:44
+msgid "``==,``"
+msgstr ""
+
+#: ../syntax.rst:43
+msgid ""
+"Same as the double equal sign ( ``==`` ), except that it adds an explicit "
+"single trailing whitespace after the python expression."
+msgstr "和 ``==`` 类似，但是会在 Python 表达式的结尾添加空格字符。"
+
+#: ../syntax.rst:64
+msgid "``/``"
+msgstr ""
+
+#: ../syntax.rst:47
+msgid ""
+"Use the forward slash for code comments - anything after it won't get "
+"displayed in the final mako markup."
+msgstr "正斜线用于代码注释，其后的任何内容都不会输出到 Mako 模板中。"
+
+#: ../syntax.rst:50
+msgid ""
+"**There is no an equivalent syntax for Slim's \"/!\" html comment**. This "
+"line indicator has been considered redundant since Plim supports raw HTML "
+"tags:"
+msgstr ""
+"**Slim 中的 \"/!\" HTML 注释并没有对应的 Plim 写法** ，"
+"这是因为 Plim 现在已经支持原生的 HTML 标记，无需多余的控制语法。"
+
+#: ../syntax.rst:67
+msgid "Indentation"
+msgstr "缩进"
+
+#: ../syntax.rst:69
+msgid ""
+"Plim indentation rules are the same as of Slim: indentation matters, but "
+"it's not as strict as `Haml <http://haml.info/about.html>`_. If you want to "
+"first indent 2 spaces, then 5 spaces, it's your choice. To nest markup you "
+"only need to indent by one space, the rest is gravy."
+msgstr ""
+"Plim 缩进规则和 Slim 类似：缩进很重要，但是并不需要像 "
+"`Haml <http://haml.info/about.html>`_ 那样严格，"
+"你尽可以在代码中使用 2 空格、5 空格缩进。实际上只需要提供 1 个以上的空格即符合 Plim 的语法。"
+
+#: ../syntax.rst:75
+msgid "Tag Attributes"
+msgstr "标签属性"
+
+#: ../syntax.rst:78
+msgid "Static Attrbutes"
+msgstr "静态属性"
+
+#: ../syntax.rst:80
+msgid ""
+"Static tag attributes can be specified in the same form as any valid python "
+"string declaration."
+msgstr ""
+
+#: ../syntax.rst:83 ../syntax.rst:854
+msgid "For example"
+msgstr "例如："
+
+#: ../syntax.rst:89 ../syntax.rst:401
+msgid "will be rendered as"
+msgstr "将会输出："
+
+#: ../syntax.rst:95
+msgid ""
+"As in Python string declarations, you must take care of correct quote "
+"escaping"
+msgstr "和 Python 字符串声明一样，你需要注意引号的转译："
+
+#: ../syntax.rst:110
+msgid "You can omit quotes from numeric attribute values:"
+msgstr "对于纯数字属性，引号并不是必须的："
+
+#: ../syntax.rst:116 ../syntax.rst:1000
+msgid "produces"
+msgstr "输出："
+
+#: ../syntax.rst:124
+msgid "Dynamic Attributes"
+msgstr "动态属性"
+
+#: ../syntax.rst:126
+msgid "Dynamic values can be specified in forms of:"
+msgstr "动态值必须以以下形式传入："
+
+#: ../syntax.rst:128
+msgid "Mako expression"
+msgstr "Mako 表达式"
+
+#: ../syntax.rst:135 ../syntax.rst:861 ../syntax.rst:1020 ../syntax.rst:1043
+#: ../syntax.rst:1065 ../syntax.rst:1088 ../syntax.rst:1122
+msgid "or"
+msgstr "或者"
+
+#: ../syntax.rst:143
+msgid "Python expression"
+msgstr "Python 表达式"
+
+#: ../syntax.rst:150
+msgid "or with parentheses"
+msgstr "或者使用圆括号"
+
+#: ../syntax.rst:157
+msgid "All these examples produce the same mako markup:"
+msgstr "以上代码都会输出相同的 Mako 代码："
+
+#: ../syntax.rst:166
+msgid "Boolean Attributes"
+msgstr "布尔属性"
+
+#: ../syntax.rst:168
+msgid ""
+"Boolean attributes can be specified either by static or dynamic method:"
+msgstr "布尔属性即可以通过静态也可以使用动态方法定义："
+
+#: ../syntax.rst:170
+msgid "Static attribute example:"
+msgstr "静态属性示例："
+
+#: ../syntax.rst:181
+msgid "Dynamic attribute example (note the trailing question mark):"
+msgstr "动态属性示例（注意结尾的问号）："
+
+#: ../syntax.rst:200
+msgid "Dynamic unpacking"
+msgstr ""
+
+#: ../syntax.rst:202
+msgid ""
+"This feature is an equivalent to `Slim's splat attributes "
+"<https://github.com/slim-template/slim#splat-attributes->`_, but the syntax "
+"was changed in order to correspond to Python's ``**kwargs`` semantics."
+msgstr ""
+"这个功能和 `Slim 的 splat 属性 "
+"<https://github.com/slim-template/slim#splat-attributes->`_ 对应，"
+"但是语法上稍有不同，以契合 Python 的 ``**kwargs`` 语法。"
+
+#: ../syntax.rst:206
+msgid "Consider the following python dictionary:"
+msgstr "假设有这样一个 Python 字典："
+
+#: ../syntax.rst:217
+msgid ""
+"Now we can unpack the dictionary in order to populate tags with attributes. "
+"The following line::"
+msgstr ""
+
+#: ../syntax.rst:221
+msgid ""
+"will be translated to mako template which will output an equivalent to the "
+"following HTML markup"
+msgstr "将会输出与下面这段 HTML 等价的 Mako 代码："
+
+#: ../syntax.rst:227
+msgid "Here are some other examples"
+msgstr "其它示例："
+
+#: ../syntax.rst:244
+msgid "Attribute Wrapping"
+msgstr ""
+
+#: ../syntax.rst:246
+msgid ""
+"You can wrap tag attributes with parentheses ``()``. Unlike Slim, Plim "
+"doesn't support square ``[]`` or curly ``{}`` braces for attributes "
+"wrapping."
+msgstr ""
+"你可以是用圆括号 ``()`` 包裹标签属性。但和 Slim 不同的是，"
+"Plim 并不支持方括号 ``[]`` 和花括号 ``{}`` 用作属性封装。"
+
+#: ../syntax.rst:256
+msgid "If you wrap the attributes, you can spread them across multiple lines:"
+msgstr "使用属性包裹后，属性赋值将支持跨行："
+
+#: ../syntax.rst:272
+msgid "Inline Tag Content"
+msgstr "单行标签内容"
+
+#: ../syntax.rst:274
+msgid "You can put content on the same line with the tag:"
+msgstr "你可以将标签中的内容与标签写在同一行："
+
+#: ../syntax.rst:282
+msgid ""
+"Or nest it. Note: use either a pipe or :ref:`Implicit literal indicators "
+"<implicit-literals>`"
+msgstr ""
+"也可以使用缩进嵌套。注意：需要使用管道符或者 :ref:`隐式文本标识"
+"（Implicit literal indicators） <implicit-literals>`"
+
+#: ../syntax.rst:297
+msgid "Dynamic Tag Content"
+msgstr "动态标签内容"
+
+#: ../syntax.rst:299
+msgid "You can make the call on the same line"
+msgstr "你可以在同一行调用动态属性"
+
+#: ../syntax.rst:307
+msgid "Or nest it."
+msgstr "或者缩进："
+
+#: ../syntax.rst:317
+msgid "``id`` and ``class`` Shortcuts"
+msgstr "``id`` 和 ``class`` 的简易写法"
+
+#: ../syntax.rst:319
+msgid ""
+"You can specify the id and class attributes in the following shortcut form."
+msgstr "你可以使用下面的格式设置标签的 id 和 class 属性："
+
+#: ../syntax.rst:334 ../syntax.rst:361
+msgid "This is the same as:"
+msgstr "与下面的写法等价："
+
+#: ../syntax.rst:348
+msgid ""
+"`In contrast to Slim <https://github.com/slim-template/slim#id-shortcut"
+"--and-class-shortcut->`_, Plim allows you to insert dynamic expressions "
+"right into the shortcuts:"
+msgstr ""
+"`与 Slim 不同 <https://github.com/slim-template/slim#id-shortcut--and-class-shortcut->`_ 的是，"
+"Plim 支持在这种简写中混合动态表达式："
+
+#: ../syntax.rst:373
+msgid "Inline Tags"
+msgstr "行内标签"
+
+#: ../syntax.rst:375
+msgid ""
+"Sometimes you may want to be a little more compact and inline the tags."
+msgstr "你可能会希望这样更简洁的行内标签支持："
+
+#: ../syntax.rst:384
+msgid "For readability, don't forget you can wrap the attributes."
+msgstr "别忘了，还可以使用圆括号增加代码的可读性："
+
+#: ../syntax.rst:393
+msgid "Inline Statements"
+msgstr "行内状态（Inline Statement）"
+
+#: ../syntax.rst:395
+msgid ""
+"You can inline python loops and conditional expressions in the same manner "
+"as tags."
+msgstr "Python 循环和条件表达式的单行写法和 HTML 标签类似："
+
+#: ../syntax.rst:412
+msgid "Evaluate Python Code in Text"
+msgstr "Python 代码与纯文本混合"
+
+#: ../syntax.rst:414
+msgid ""
+"Use standard `mako expression syntax "
+"<http://docs.makotemplates.org/en/latest/syntax.html#expression-"
+"substitution>`_. The text escaping depends on `mako's default filters "
+"settings "
+"<http://docs.makotemplates.org/en/latest/filtering.html?highlight=default%20filters"
+"#the-default-filters-argument>`_."
+msgstr ""
+"使用标准 `Mako 表达式语法 "
+"<http://docs.makotemplates.org/en/latest/syntax.html#expression-substitution>`_ 。"
+"文本的解析方式决定于 `Mako 默认过滤器的设置 "
+"<http://docs.makotemplates.org/en/latest/filtering.html?highlight=default%20filters#the-default-filters-argument>`_ 。"
+
+#: ../syntax.rst:424
+msgid ""
+"Currently, Mako doesn't provide a simple way to escape the interpolation of "
+"expressions (i.e. render as is). You can use either the `<%text> "
+"<http://docs.makotemplates.org/en/latest/syntax.html#text>`_ tag (or Plim's "
+"``-text`` equivalent for blocks of mako syntax examples), or this trick"
+msgstr ""
+"目前，Mako 并没有提供一种简单的其嵌入表达式的渲染方法（比如原样输出）。"
+"你可以使用 `<%text> <http://docs.makotemplates.org/en/latest/syntax.html#text>`_ "
+"标签（或者 Plim ``-text`` 标记）或者下面的取巧办法："
+
+#: ../syntax.rst:434
+msgid "Embedded Markup"
+msgstr "嵌入的标记"
+
+#: ../syntax.rst:436
+msgid "You can embed plim markup right into literal blocks:"
+msgstr "你可以在隐式文本块中嵌入 Plim 标记："
+
+#: ../syntax.rst:442 ../syntax.rst:455 ../syntax.rst:467
+msgid "is rendered as"
+msgstr "将输出："
+
+#: ../syntax.rst:448
+msgid ""
+"If you want to put two embedded strings next to each other, add a trailing "
+"underscore character after the first embedded string:"
+msgstr ""
+"如果你想要紧接着使用两个嵌入标记，需要在第一个嵌入标记后跟上一个下划线 ``_``："
+
+#: ../syntax.rst:461
+msgid ""
+"The embedding mechanism is recursive so you can embed plim markup into "
+"embedded plim markup:"
+msgstr "这种嵌入机制可迭代，也就是说你可以在嵌入标记中使用嵌入标记："
+
+#: ../syntax.rst:475
+msgid "Skip HTML Escaping"
+msgstr "停用 HTML 转义"
+
+#: ../syntax.rst:477
+msgid "Use either a double equal sign"
+msgstr "使用双等号："
+
+#: ../syntax.rst:486
+msgid "or the explicit ``| n`` filter at the end of the expression"
+msgstr "或者在表达式的结尾添加 ``| n`` 过滤器："
+
+#: ../syntax.rst:496
+msgid "Code Comments"
+msgstr "代码注释"
+
+#: ../syntax.rst:498
+msgid "Use forward slash ``/`` for code comments"
+msgstr "使用正斜线 ``/`` 标记代码中的注释："
+
+#: ../syntax.rst:511
+msgid "Raw HTML Tags"
+msgstr "原生 HTML 标签"
+
+#: ../syntax.rst:513
+msgid ""
+"Plim allows you to use raw HTML tag lines, and also to mix them with any "
+"available control logic. It is particularly useful in situations like this "
+"one:"
+msgstr ""
+"在 Plim 中你可以使用原生的 HTML 标签，也可以和所有逻辑控制模块混合使用，"
+"在下面的情况中非常实用："
+
+#: ../syntax.rst:530
+msgid "Doctype Declarations"
+msgstr "Doctype 声明"
+
+#: ../syntax.rst:532
+msgid ""
+"There is no default option for doctype declaration tag. Therefore, you "
+"should explicitly specify the desired doctype:"
+msgstr "Plim 并不提供默认的 doctype 声明，因此你需要指定 HTML 的 doctype"
+
+#: ../syntax.rst:540
+msgid "Here is the full list of available doctypes:"
+msgstr "可用的 HTML doctype 包括："
+
+#: ../syntax.rst:542
+msgid "**doctype html**"
+msgstr ""
+
+#: ../syntax.rst:544 ../syntax.rst:548
+msgid "``<!DOCTYPE html>``"
+msgstr ""
+
+#: ../syntax.rst:546
+msgid "**doctype 5**"
+msgstr ""
+
+#: ../syntax.rst:550
+msgid "**doctype 1.1**"
+msgstr ""
+
+#: ../syntax.rst:552
+msgid ""
+"``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
+"\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:554
+msgid "**doctype strict**"
+msgstr ""
+
+#: ../syntax.rst:556
+msgid ""
+"``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:558
+msgid "**doctype xml**"
+msgstr ""
+
+#: ../syntax.rst:560
+msgid "``<?xml version=\"1.0\" encoding=\"utf-8\" ?>``"
+msgstr ""
+
+#: ../syntax.rst:562
+msgid "**doctype transitional**"
+msgstr ""
+
+#: ../syntax.rst:564
+msgid ""
+"``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:566
+msgid "**doctype frameset**"
+msgstr ""
+
+#: ../syntax.rst:568
+msgid ""
+"``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" "
+"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:570
+msgid "**doctype basic**"
+msgstr ""
+
+#: ../syntax.rst:572
+msgid ""
+"``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" "
+"\"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:574
+msgid "**doctype mobile**"
+msgstr ""
+
+#: ../syntax.rst:576
+msgid ""
+"``<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" "
+"\"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:581
+msgid "Control Logic"
+msgstr "逻辑控制"
+
+#: ../syntax.rst:585
+msgid "**if/elif/else** statements"
+msgstr "**if/elif/else**"
+
+#: ../syntax.rst:602
+msgid "**unless** statement"
+msgstr "**unless**"
+
+#: ../syntax.rst:604
+msgid "This is the shortcut form of the ``- if not (<EXPR>)`` statement."
+msgstr "``unless`` 是 ``- if not (<EXPR>)`` 的缩写形式"
+
+#: ../syntax.rst:615
+msgid "**for** statement"
+msgstr "**for** 循环"
+
+#: ../syntax.rst:626
+msgid ""
+"You can use the ``-continue`` and ``-break`` commands inside the ``-for`` "
+"block. See the section :ref:`Returning Early from a Template <return-"
+"early>`."
+msgstr ""
+"你可以在 ``-for`` 中使用 ``-continue`` 和 ``-break`` 标记。"
+"参考链接 :ref:`Returning Early from a Template <return-early>`."
+
+#: ../syntax.rst:631
+msgid "**while** statement"
+msgstr ""
+
+#: ../syntax.rst:645
+msgid ""
+"You can use the ``-continue`` and ``-break`` commands inside the ``-while`` "
+"block. See the section :ref:`Returning Early from a Template <return-"
+"early>`."
+msgstr ""
+"你同样可以在 ``-while`` 循环中使用 ``-continue`` 和 ``-break`` 标记。"
+"参考链接 :ref:`Returning Early from a Template <return-early>`."
+
+#: ../syntax.rst:650
+msgid "**until** statement"
+msgstr "**until**"
+
+#: ../syntax.rst:652
+msgid "This is the shortcut form of the ``- while not (<EXPR>)`` statement."
+msgstr "``until`` 是 ``- while not (<EXPR>)`` 的简写方式："
+
+#: ../syntax.rst:661
+msgid ""
+"You can use the ``-continue`` and ``-break`` commands inside the ``-until`` "
+"block. See the section :ref:`Returning Early from a Template <return-"
+"early>`."
+msgstr ""
+"你同样可以在 ``-until`` 中使用 ``-continue`` 和 ``-break`` 标记。
+"参考链接 :ref:`Returning Early from a Template <return-early>` 。"
+
+#: ../syntax.rst:666
+msgid "**with** statement"
+msgstr "**with**"
+
+#: ../syntax.rst:668
+msgid ""
+"The ``% with`` statement was introduced in `Mako 0.7.0 "
+"<http://www.makotemplates.org/CHANGES>`_."
+msgstr "`Mako 0.7.0 <http://www.makotemplates.org/CHANGES>`_ 中引入了``% with`` 标记："
+
+#: ../syntax.rst:678
+msgid "**try/except** statements"
+msgstr "**try/except**"
+
+#: ../syntax.rst:696
+msgid "Returning Early from a Template"
+msgstr ""
+
+#: ../syntax.rst:698
+msgid ""
+"Plim provides a shortcut to Mako's `<% return %> "
+"<http://docs.makotemplates.org/en/latest/syntax.html#returning-early-"
+"from-a-template>`_ template directive."
+msgstr ""
+"Plim 同样提供 Mako `<% return %> 标签 "
+"<http://docs.makotemplates.org/en/latest/syntax.html#returning-early-from-a-template>`_ "
+"的简写形式："
+
+#: ../syntax.rst:708
+msgid "This is the same as"
+msgstr "等价于："
+
+#: ../syntax.rst:716
+msgid ""
+"You can use it at any position of the template, not only inside control "
+"structures."
+msgstr "你可以在 Plim 模板中的任意位置这样使用，而不独是控制结构中。"
+
+#: ../syntax.rst:718
+msgid ""
+"There are also the ``-break`` and ``-continue`` shortcuts, that can be used "
+"inside the ``-for``, ``-while``, and ``-until`` loops."
+msgstr ""
+
+#: ../syntax.rst:726
+msgid "Literals"
+msgstr "文本块"
+
+#: ../syntax.rst:728
+msgid ""
+"You can specify either explicit or implicit literal blocks. The difference "
+"is, whether you prepend a block with the explicit pipe char ``|`` or start "
+"it by one of the implicit indicators."
+msgstr "你可以定义显式或者隐式的文本块，区别在于以 ``|`` 显式声明符还是隐式声明符开头。"
+
+#: ../syntax.rst:734
+msgid "Explicit Literals"
+msgstr "显式声明"
+
+#: ../syntax.rst:736
+msgid ""
+"Use a pipe ( ``|`` ) or comma ( ``,`` ) literal indicators to start the "
+"escape. Each following line that is indented greater than the first one is "
+"copied over."
+msgstr ""
+"使用管道符 （ ``|`` ） 或者逗号 （ ``,`` ） literal indicators to start the escape."
+"Each following line that is indented greater than the first one is copied over."
+
+#: ../syntax.rst:755
+msgid "The parsed result of both the above examples:"
+msgstr "上面的输出结果如下："
+
+#: ../syntax.rst:762
+msgid ""
+"The left margin is set to the zero. Any additional spaces will be copied "
+"over."
+msgstr "边缘空格将被抹去。其它位置的空格则会原样复制。"
+
+#: ../syntax.rst:775
+msgid "Implicit Literals"
+msgstr "隐式文本块"
+
+#: ../syntax.rst:777
+msgid ""
+"Literal blocks can be implicitly specified by the following starting "
+"sequences:"
+msgstr "以下字符开头的文本块将被当作隐式声明："
+
+#: ../syntax.rst:779
+msgid "an uppercase ASCII letter;"
+msgstr "大写 ASCII 字母；"
+
+#: ../syntax.rst:780
+msgid "any non-ASCII letter;"
+msgstr "任何非 ASCII 字符；"
+
+#: ../syntax.rst:781
+msgid "a digit without prefixed positive/negative signs;"
+msgstr "没有正／负号的数字；"
+
+#: ../syntax.rst:782
+msgid "HTML-escaped character, for example ``&nbsp;``;"
+msgstr "HTML 转义字符，如 ``&nbsp;``；"
+
+#: ../syntax.rst:783
+msgid "Mako open brace sequence ``${``;"
+msgstr "Mako 格式的开括号 ``${``；"
+
+#: ../syntax.rst:784
+msgid "an open square brace ``[``;"
+msgstr ""
+
+#: ../syntax.rst:785
+msgid "an open parenthesis ``(``;"
+msgstr ""
+
+#: ../syntax.rst:786
+msgid ""
+"any unicode character outside the range of U0021 - U007E (ASCII 33 - 126)."
+msgstr ""
+
+#: ../syntax.rst:847
+msgid "Python Blocks"
+msgstr "Python 代码块"
+
+#: ../syntax.rst:850
+msgid "Classic Blocks"
+msgstr "旧式写法"
+
+#: ../syntax.rst:851
+msgid ""
+"Use ``-py`` or ``-python`` to insert the `<% %> mako tag "
+"<http://docs.makotemplates.org/en/latest/syntax.html#python-blocks>`_."
+msgstr ""
+"使用 ``-py`` 或者 ``-python`` 标记来代替 "
+"`<% %> mako 标签 <http://docs.makotemplates.org/en/latest/syntax.html#python-blocks>`_ 。"
+
+#: ../syntax.rst:869
+msgid "or even"
+msgstr "或者："
+
+#: ../syntax.rst:881
+msgid ""
+"In latter case, the first line ``x = 1`` will be aligned with the second "
+"line ``y = x + 1``."
+msgstr "在后面的例子中， ``x = 1`` 将会和 ``y = x + 1`` 出现在同一行。"
+
+#: ../syntax.rst:884
+msgid "New-style blocks"
+msgstr "新式写法"
+
+#: ../syntax.rst:886
+msgid ""
+"New-style blocks were introduced for better readability of embedded python "
+"code."
+msgstr "新式写法将提高嵌入的 Python 代码的可读性。"
+
+#: ../syntax.rst:889
+msgid ""
+"Use a sequence of at least three dashes to start a new-style python block."
+msgstr "新式写法使用三个以上的横线开头的字符串作为 Python 代码块的开始。"
+
+#: ../syntax.rst:891
+msgid ""
+"Here are the overwritten examples of the classic ones. The results are the "
+"same:"
+msgstr "下面是对应的新式写法示例："
+
+#: ../syntax.rst:911
+msgid ""
+"And here's an example of how we can use an inline statement for providing a "
+"block description"
+msgstr ""
+
+#: ../syntax.rst:925
+msgid "the result (indentation will be stripped out):"
+msgstr "输出（真实输出不包括下面的缩进）："
+
+#: ../syntax.rst:954
+msgid "Module-level Blocks"
+msgstr "模块级 Block"
+
+#: ../syntax.rst:956
+msgid ""
+"Use ``-py!`` or ``-python!`` block to insert the `<%! %> mako tag "
+"<http://docs.makotemplates.org/en/latest/syntax.html#module-level-blocks>`_."
+msgstr ""
+"使用 ``-py!`` 或者 ``-python!`` 代替 `<%! %> mako 标签 "
+"<http://docs.makotemplates.org/en/latest/syntax.html#module-level-blocks>`_ 。"
+
+#: ../syntax.rst:968
+msgid "The same example with a new-style syntax:"
+msgstr "新式写法："
+
+#: ../syntax.rst:981
+msgid "Mako Tags"
+msgstr "Mako 标签"
+
+#: ../syntax.rst:983
+msgid ""
+"Plim supports a complete set of `Mako Tags "
+"<http://docs.makotemplates.org/en/latest/syntax.html#tags>`_, except the "
+"``<%doc>``. The latter has been considered deprecated, since Plim itself has"
+" built-in support of multi-line comments."
+msgstr ""
+
+#: ../syntax.rst:988
+msgid ""
+"As all mako tags start with the ``<`` char, which indicates a :ref:`raw HTML"
+" line <raw-html>`, they all can be written \"as is\". The only thing you "
+"must remember is to manually close the pair tags."
+msgstr ""
+"Plim 支持 ``<%doc>`` 以外的大部分 "
+"`Mako 标签 <http://docs.makotemplates.org/en/latest/syntax.html#tags>`_ ，"
+"Plim 本身提供了多行注释的另一种写法，因此这一标记略显多余。"
+
+#: ../syntax.rst:994
+msgid "**-page** tag"
+msgstr "**-page** 标签"
+
+#: ../syntax.rst:1006
+msgid ""
+"See the details of what ``<%page>`` is used for in `The body() Method "
+"<http://docs.makotemplates.org/en/latest/namespaces.html#namespaces-body>`_ "
+"and `Caching <http://docs.makotemplates.org/en/latest/caching.html>`_ "
+"sections of Mako Documentation."
+msgstr ""
+
+#: ../syntax.rst:1014
+msgid "**-include** tag"
+msgstr "**-include** 标签"
+
+#: ../syntax.rst:1026
+msgid "produce the same output"
+msgstr "输出是一样的："
+
+#: ../syntax.rst:1033
+msgid ""
+"See the `<%include> section "
+"<http://docs.makotemplates.org/en/latest/syntax.html#include>`_ of Mako "
+"Documentation to get more information about this tag."
+msgstr ""
+"查看 `<%include> 章节 <http://docs.makotemplates.org/en/latest/syntax.html#include>`_ "
+"或者其它文档以获取更多内容。"
+
+#: ../syntax.rst:1037
+msgid "**-inherit** tag"
+msgstr "**-inherit** 标签"
+
+#: ../syntax.rst:1049
+msgid "will generate the same"
+msgstr "同样输出："
+
+#: ../syntax.rst:1055
+msgid ""
+"See Mako's `inheritance documentation "
+"<http://docs.makotemplates.org/en/latest/inheritance.html>`_ to get more "
+"information about template inheritance."
+msgstr ""
+"参考 Mako `继承章节 <http://docs.makotemplates.org/en/latest/inheritance.html>`_ "
+"获取更多信息。"
+
+#: ../syntax.rst:1059
+msgid "**-namespace** tag"
+msgstr "**-namespace** 标签"
+
+#: ../syntax.rst:1071 ../syntax.rst:1094
+msgid "produce"
+msgstr "输出："
+
+#: ../syntax.rst:1077
+msgid ""
+"See Mako's `namespace documentation "
+"<http://docs.makotemplates.org/en/latest/namespaces.html>`_ to get more "
+"information about template namespaces."
+msgstr ""
+"更多信息参见 Mako 文档 `namespace 章节 "
+"<http://docs.makotemplates.org/en/latest/namespaces.html>`_  。"
+
+#: ../syntax.rst:1082
+msgid "**-def** tag"
+msgstr "**-def** 标签"
+
+#: ../syntax.rst:1101 ../syntax.rst:1144
+msgid ""
+"See Mako's `defs and blocks documentation "
+"<http://docs.makotemplates.org/en/latest/defs.html>`_ to get more "
+"information about functions and blocks."
+msgstr ""
+
+#: ../syntax.rst:1106
+msgid "**-block** tag"
+msgstr "**-block** 标签"
+
+#: ../syntax.rst:1108
+msgid "Unlike ``-def`` statements, blocks can be anonymous"
+msgstr "和 ``-def`` 不同的是，block 支持匿名："
+
+#: ../syntax.rst:1115
+msgid "Or they can be named as functions"
+msgstr "当然也可以用于定义命名函数："
+
+#: ../syntax.rst:1129
+msgid "As in ``-def``, both above examples produce the same result"
+msgstr "以上 Plim 片段都会输出相同的 Mako 标记："
+
+#: ../syntax.rst:1136
+msgid "You can also specify other block arguments as well"
+msgstr ""
+
+#: ../syntax.rst:1149
+msgid "**-call** tag"
+msgstr "**-call** 标签"
+
+#: ../syntax.rst:1151
+msgid "This statement allows you to define custom tags."
+msgstr "``-call`` 可以用于定制标签。"
+
+#: ../syntax.rst:1153
+msgid "The following examples"
+msgstr "下面的例子"
+
+#: ../syntax.rst:1168
+msgid "will produce"
+msgstr "将输出："
+
+#: ../syntax.rst:1188
+msgid ""
+"Please consult the sections `<%nsname:defname> "
+"<http://docs.makotemplates.org/en/latest/syntax.html#nsname-defname>`_ and "
+"`Calling a Def with Embedded Content and/or Other Defs "
+"<http://docs.makotemplates.org/en/latest/defs.html#defs-with-content>`_ of "
+"Mako Documentation to get more information about custom tags."
+msgstr ""
+"更多信息参见 Mako 文档 `<%nsname:defname> 章节 "
+"<http://docs.makotemplates.org/en/latest/syntax.html#nsname-defname>`_ "
+"和 `Calling a Def with Embedded Content and/or Other Defs "
+"<http://docs.makotemplates.org/en/latest/defs.html#defs-with-content>`_ 章节。"
+
+#: ../syntax.rst:1197
+msgid "**-text** tag"
+msgstr "**-text** 标签"
+
+#: ../syntax.rst:1199
+msgid ""
+"As it is mentioned in `Mako documentation "
+"<http://docs.makotemplates.org/en/latest/syntax.html#text>`_, this tag "
+"suspends the Mako lexer’s normal parsing of Mako template directives, and "
+"returns its entire body contents as plain text. It is used pretty much to "
+"write documentation about Mako:"
+msgstr ""
+"`和 Mako 类似 <http://docs.makotemplates.org/en/latest/syntax.html#text>`_ ，"
+"该标签中的代码将不会对 Mako 命令进行任何渲染操作，"
+"这在写 Mako 文档这样的情况下会很有帮助："
+

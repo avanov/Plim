@@ -1,0 +1,384 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../CHANGES:2
+msgid "Changelog"
+msgstr ""
+
+#: ../../CHANGES:5
+msgid "Version 0.9"
+msgstr ""
+
+#: ../../CHANGES:7
+msgid "0.9.11"
+msgstr ""
+
+#: ../../CHANGES:9
+msgid ""
+"Hotfix: Fix incorrect parsing of templates with windows-style newlines "
+"(CR+LF)."
+msgstr ""
+"Hotfix: Windows-样式换行（CR+LF）的错误解析修复"
+
+#: ../../CHANGES:11
+msgid "0.9.10"
+msgstr ""
+
+#: ../../CHANGES:13
+msgid ""
+"Hotfix: Fix ``plimc``'s inability to find a custom preprocessors module in "
+"the current working dir."
+msgstr ""
+"Hotfix: 修复 ``plimc`` 无法使用当前目录下的预处理器模块问题。"
+
+#: ../../CHANGES:15
+msgid "0.9.9"
+msgstr ""
+
+#: ../../CHANGES:17
+msgid ""
+"Hotfix: Fix UnicodeEncodeError in ``-def`` blocks with unicode strings as "
+"default argument values."
+msgstr ""
+
+#: ../../CHANGES:19
+msgid "0.9.8"
+msgstr ""
+
+#: ../../CHANGES:21
+msgid "Change: Stylus extension no longer depends on the ``nib`` package."
+msgstr ""
+
+#: ../../CHANGES:23
+msgid "0.9.7"
+msgstr ""
+
+#: ../../CHANGES:25
+msgid "Hotfix: Include requirements.txt into the distribution."
+msgstr ""
+
+#: ../../CHANGES:27
+msgid "0.9.6"
+msgstr ""
+
+#: ../../CHANGES:29
+msgid ""
+"Hotfix: Conditional statements parser now can handle strings containing "
+"inline tag separator sequences (#27)."
+msgstr ""
+
+#: ../../CHANGES:31
+msgid "0.9.5"
+msgstr ""
+
+#: ../../CHANGES:33
+msgid ""
+"Hotfix: Fix ``plimc`` unicode decoding regression introduced by the previous"
+" hotfix."
+msgstr ""
+
+#: ../../CHANGES:36
+msgid "0.9.4"
+msgstr ""
+
+#: ../../CHANGES:39
+msgid ""
+"Hotfix: ``plimc`` no longer crashes with TypeError in Python3 environments"
+msgstr ""
+
+#: ../../CHANGES:39
+msgid "when it writes bytes to sys.stdout."
+msgstr ""
+
+#: ../../CHANGES:41
+msgid "0.9.3"
+msgstr ""
+
+#: ../../CHANGES:43
+msgid "Hotfix: Fix UnicodeEncodeError in ``plimc`` when it writes to STDOUT."
+msgstr ""
+
+#: ../../CHANGES:45
+msgid "0.9.2"
+msgstr ""
+
+#: ../../CHANGES:47
+msgid ""
+"Feature: added support for `Custom Parsers "
+"<http://plim.readthedocs.org/en/latest/en/extensions.html#extending-plim-"
+"with-custom-parsers>`_."
+msgstr ""
+
+#: ../../CHANGES:49
+msgid "0.9.1"
+msgstr ""
+
+#: ../../CHANGES:51
+msgid ""
+"New Syntax: `New-style Python Blocks "
+"<http://plim.readthedocs.org/en/latest/en/syntax.html#new-style-blocks>`_."
+msgstr ""
+
+#: ../../CHANGES:52
+msgid ""
+"New Syntax: `New-style Module-level Blocks "
+"<http://plim.readthedocs.org/en/latest/en/syntax.html#module-level-"
+"blocks>`_."
+msgstr ""
+
+#: ../../CHANGES:55
+msgid "0.9.0"
+msgstr ""
+
+#: ../../CHANGES:57
+msgid ""
+"Change: Pyramid adapter now relies on Pyramid>=1.5a2 and "
+"pyramid_mako>=0.3.1."
+msgstr ""
+
+#: ../../CHANGES:58
+msgid "Change: The package now depends on Mako>=0.9.0."
+msgstr ""
+
+#: ../../CHANGES:59
+msgid "Change: Sass/Scss extension now requires PyScss>=1.2.0.post3."
+msgstr ""
+
+#: ../../CHANGES:61
+msgid ""
+"Change: Pyramid adapter's ``plim.file_extension`` configuration option is "
+"deprecated."
+msgstr ""
+
+#: ../../CHANGES:61
+msgid ""
+"The ``config.add_plim_renderer()`` `directive is provided instead "
+"<http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_."
+msgstr ""
+
+#: ../../CHANGES:64
+msgid "Version 0.8"
+msgstr ""
+
+#: ../../CHANGES:66
+msgid "0.8.9"
+msgstr ""
+
+#: ../../CHANGES:68
+msgid "Bugfix: Use sys.maxsize instead of unavailable sys.maxint on Python 3."
+msgstr ""
+
+#: ../../CHANGES:70
+msgid "0.8.8"
+msgstr ""
+
+#: ../../CHANGES:72
+msgid ""
+"Hotfix: Make Plim working with a development version of pyScss for "
+"Python-3.x setups."
+msgstr ""
+
+#: ../../CHANGES:74
+msgid "0.8.7"
+msgstr ""
+
+#: ../../CHANGES:76
+msgid ""
+"Bugfix: Pyramid adapter is now compatible with the 1.5a2+ version of the "
+"framework."
+msgstr ""
+
+#: ../../CHANGES:78
+msgid ""
+"Change: `default template file extension "
+"<http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_"
+msgstr ""
+
+#: ../../CHANGES:78
+msgid "used in pyramid bindings is changed from \".plm\" to \".plim\"."
+msgstr ""
+
+#: ../../CHANGES:80
+msgid "0.8.6"
+msgstr ""
+
+#: ../../CHANGES:82
+msgid "Hotfix: fixed assertion error in handlebars parser."
+msgstr ""
+
+#: ../../CHANGES:84
+msgid "0.8.5"
+msgstr ""
+
+#: ../../CHANGES:86
+msgid ""
+"Feature: added support for `Handlebars blocks "
+"<http://plim.readthedocs.org/en/latest/en/extensions.html#handlebars>`_."
+msgstr ""
+
+#: ../../CHANGES:88
+msgid "0.8.4"
+msgstr ""
+
+#: ../../CHANGES:90
+msgid "Hotfix: updated links to github."
+msgstr ""
+
+#: ../../CHANGES:92
+msgid "0.8.3"
+msgstr ""
+
+#: ../../CHANGES:94
+msgid ""
+"Hotfix: prevent lexer from parsing embedded markup inside ``style`` and "
+"``script`` blocks."
+msgstr ""
+
+#: ../../CHANGES:96
+msgid "0.8.2"
+msgstr ""
+
+#: ../../CHANGES:98
+msgid ""
+"Feature: added support for `Embedded Markup "
+"<http://plim.readthedocs.org/en/latest/en/syntax.html#embedded-markup>`_."
+msgstr ""
+
+#: ../../CHANGES:99
+msgid "Feature: plimc utility is now able to output plain HTML."
+msgstr ""
+
+#: ../../CHANGES:101
+msgid "0.8.1"
+msgstr ""
+
+#: ../../CHANGES:103
+msgid ""
+"Feature: added support for `Inline Statements "
+"<http://plim.readthedocs.org/en/latest/en/syntax.html#inline-statements>`_."
+msgstr ""
+
+#: ../../CHANGES:105
+msgid "0.8.0"
+msgstr ""
+
+#: ../../CHANGES:107
+msgid ""
+"Feature: added support for dynamic attributes unpacker (an equivalent to "
+"Slim's splat attributes)."
+msgstr ""
+
+#: ../../CHANGES:111
+msgid "Version 0.7"
+msgstr ""
+
+#: ../../CHANGES:113
+msgid "0.7.14"
+msgstr ""
+
+#: ../../CHANGES:115
+msgid "Hotfix: fixed bug with unicode handling."
+msgstr ""
+
+#: ../../CHANGES:117
+msgid "0.7.13"
+msgstr ""
+
+#: ../../CHANGES:119
+msgid "Hotfix: fixed bug with static unicode attributes."
+msgstr ""
+
+#: ../../CHANGES:121
+msgid "0.7.12"
+msgstr ""
+
+#: ../../CHANGES:123
+msgid ""
+"Unnecessary newline characters at the end of literal blocks have been "
+"removed."
+msgstr ""
+
+#: ../../CHANGES:124
+msgid "Added the command-line tool ``plimc``."
+msgstr ""
+
+#: ../../CHANGES:126
+msgid "0.7.11"
+msgstr ""
+
+#: ../../CHANGES:128
+msgid ""
+"Fixed bug that had to do with incorrect parsing of multi-line dynamic class "
+"attributes."
+msgstr ""
+
+#: ../../CHANGES:129
+msgid ""
+"Fixed bug that had to do with passing incorrect data to plim parser in babel"
+" adapter."
+msgstr ""
+
+#: ../../CHANGES:131
+msgid ""
+"0.7.10 Fixed bug with unicode error in python block. Thanks to "
+"sqrabs@github!"
+msgstr ""
+
+#: ../../CHANGES:134
+msgid "0.7.9 Added babel message extraction plugin."
+msgstr ""
+
+#: ../../CHANGES:137
+msgid ""
+"0.7.8 Expanded range of possible numeric values that don't require double-"
+"quoting."
+msgstr ""
+
+#: ../../CHANGES:140
+msgid "0.7.7"
+msgstr ""
+
+#: ../../CHANGES:142
+msgid "Fixed bug with linebreaks without trailing newline character."
+msgstr ""
+
+#: ../../CHANGES:143
+msgid ""
+"Fixed bug with missing explicit whitespace after ``=,`` and ``==,`` line "
+"indicators."
+msgstr ""
+
+#: ../../CHANGES:145
+msgid "0.7.6 Fixed bug with incorrect parsing of static boolean attributes."
+msgstr ""
+
+#: ../../CHANGES:148
+msgid ""
+"0.7.5 Fixed bug with comment and content blocks separated by empty lines."
+msgstr ""
+
+#: ../../CHANGES:151
+msgid "0.7.4 Added -stylus extension."
+msgstr ""
+
+#: ../../CHANGES:154
+msgid "0.7.3 Fix bug with literal one-liners."
+msgstr ""
+
+#: ../../CHANGES:157
+msgid "0.7.1 Fixed installation error caused by missing README.rst."
+msgstr ""
+
+#: ../../CHANGES:160
+msgid "0.7.0 Initial public release."
+msgstr ""
