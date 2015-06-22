@@ -1,0 +1,215 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../extensions.rst:2
+# 512b2f11fc2c47188aa0cb21a07c1033
+msgid "Extensions"
+msgstr ""
+
+#: ../extensions.rst:5
+# b4752206bd5548558b18df8bd86b37d5
+msgid "Standard extensions"
+msgstr ""
+
+#: ../extensions.rst:8
+# 6c674f211c5b49fa979aa8d13fa61571
+msgid "CoffeeScript"
+msgstr ""
+
+#: ../extensions.rst:10
+# a18c113401fa4867bf17786a267446d7
+msgid "Plim uses `Python-CoffeeScript <https://github.com/doloopwhile/Python-CoffeeScript>`_ package as a bridge to the JS `CoffeeScript <http://coffeescript.org/>`_ compiler. You can start CoffeeScript block with the ``-coffee`` construct."
+msgstr ""
+
+#: ../extensions.rst:48
+# 066f1561a0804f56b23cbe3ef5a827f3
+msgid "SCSS/SASS"
+msgstr ""
+
+#: ../extensions.rst:50
+# 46902de4e5244aefb0a882bfa29e7bd6
+msgid "Plim uses `pyScss <https://github.com/Kronuz/pyScss>`_ package to translate `SCSS/SASS <http://sass-lang.com/>`_ markup to plain CSS. You can start SCSS/SASS block with the ``-scss`` or ``-sass`` construct. The output will be wrapped with ``<style></style>`` tags."
+msgstr ""
+
+#: ../extensions.rst:55
+#: ../extensions.rst:90
+#: ../extensions.rst:132
+#: ../extensions.rst:191
+# 45cbbbb44c584a128ce6a94b2a0b9340
+# 2f463f2d07844b8a8f8986ee1fe3cae2
+# 7c8698d5eac2478b8a51ac98d3df907f
+# 5284124e6c28483e99171a11a3e0fa83
+msgid "For example,"
+msgstr ""
+
+#: ../extensions.rst:70
+#: ../extensions.rst:107
+#: ../extensions.rst:159
+#: ../extensions.rst:211
+# 33469c6e60544ee598e13e8606daa34d
+# 7f1aea203e4a440290026305c5bf8788
+# d35768c9a10e48d7b7971af93be0ea93
+# 8295576219b34e468cfd7520cce01556
+msgid "produces"
+msgstr ""
+
+#: ../extensions.rst:83
+# a5e83e92d2e44299985f09cf04490a7d
+msgid "Stylus"
+msgstr ""
+
+#: ../extensions.rst:85
+# 21378a06f1974ff8a2cbecc0b3b580ef
+msgid "Plim uses `stylus <https://github.com/bkad/python-stylus>`_ package to translate `stylus <http://learnboost.github.com/stylus/>`_ markup to plain CSS. You can start Stylus block with the ``-stylus`` construct. The output will be wrapped with ``<style></style>`` tags."
+msgstr ""
+
+#: ../extensions.rst:127
+# 4beef184af70461897dab07ea5e52830
+msgid "Markdown"
+msgstr ""
+
+#: ../extensions.rst:129
+# 1a217118c12248cab92b77ecfe5fa76d
+msgid "Plim uses `python-markdown2 <https://github.com/trentm/python-markdown2>`_ package for the ``-markdown`` (or ``-md``) extension."
+msgstr ""
+
+#: ../extensions.rst:186
+# 339c154b88054eb9ac81154671c115d7
+msgid "reStructuredText"
+msgstr ""
+
+#: ../extensions.rst:188
+# 2ea8e053eb63419d84780d54b8c1b498
+msgid "Plim uses `Docutils <http://docutils.sourceforge.net/>`_ package for both supporting the ``-rest`` (or ``-rst``) extension and project documenting."
+msgstr ""
+
+#: ../extensions.rst:251
+# 493f775cbc354bfd91cecb1cbf60d4b7
+msgid "Handlebars"
+msgstr ""
+
+#: ../extensions.rst:253
+# ae10235e5a7243f2a9ecc7d7ed2348dc
+msgid "Plim supports a special tag ``handlebars`` that is translated to a handlebars section declaration:"
+msgstr ""
+
+#: ../extensions.rst:260
+# be112f2879e945e3b562b8cbad7cd891
+msgid "This is particularly useful to developers using `Ember.js <http://emberjs.com/guides/templates/handlebars-basics/>`_."
+msgstr ""
+
+#: ../extensions.rst:262
+# 9f419adb749a450ba5b936f3e19fcba1
+msgid "Here is an example. The following plim document"
+msgstr ""
+
+#: ../extensions.rst:274
+# b841b3deaf7348ebb6a6500256f70f19
+msgid "will be rendered as"
+msgstr ""
+
+#: ../extensions.rst:291
+# fc7afd4958d84996a1b9bb5c651df203
+msgid "Extending Plim with custom parsers"
+msgstr ""
+
+#: ../extensions.rst:295
+# 9f205ce9c17e4525b1f0e93e72effbf1
+msgid "It is possible to extend standard Plim markup with your own directives. This feature allows you to build your own DSL on top of Plim. For instance, the following example adds a new directive for parsing HTTP links present in a form of ``http_url > title``."
+msgstr ""
+
+#: ../extensions.rst:325
+# b3db68e2dcaa45b5935a7fb50e1173e9
+msgid "The ``parse_http_link()`` function is defined according to the strict API."
+msgstr ""
+
+#: ../extensions.rst:327
+# a1ce9601a9c34970abb0a6d45c5e397d
+msgid "Every parser accepts five input arguments:"
+msgstr ""
+
+#: ../extensions.rst:329
+# e6d71e8dccd0436aa29f02f69612e6e7
+msgid "``indent_level`` - an indentation level of the current line. When the parser reaches a line which indentation is lower or equal to ``indent_level``, it returns control to a top-level function."
+msgstr ""
+
+#: ../extensions.rst:331
+# b171860798d8474bb151c42854ca3268
+msgid "``current_line`` - a line which is being parsed. This is the line that has been matched by ``matched`` object at the previous parsing step."
+msgstr ""
+
+#: ../extensions.rst:333
+# 47f03c5dd1d1440eb8a787c00ea615e1
+msgid "``matched`` - an instance of :class:`re.MatchObject` of the regex associated with the current parser."
+msgstr ""
+
+#: ../extensions.rst:334
+# 827e2f488f4943aba501efbcbf6b06ae
+msgid "``source`` - an instance of an enumerated object returned by :func:`plim.lexer.enumerate_source`."
+msgstr ""
+
+#: ../extensions.rst:335
+# 46b230f3f9204113b08cbeb3ed602fff
+msgid "``syntax`` - an instance of one of :class:`plim.syntax.BaseSyntax` children."
+msgstr ""
+
+#: ../extensions.rst:337
+# 0709e9801ec047e199ae99b9c00885aa
+msgid "Every parser returns a 4-tuple of:"
+msgstr ""
+
+#: ../extensions.rst:339
+# 3259868813bb4b509864ef0a88506324
+msgid "parsed_data - a string of successfully parsed data"
+msgstr ""
+
+#: ../extensions.rst:340
+# c71201d92fc74197928da6959af4cf7b
+msgid "tail_indent - an indentation level of the ``tail line``"
+msgstr ""
+
+#: ../extensions.rst:341
+# 0cf52ab68f474c3abb0c165d2bc51238
+msgid "tail_line - a line which indentation level (``tail_indent``) is lower or equal to the input ``indent_level``."
+msgstr ""
+
+#: ../extensions.rst:343
+# 8ffbc357e2d148839111540285b5e41f
+msgid "``source`` - an instance of enumerated object returned by :func:`plim.lexer.enumerate_source` which represents the remaining (untouched) plim markup."
+msgstr ""
+
+#: ../extensions.rst:347
+# 2996315a53594b418a15bf8946c2a024
+msgid "From now on, we can use ``custom_preprocessor`` in exactly the same manner as the standard ``plim.preprocessor``."
+msgstr ""
+
+#: ../extensions.rst:350
+# 2775aeb34df149ad83a07c74327041d6
+msgid "Let's create a plim document with extended syntax:"
+msgstr ""
+
+#: ../extensions.rst:365
+# 2ecefd9691e64b199f74e52e282830ee
+msgid "Here is how we can compile this document into a valid HTML (note the ``-p`` argument):"
+msgstr ""
+
+#: ../extensions.rst:371
+# d464a506dfee44ffb9d246f39c2bbc59
+msgid "The result:"
+msgstr ""
+

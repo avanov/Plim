@@ -1,0 +1,938 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../syntax.rst:3
+# 124f87a0e4d049eca8d49b4056a27e08
+msgid "Syntax"
+msgstr ""
+
+#: ../syntax.rst:6
+# 0b037469b947479ead751a70fdbe46d2
+msgid "Some relevant parts of this section were copied from the `official Slim documentation <https://github.com/slim-template/slim>`_."
+msgstr ""
+
+#: ../syntax.rst:10
+# d9f3509a843448398cf053d63a8635dc
+msgid "Line Indicators"
+msgstr ""
+
+#: ../syntax.rst:13
+# 84320a0d7d31414bb253e19998b90188
+msgid "``|``"
+msgstr ""
+
+#: ../syntax.rst:13
+# e5963b8839eb4d17afe9907e190e9025
+msgid "The pipe tells Plim to just copy the line. It essentially escapes any processing."
+msgstr ""
+
+#: ../syntax.rst:18
+# ee8efc3a9d994ba2850e1c705966bb45
+msgid "``,``"
+msgstr ""
+
+#: ../syntax.rst:16
+# 0f9db45e8cf34731b5e484efa4aa6f56
+msgid "The comma tells Plim to copy the line (similar to ``|``), but makes sure that a single trailing space is appended."
+msgstr ""
+
+#: ../syntax.rst:18
+# ff5843bfd8004e5094aa09ccc43ee1ff
+msgid "Slim syntax instead has the single quote ( ``'`` ) line indicator."
+msgstr ""
+
+#: ../syntax.rst:22
+# 37be9ab7c20648e59d174f4ddc9d74f7
+msgid "``-``"
+msgstr ""
+
+#: ../syntax.rst:21
+# a7c676fa78574d2ca373c3c7fda0e96b
+msgid "The dash denotes control code. Examples of control code are loops, conditionals, mako tags, and extensions."
+msgstr ""
+
+#: ../syntax.rst:25
+# cb3a901add994fb5aedf485a8b8df90e
+msgid "``=``"
+msgstr ""
+
+#: ../syntax.rst:25
+# 3be9f4075b8a43a18e94134340714254
+msgid "The equal sign tells Plim it's a Python call that produces output to add to the buffer."
+msgstr ""
+
+#: ../syntax.rst:29
+# c3cb947e8156448a8be443901e180218
+msgid "``=,``"
+msgstr ""
+
+#: ../syntax.rst:28
+# e6facecab1a14f9bb5ec253598c6279d
+msgid "Same as the single equal sign ( ``=`` ), except that it adds an explicit single trailing whitespace after the python expression."
+msgstr ""
+
+#: ../syntax.rst:40
+# 5a2223e009784f83905f77158e4f420c
+msgid "``==``"
+msgstr ""
+
+#: ../syntax.rst:32
+# b5ead9e066f2479cb79d83d2983f69ae
+msgid "Same as the single equal sign ( ``=`` ), but adds `the \"n\" filter <http://docs.makotemplates.org/en/latest/filtering.html>`_ to mako expression."
+msgstr ""
+
+#: ../syntax.rst:44
+# 53540b86830d43718859bcfe3c7d14db
+msgid "``==,``"
+msgstr ""
+
+#: ../syntax.rst:43
+# c26ad0eaf4a140fdb64ade92700a284f
+msgid "Same as the double equal sign ( ``==`` ), except that it adds an explicit single trailing whitespace after the python expression."
+msgstr ""
+
+#: ../syntax.rst:64
+# ffa8d4c082654ef69dbd9c0f41891145
+msgid "``/``"
+msgstr ""
+
+#: ../syntax.rst:47
+# 190f031f46324e899571aaecfe77ab26
+msgid "Use the forward slash for code comments - anything after it won't get displayed in the final mako markup."
+msgstr ""
+
+#: ../syntax.rst:50
+# ee810b79677c4453926b73ec92900da4
+msgid "**There is no an equivalent syntax for Slim's \"/!\" html comment**. This line indicator has been considered redundant since Plim supports raw HTML tags:"
+msgstr ""
+
+#: ../syntax.rst:67
+# e64d00edf8fc44c995fe3563c7012e74
+msgid "Indentation"
+msgstr ""
+
+#: ../syntax.rst:69
+# 4a2c2a20d3aa442898df4023bc0a6ae5
+msgid "Plim indentation rules are the same as of Slim: indentation matters, but it's not as strict as `Haml <http://haml.info/about.html>`_. If you want to first indent 2 spaces, then 5 spaces, it's your choice. To nest markup you only need to indent by one space, the rest is gravy."
+msgstr ""
+
+#: ../syntax.rst:75
+# d33579dd38a94ebb8be7a4e3756ea352
+msgid "Tag Attributes"
+msgstr ""
+
+#: ../syntax.rst:78
+# e0a3334be95f40e18765f12ee6d48d2f
+msgid "Static Attrbutes"
+msgstr ""
+
+#: ../syntax.rst:80
+# 74f1c188f35749948904597dad9ea727
+msgid "Static tag attributes can be specified in the same form as any valid python string declaration."
+msgstr ""
+
+#: ../syntax.rst:83
+#: ../syntax.rst:854
+# 70066ea6ebef4657ac30f5ac9577c113
+# 81c3ccd493714d178ccfeccfaca4bd4e
+msgid "For example"
+msgstr ""
+
+#: ../syntax.rst:89
+#: ../syntax.rst:401
+# 4b9357f3aa4f457c893e80f8b881a9f2
+# be448922eae04b5baa18826ff77fe6bd
+msgid "will be rendered as"
+msgstr ""
+
+#: ../syntax.rst:95
+# fe245320c6c24dcfb3f01f8b7ec7b744
+msgid "As in Python string declarations, you must take care of correct quote escaping"
+msgstr ""
+
+#: ../syntax.rst:110
+# 63759dbbce334ebe9a48309043404aa8
+msgid "You can omit quotes from numeric attribute values:"
+msgstr ""
+
+#: ../syntax.rst:116
+#: ../syntax.rst:1000
+# 7846db5d376940e097bdf339d16c344d
+# 67c6a3101a624242bfbaa5c1890e4e33
+msgid "produces"
+msgstr ""
+
+#: ../syntax.rst:124
+# 428bccd12fb348309db7070d82892132
+msgid "Dynamic Attributes"
+msgstr ""
+
+#: ../syntax.rst:126
+# 2a2bf640e9c845749e0983831c991897
+msgid "Dynamic values can be specified in forms of:"
+msgstr ""
+
+#: ../syntax.rst:128
+# cbdacd36ab8b468795db8865c908d0b5
+msgid "Mako expression"
+msgstr ""
+
+#: ../syntax.rst:135
+#: ../syntax.rst:861
+#: ../syntax.rst:1020
+#: ../syntax.rst:1043
+#: ../syntax.rst:1065
+#: ../syntax.rst:1088
+#: ../syntax.rst:1122
+# d10a8db5ce3d48e895f00e74ed6fc61c
+# dd2e68840c4e403393470c771009cd88
+# dd3f5773c829459a8095317c31360423
+# 0d97faa664a1483381bac4faf52dd297
+# a8096b1e63e048b99bfcafd5e9aa0bda
+# 8bf9032920134503ab425aa13368c9ae
+# 5643b620ed3644c0aa03797e57dee797
+msgid "or"
+msgstr ""
+
+#: ../syntax.rst:143
+# 08f69c4e336049418a1735fd5bf22345
+msgid "Python expression"
+msgstr ""
+
+#: ../syntax.rst:150
+# 05f78588c99744bdb982f22dff401411
+msgid "or with parentheses"
+msgstr ""
+
+#: ../syntax.rst:157
+# 0a91fa9e047b46f8ba043b8af042a9c3
+msgid "All these examples produce the same mako markup:"
+msgstr ""
+
+#: ../syntax.rst:166
+# d81ca60bd550407080cfeaeae20352b6
+msgid "Boolean Attributes"
+msgstr ""
+
+#: ../syntax.rst:168
+# caf0cd2f15ed4470a3f6790967469f00
+msgid "Boolean attributes can be specified either by static or dynamic method:"
+msgstr ""
+
+#: ../syntax.rst:170
+# 46d3a694099f469e9c8a3b023b07b62d
+msgid "Static attribute example:"
+msgstr ""
+
+#: ../syntax.rst:181
+# a79a5740312c4b2abaa357c12760a543
+msgid "Dynamic attribute example (note the trailing question mark):"
+msgstr ""
+
+#: ../syntax.rst:200
+# 20a3706173c746718c28754e73cf8fef
+msgid "Dynamic unpacking"
+msgstr ""
+
+#: ../syntax.rst:202
+# 611c655da2a04d0d9d69f75620775b4d
+msgid "This feature is an equivalent to `Slim's splat attributes <https://github.com/slim-template/slim#splat-attributes->`_, but the syntax was changed in order to correspond to Python's ``**kwargs`` semantics."
+msgstr ""
+
+#: ../syntax.rst:206
+# 65b40d2796054c11a7bd06ad07eb8c56
+msgid "Consider the following python dictionary:"
+msgstr ""
+
+#: ../syntax.rst:217
+# f0033a6f43db4786a87f87da28d8c072
+msgid "Now we can unpack the dictionary in order to populate tags with attributes. The following line::"
+msgstr ""
+
+#: ../syntax.rst:221
+# d256bdf6a8a04e07b924c51c9d368b8a
+msgid "will be translated to mako template which will output an equivalent to the following HTML markup"
+msgstr ""
+
+#: ../syntax.rst:227
+# 59faf1e4b6dd406dbab81e09297f105d
+msgid "Here are some other examples"
+msgstr ""
+
+#: ../syntax.rst:244
+# d6a9f2e71ce94c52bf044f8edff473dd
+msgid "Attribute Wrapping"
+msgstr ""
+
+#: ../syntax.rst:246
+# eb5c8d12fdf5440da9c57520f2665485
+msgid "You can wrap tag attributes with parentheses ``()``. Unlike Slim, Plim doesn't support square ``[]`` or curly ``{}`` braces for attributes wrapping."
+msgstr ""
+
+#: ../syntax.rst:256
+# d443e0041eca4ecda696f61e16835cb3
+msgid "If you wrap the attributes, you can spread them across multiple lines:"
+msgstr ""
+
+#: ../syntax.rst:272
+# 486dcf74ccd347cebb7aaefb380588fe
+msgid "Inline Tag Content"
+msgstr ""
+
+#: ../syntax.rst:274
+# 189b4ecfe9e34ed4844d41829114405e
+msgid "You can put content on the same line with the tag:"
+msgstr ""
+
+#: ../syntax.rst:282
+# 8ae8464a9ea14200baea71222ce0bc3f
+msgid "Or nest it. Note: use either a pipe or :ref:`Implicit literal indicators <implicit-literals>`"
+msgstr ""
+
+#: ../syntax.rst:297
+# 09d2657b7dc54ba196db1ecd2baa0903
+msgid "Dynamic Tag Content"
+msgstr ""
+
+#: ../syntax.rst:299
+# 0935446448bb41ebba3c0e0cdca4f24f
+msgid "You can make the call on the same line"
+msgstr ""
+
+#: ../syntax.rst:307
+# 6935672f58944cb39c985d561ee5f992
+msgid "Or nest it."
+msgstr ""
+
+#: ../syntax.rst:317
+# 39270c0fab4a48f79cb9d2edce77dbc3
+msgid "``id`` and ``class`` Shortcuts"
+msgstr ""
+
+#: ../syntax.rst:319
+# fce8b844d4b34d2c9961d8fa63fbb38f
+msgid "You can specify the id and class attributes in the following shortcut form."
+msgstr ""
+
+#: ../syntax.rst:334
+#: ../syntax.rst:361
+# 07df73f96f2f48588c766cbbac149d0a
+# fc16ccaeadee4a3e9aefd7fb7e8f7742
+msgid "This is the same as:"
+msgstr ""
+
+#: ../syntax.rst:348
+# b2f9dad871d3458fa3c5e1501e509be0
+msgid "`In contrast to Slim <https://github.com/slim-template/slim#id-shortcut--and-class-shortcut->`_, Plim allows you to insert dynamic expressions right into the shortcuts:"
+msgstr ""
+
+#: ../syntax.rst:373
+# 2a5fe28842e84627a182bd1394d9a7e0
+msgid "Inline Tags"
+msgstr ""
+
+#: ../syntax.rst:375
+# 804b31be75d24925911d4d3752c8f88e
+msgid "Sometimes you may want to be a little more compact and inline the tags."
+msgstr ""
+
+#: ../syntax.rst:384
+# 5f802f97f8be4940959c265ecdfa42ec
+msgid "For readability, don't forget you can wrap the attributes."
+msgstr ""
+
+#: ../syntax.rst:393
+# e32ae3680da742ef8c74a117cbd0842b
+msgid "Inline Statements"
+msgstr ""
+
+#: ../syntax.rst:395
+# 9a00b98be66b4ad88d8cb1ebb660dc91
+msgid "You can inline python loops and conditional expressions in the same manner as tags."
+msgstr ""
+
+#: ../syntax.rst:412
+# 318807587f5f4933a5e956754f6c804a
+msgid "Evaluate Python Code in Text"
+msgstr ""
+
+#: ../syntax.rst:414
+# 7e83a980e3754550982d60768ac49015
+msgid "Use standard `mako expression syntax <http://docs.makotemplates.org/en/latest/syntax.html#expression-substitution>`_. The text escaping depends on `mako's default filters settings <http://docs.makotemplates.org/en/latest/filtering.html?highlight=default%20filters#the-default-filters-argument>`_."
+msgstr ""
+
+#: ../syntax.rst:424
+# d786f5daf4aa49688d2f1404307f61d1
+msgid "Currently, Mako doesn't provide a simple way to escape the interpolation of expressions (i.e. render as is). You can use either the `<%text> <http://docs.makotemplates.org/en/latest/syntax.html#text>`_ tag (or Plim's ``-text`` equivalent for blocks of mako syntax examples), or this trick"
+msgstr ""
+
+#: ../syntax.rst:434
+# 39227c06b834447ca0bb5c780767dd13
+msgid "Embedded Markup"
+msgstr ""
+
+#: ../syntax.rst:436
+# 1cfbeb0f8a624fbe90a888f393ccfdd7
+msgid "You can embed plim markup right into literal blocks:"
+msgstr ""
+
+#: ../syntax.rst:442
+#: ../syntax.rst:455
+#: ../syntax.rst:467
+# 122dee56a402428b9a0798c2b4bf87ca
+# 66805ee19bfe41efa9fc148a8fcbf4a5
+# 0efdf855703740d5983b62db9be6d1df
+msgid "is rendered as"
+msgstr ""
+
+#: ../syntax.rst:448
+# 834bb3c2a05b4c138e6b1c928a17507b
+msgid "If you want to put two embedded strings next to each other, add a trailing underscore character after the first embedded string:"
+msgstr ""
+
+#: ../syntax.rst:461
+# e87e7e50e70043c78d8f74c96eced2d9
+msgid "The embedding mechanism is recursive so you can embed plim markup into embedded plim markup:"
+msgstr ""
+
+#: ../syntax.rst:475
+# 8109343048694edf97086b055b7b1344
+msgid "Skip HTML Escaping"
+msgstr ""
+
+#: ../syntax.rst:477
+# 31aae746ad9642938032840534600901
+msgid "Use either a double equal sign"
+msgstr ""
+
+#: ../syntax.rst:486
+# 9e608718fe6141caa03114eaf63734bf
+msgid "or the explicit ``| n`` filter at the end of the expression"
+msgstr ""
+
+#: ../syntax.rst:496
+# d0860bf4a1b8415fae80aaf505f2d163
+msgid "Code Comments"
+msgstr ""
+
+#: ../syntax.rst:498
+# 361e2b7f8f254bb3831d44e8de082bc8
+msgid "Use forward slash ``/`` for code comments"
+msgstr ""
+
+#: ../syntax.rst:511
+# 405e25986873442294577e7c7a2c3e6a
+msgid "Raw HTML Tags"
+msgstr ""
+
+#: ../syntax.rst:513
+# 3ae1a5c8665d4f1f8ac0864be9201ea4
+msgid "Plim allows you to use raw HTML tag lines, and also to mix them with any available control logic. It is particularly useful in situations like this one:"
+msgstr ""
+
+#: ../syntax.rst:530
+# 03c99dd13d3e4a20b64840e0fc8b9b49
+msgid "Doctype Declarations"
+msgstr ""
+
+#: ../syntax.rst:532
+# ac89439b5422413d82d8657c6f9a7655
+msgid "There is no default option for doctype declaration tag. Therefore, you should explicitly specify the desired doctype:"
+msgstr ""
+
+#: ../syntax.rst:540
+# 19f9a36e385f4a4d93a9e7bf48dba896
+msgid "Here is the full list of available doctypes:"
+msgstr ""
+
+#: ../syntax.rst:542
+# 34a2542e006f4ef586aa93cf0dc0bed1
+msgid "**doctype html**"
+msgstr ""
+
+#: ../syntax.rst:544
+#: ../syntax.rst:548
+# 08c87fe36c1d4fe4b82371dc2d84ab41
+# d2824ffa3e39433b91ea9626ea436952
+msgid "``<!DOCTYPE html>``"
+msgstr ""
+
+#: ../syntax.rst:546
+# 16c47d4d103946c5b02cbe313cf88349
+msgid "**doctype 5**"
+msgstr ""
+
+#: ../syntax.rst:550
+# 98026be5ddf84581b95a227f85b681f1
+msgid "**doctype 1.1**"
+msgstr ""
+
+#: ../syntax.rst:552
+# 70e9c476992d4ca7bada69987f343932
+msgid "``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:554
+# 1d5e7eb8a17e4bdea804fb9edc985c36
+msgid "**doctype strict**"
+msgstr ""
+
+#: ../syntax.rst:556
+# 389d9ff710034c2fa5d27644e8d4ec20
+msgid "``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:558
+# 37ab2f9caf8948f6bfc1742055473a0a
+msgid "**doctype xml**"
+msgstr ""
+
+#: ../syntax.rst:560
+# 73b7f07c2c014e389938b4fda981ca85
+msgid "``<?xml version=\"1.0\" encoding=\"utf-8\" ?>``"
+msgstr ""
+
+#: ../syntax.rst:562
+# 0cc037edb01a4a7f9f11aeaa2c1eac8e
+msgid "**doctype transitional**"
+msgstr ""
+
+#: ../syntax.rst:564
+# 483fd1d3cb9c41be8c01aa71c7a62f4f
+msgid "``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:566
+# 85ecf5bb9a65461394a4d6030422a7c9
+msgid "**doctype frameset**"
+msgstr ""
+
+#: ../syntax.rst:568
+# 13c2f64eab44479092b737f43acb703f
+msgid "``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:570
+# 086ca1cffbd24e749444706912d40987
+msgid "**doctype basic**"
+msgstr ""
+
+#: ../syntax.rst:572
+# af5114c4717648d1a03bbfdc7277e7d9
+msgid "``<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:574
+# c54b686a7eba40a7b3237d33faf30451
+msgid "**doctype mobile**"
+msgstr ""
+
+#: ../syntax.rst:576
+# 9e2ec301d2454429a544dbbdf6770772
+msgid "``<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">``"
+msgstr ""
+
+#: ../syntax.rst:581
+# 802a0cc02f984be98e0f34555af65e5b
+msgid "Control Logic"
+msgstr ""
+
+#: ../syntax.rst:585
+# f70bf2109cdf4a32b451b6d5703482ae
+msgid "**if/elif/else** statements"
+msgstr ""
+
+#: ../syntax.rst:602
+# 3a6efc3bd2944756bd03451d44692dc1
+msgid "**unless** statement"
+msgstr ""
+
+#: ../syntax.rst:604
+# bb9132bb2c7f49038d24eacff3c2b62c
+msgid "This is the shortcut form of the ``- if not (<EXPR>)`` statement."
+msgstr ""
+
+#: ../syntax.rst:615
+# ebd1b672276c439eac8f5fa0acd5790b
+msgid "**for** statement"
+msgstr ""
+
+#: ../syntax.rst:626
+# 36bbecad448d498d82ffa419640e87bc
+msgid "You can use the ``-continue`` and ``-break`` commands inside the ``-for`` block. See the section :ref:`Returning Early from a Template <return-early>`."
+msgstr ""
+
+#: ../syntax.rst:631
+# 1388a258b5614ba1bf4a92c961f946f0
+msgid "**while** statement"
+msgstr ""
+
+#: ../syntax.rst:645
+# ed35c104ba474f268dcc3b7a9278d71b
+msgid "You can use the ``-continue`` and ``-break`` commands inside the ``-while`` block. See the section :ref:`Returning Early from a Template <return-early>`."
+msgstr ""
+
+#: ../syntax.rst:650
+# 662d7ab2caf04ebcbaf789fac4580ec4
+msgid "**until** statement"
+msgstr ""
+
+#: ../syntax.rst:652
+# 0bf59fc1d77b4eaa822cdc5319e73652
+msgid "This is the shortcut form of the ``- while not (<EXPR>)`` statement."
+msgstr ""
+
+#: ../syntax.rst:661
+# cca8ffc7a71247d19da60a014e5fd27d
+msgid "You can use the ``-continue`` and ``-break`` commands inside the ``-until`` block. See the section :ref:`Returning Early from a Template <return-early>`."
+msgstr ""
+
+#: ../syntax.rst:666
+# 67765aebf43d418f81b0ff0d029bf49d
+msgid "**with** statement"
+msgstr ""
+
+#: ../syntax.rst:668
+# 080b555a76c14a44befb980371e5129c
+msgid "The ``% with`` statement was introduced in `Mako 0.7.0 <http://www.makotemplates.org/CHANGES>`_."
+msgstr ""
+
+#: ../syntax.rst:678
+# 99b0c553f971449fa5150b7844b4013f
+msgid "**try/except** statements"
+msgstr ""
+
+#: ../syntax.rst:696
+# c602878dc81f4b168c3145f2b90e12e9
+msgid "Returning Early from a Template"
+msgstr ""
+
+#: ../syntax.rst:698
+# 3f69ab16e90b48a0ad5b2015933bca1b
+msgid "Plim provides a shortcut to Mako's `<% return %> <http://docs.makotemplates.org/en/latest/syntax.html#returning-early-from-a-template>`_ template directive."
+msgstr ""
+
+#: ../syntax.rst:708
+# b68ed8422d9b4694bd35527a55efdca2
+msgid "This is the same as"
+msgstr ""
+
+#: ../syntax.rst:716
+# dd868854943340af85d7b8928f3bb8d7
+msgid "You can use it at any position of the template, not only inside control structures."
+msgstr ""
+
+#: ../syntax.rst:718
+# de1d71bbc39e43e88f36e867a4354559
+msgid "There are also the ``-break`` and ``-continue`` shortcuts, that can be used inside the ``-for``, ``-while``, and ``-until`` loops."
+msgstr ""
+
+#: ../syntax.rst:726
+# 90b576cf66c248ab99179b7d7c8d02ad
+msgid "Literals"
+msgstr ""
+
+#: ../syntax.rst:728
+# 7c380c5ac9ca4ddb9c9e3e6720b10136
+msgid "You can specify either explicit or implicit literal blocks. The difference is, whether you prepend a block with the explicit pipe char ``|`` or start it by one of the implicit indicators."
+msgstr ""
+
+#: ../syntax.rst:734
+# b861fdbd54ad4681bba2f30b9b6dac49
+msgid "Explicit Literals"
+msgstr ""
+
+#: ../syntax.rst:736
+# 02d04a589df1455294c87cf851fbee05
+msgid "Use a pipe ( ``|`` ) or comma ( ``,`` ) literal indicators to start the escape. Each following line that is indented greater than the first one is copied over."
+msgstr ""
+
+#: ../syntax.rst:755
+# 77eeccea192c45a9ad9d400f5be47043
+msgid "The parsed result of both the above examples:"
+msgstr ""
+
+#: ../syntax.rst:762
+# ae4452e963584dc2b679a43ec5a85d54
+msgid "The left margin is set to the zero. Any additional spaces will be copied over."
+msgstr ""
+
+#: ../syntax.rst:775
+# d6e6fb5ddeac4089a91a8b484ff12a28
+msgid "Implicit Literals"
+msgstr ""
+
+#: ../syntax.rst:777
+# 4b916267594c40cd9d1abd4a1efb9e3b
+msgid "Literal blocks can be implicitly specified by the following starting sequences:"
+msgstr ""
+
+#: ../syntax.rst:779
+# 3dcc4bea0da64be0bff7794438538e69
+msgid "an uppercase ASCII letter;"
+msgstr ""
+
+#: ../syntax.rst:780
+# dffa5aef301b4bcbb72d856195a36b87
+msgid "any non-ASCII letter;"
+msgstr ""
+
+#: ../syntax.rst:781
+# 65f337405a2d48749048be079a47e586
+msgid "a digit without prefixed positive/negative signs;"
+msgstr ""
+
+#: ../syntax.rst:782
+# 196f4b9d0b0b46c3a3e96a7a525a1c2f
+msgid "HTML-escaped character, for example ``&nbsp;``;"
+msgstr ""
+
+#: ../syntax.rst:783
+# 75ec18d414064534b418db3aa1784f1e
+msgid "Mako open brace sequence ``${``;"
+msgstr ""
+
+#: ../syntax.rst:784
+# 077868c45916424d8e8cb087f5753892
+msgid "an open square brace ``[``;"
+msgstr ""
+
+#: ../syntax.rst:785
+# 142f7c0b2fff4db896cfcbc965e70f29
+msgid "an open parenthesis ``(``;"
+msgstr ""
+
+#: ../syntax.rst:786
+# 7a6ab0948b584725af1b8571108c3577
+msgid "any unicode character outside the range of U0021 - U007E (ASCII 33 - 126)."
+msgstr ""
+
+#: ../syntax.rst:847
+# 987a8fd2332b4deaaa61c579e7468e1f
+msgid "Python Blocks"
+msgstr ""
+
+#: ../syntax.rst:850
+# f9cd8b2a3a2d46df9a2c5bffdfaf7ffd
+msgid "Classic Blocks"
+msgstr ""
+
+#: ../syntax.rst:851
+# e378c6099bf74316a06fbfdef7933eef
+msgid "Use ``-py`` or ``-python`` to insert the `<% %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#python-blocks>`_."
+msgstr ""
+
+#: ../syntax.rst:869
+# 719d309aea404d7f80917125a3a9c80b
+msgid "or even"
+msgstr ""
+
+#: ../syntax.rst:881
+# aa6dd8249ed14fa2ab0dccf89965218c
+msgid "In latter case, the first line ``x = 1`` will be aligned with the second line ``y = x + 1``."
+msgstr ""
+
+#: ../syntax.rst:884
+# 78f6942fbf094a9d97bdfb59360b0ff2
+msgid "New-style blocks"
+msgstr ""
+
+#: ../syntax.rst:886
+# c3f2f5d8c87e4af6a65f8d971cff7b31
+msgid "New-style blocks were introduced for better readability of embedded python code."
+msgstr ""
+
+#: ../syntax.rst:889
+# 5d554a69c989461591d77732dd516413
+msgid "Use a sequence of at least three dashes to start a new-style python block."
+msgstr ""
+
+#: ../syntax.rst:891
+# 2114cd2c107b449eb7a6fce033d32afe
+msgid "Here are the overwritten examples of the classic ones. The results are the same:"
+msgstr ""
+
+#: ../syntax.rst:911
+# f0acdae03b0e423fa5190bd64ac1a741
+msgid "And here's an example of how we can use an inline statement for providing a block description"
+msgstr ""
+
+#: ../syntax.rst:925
+# 4c4fd11250ee48b69f4f9ed2b5ddcc53
+msgid "the result (indentation will be stripped out):"
+msgstr ""
+
+#: ../syntax.rst:954
+# 174f08cb7a094c78af5b29252ebed2ac
+msgid "Module-level Blocks"
+msgstr ""
+
+#: ../syntax.rst:956
+# 233130fda84342f9acf47db0fc96076a
+msgid "Use ``-py!`` or ``-python!`` block to insert the `<%! %> mako tag <http://docs.makotemplates.org/en/latest/syntax.html#module-level-blocks>`_."
+msgstr ""
+
+#: ../syntax.rst:968
+# 5a79410dcef744359e4141044e099d52
+msgid "The same example with a new-style syntax:"
+msgstr ""
+
+#: ../syntax.rst:981
+# ed94d10323854c2abae8eb686da13bed
+msgid "Mako Tags"
+msgstr ""
+
+#: ../syntax.rst:983
+# 4409cfc9c1e64631a4ba2432100016b9
+msgid "Plim supports a complete set of `Mako Tags <http://docs.makotemplates.org/en/latest/syntax.html#tags>`_, except the ``<%doc>``. The latter has been considered deprecated, since Plim itself has built-in support of multi-line comments."
+msgstr ""
+
+#: ../syntax.rst:988
+# 7f9c4df848b2407aa5adb6c80abc88e2
+msgid "As all mako tags start with the ``<`` char, which indicates a :ref:`raw HTML line <raw-html>`, they all can be written \"as is\". The only thing you must remember is to manually close the pair tags."
+msgstr ""
+
+#: ../syntax.rst:994
+# 7da8b22c0ff644bca89c8802e69f561f
+msgid "**-page** tag"
+msgstr ""
+
+#: ../syntax.rst:1006
+# adae8b6f79b9414eaa0c23610269bc4c
+msgid "See the details of what ``<%page>`` is used for in `The body() Method <http://docs.makotemplates.org/en/latest/namespaces.html#namespaces-body>`_ and `Caching <http://docs.makotemplates.org/en/latest/caching.html>`_ sections of Mako Documentation."
+msgstr ""
+
+#: ../syntax.rst:1014
+# c113fd1367c44393b2db00b00f0d818f
+msgid "**-include** tag"
+msgstr ""
+
+#: ../syntax.rst:1026
+# 6a9bae1bb9884d00bc3c5ef19913195e
+msgid "produce the same output"
+msgstr ""
+
+#: ../syntax.rst:1033
+# 60bf0062b6ee46eb92792d6e9e0a10f5
+msgid "See the `<%include> section <http://docs.makotemplates.org/en/latest/syntax.html#include>`_ of Mako Documentation to get more information about this tag."
+msgstr ""
+
+#: ../syntax.rst:1037
+# 7d2cc9617a1344029499ec28d08877e2
+msgid "**-inherit** tag"
+msgstr ""
+
+#: ../syntax.rst:1049
+# fb4a9fb2ce154b82850d4aab3badfe48
+msgid "will generate the same"
+msgstr ""
+
+#: ../syntax.rst:1055
+# 5a251ca9b30349eb99e9aac8a07ba46e
+msgid "See Mako's `inheritance documentation <http://docs.makotemplates.org/en/latest/inheritance.html>`_ to get more information about template inheritance."
+msgstr ""
+
+#: ../syntax.rst:1059
+# 828adf836464417586f743fecd4c3862
+msgid "**-namespace** tag"
+msgstr ""
+
+#: ../syntax.rst:1071
+#: ../syntax.rst:1094
+# 121fc97c8f1a480b88b8fd969341ef9c
+# c9f96929aed24536935affa2cba5069c
+msgid "produce"
+msgstr ""
+
+#: ../syntax.rst:1077
+# 6d80e7c1d7864a219850b6bf2b6cc44e
+msgid "See Mako's `namespace documentation <http://docs.makotemplates.org/en/latest/namespaces.html>`_ to get more information about template namespaces."
+msgstr ""
+
+#: ../syntax.rst:1082
+# 11d89b172602424692f487e6dca9d8b2
+msgid "**-def** tag"
+msgstr ""
+
+#: ../syntax.rst:1101
+#: ../syntax.rst:1144
+# a22ff6d8dfa14b858ff17c3d57c93fa8
+# c2b2cfcc036a44caad8ba58b9bc66cb2
+msgid "See Mako's `defs and blocks documentation <http://docs.makotemplates.org/en/latest/defs.html>`_ to get more information about functions and blocks."
+msgstr ""
+
+#: ../syntax.rst:1106
+# 92be5305face482ea07bd0d67d75488d
+msgid "**-block** tag"
+msgstr ""
+
+#: ../syntax.rst:1108
+# e2cf5d68d6864d5d9d6c7b747addfa44
+msgid "Unlike ``-def`` statements, blocks can be anonymous"
+msgstr ""
+
+#: ../syntax.rst:1115
+# 19c1eee15e804dc191a8a058fb460ee2
+msgid "Or they can be named as functions"
+msgstr ""
+
+#: ../syntax.rst:1129
+# f1a29b1dba1b478fb764b89927f32318
+msgid "As in ``-def``, both above examples produce the same result"
+msgstr ""
+
+#: ../syntax.rst:1136
+# 961f4be4a07d483b9cca6b6250478628
+msgid "You can also specify other block arguments as well"
+msgstr ""
+
+#: ../syntax.rst:1149
+# df59da0c8301436aa3ed2fecb25fb7c2
+msgid "**-call** tag"
+msgstr ""
+
+#: ../syntax.rst:1151
+# 3236829232cc43de8845a887d2a06052
+msgid "This statement allows you to define custom tags."
+msgstr ""
+
+#: ../syntax.rst:1153
+# e4b99a89df9847d280157e46ec5f31ba
+msgid "The following examples"
+msgstr ""
+
+#: ../syntax.rst:1168
+# 558017bd428944b4ade53f1f02f4ab1a
+msgid "will produce"
+msgstr ""
+
+#: ../syntax.rst:1188
+# 11cdae2c7eae411f827709534dda76bc
+msgid "Please consult the sections `<%nsname:defname> <http://docs.makotemplates.org/en/latest/syntax.html#nsname-defname>`_ and `Calling a Def with Embedded Content and/or Other Defs <http://docs.makotemplates.org/en/latest/defs.html#defs-with-content>`_ of Mako Documentation to get more information about custom tags."
+msgstr ""
+
+#: ../syntax.rst:1197
+# b484b8fe24d24a9a8ca54c3113f2d49a
+msgid "**-text** tag"
+msgstr ""
+
+#: ../syntax.rst:1199
+# b0c2d861d5c5444a9a8f964b96fd24e4
+msgid "As it is mentioned in `Mako documentation <http://docs.makotemplates.org/en/latest/syntax.html#text>`_, this tag suspends the Mako lexer’s normal parsing of Mako template directives, and returns its entire body contents as plain text. It is used pretty much to write documentation about Mako:"
+msgstr ""
+

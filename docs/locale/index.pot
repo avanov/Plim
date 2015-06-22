@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../index.rst:8
+# f6f4c1e6d7a04a0da2b2f13c1843cd56
+msgid "Plim Documentation"
+msgstr ""
+
+#: ../index.rst:23
+# 2eaa426688a24a7693aa151b8e525aa8
+msgid "Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_ built on top of `Mako Templates <http://www.makotemplates.org/>`_. It uses `Mako's preprocessor feature <http://docs.makotemplates.org/en/latest/usage.html?highlight=preprocessor#api-reference>`_ to translate its syntax into a valid HTML/Mako markup."
+msgstr ""
+
+#: ../index.rst:30
+# aeef021e407a41c4b53890e7126b63ae
+msgid "Installation"
+msgstr ""
+
+#: ../index.rst:38
+# ea6938fb83b3498a8d9d8ae3654acd20
+msgid "Tests"
+msgstr ""
+
+#: ../index.rst:40
+# 2075f9ace53449618d8eb6bf0edbfafa
+msgid "Plim provides an extensive test suite based on `nosetests <http://nose.readthedocs.org/en/latest/>`_. You can run the tests with the following command"
+msgstr ""
+
+#: ../index.rst:48
+# b8140d2d86eb4e57b29ed8d629d8848d
+msgid "Coverage statistics are `available online <https://coveralls.io/r/avanov/Plim?branch=develop>`_."
+msgstr ""
+
+#: ../index.rst:52
+# 18b7199b5bc946e3a9694716490b086e
+msgid "Detailed example"
+msgstr ""
+
+#: ../index.rst:166
+# a3ee0818fde642c9b696899899169fe0
+msgid "Main Documentation"
+msgstr ""
+
+#: ../index.rst:183
+# 632a1c8d3c7349958ec3754e3c6f3423
+msgid "Indices and tables"
+msgstr ""
+
+#: ../index.rst:185
+# d90dfb1201c6481eb978fdd20044cc37
+msgid ":ref:`genindex`"
+msgstr ""
+
+#: ../index.rst:186
+# 5a554d3b01854993a51cf28ce31fd34b
+msgid ":ref:`modindex`"
+msgstr ""
+
+#: ../index.rst:187
+# e8f102f4d12047649caaf614f88e935f
+msgid ":ref:`search`"
+msgstr ""
+
