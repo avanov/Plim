@@ -84,6 +84,8 @@ msgid ""
 "Plim uses `python-markdown2 <https://github.com/trentm/python-markdown2>`_ "
 "package for the ``-markdown`` (or ``-md``) extension."
 msgstr ""
+"Plim 使用 `python-markdown2 <https://github.com/trentm/python-markdown2>`_ "
+"包处理 ``-markdown`` （或者 ``-md``）扩展"
 
 #: ../extensions.rst:186
 msgid "reStructuredText"
@@ -95,11 +97,11 @@ msgid ""
 "supporting the ``-rest`` (or ``-rst``) extension and project documenting."
 msgstr ""
 "Plim 使用 `python-markdown2 <https://github.com/trentm/python-markdown2>`_ "
-"作为 ``-markdown`` （或者 ``-md``） 扩展。"
+"来处理 ``-rest`` （或者 ``-rst``）扩展以及项目文档。"
 
 #: ../extensions.rst:251
 msgid "Handlebars"
-msgstr ""
+msgstr "Handlebar"
 
 #: ../extensions.rst:253
 msgid ""
@@ -155,12 +157,16 @@ msgid ""
 " reaches a line which indentation is lower or equal to ``indent_level``, it "
 "returns control to a top-level function."
 msgstr ""
+"``indent_level`` - 当前行的缩进层次。分析器发现某一行的缩进比上一行多 "
+"``indent_level`` 层或更多时，将把它的控制权交给上一层。"
 
 #: ../extensions.rst:331
 msgid ""
 "``current_line`` - a line which is being parsed. This is the line that has "
 "been matched by ``matched`` object at the previous parsing step."
 msgstr ""
+"``current_line`` - 已被解析的行列。说明这一行在上一步的解析中已经被 ``matched``"
+" 解析器匹配。"
 
 #: ../extensions.rst:333
 msgid ""
@@ -173,29 +179,32 @@ msgid ""
 "``source`` - an instance of an enumerated object returned by "
 ":func:`plim.lexer.enumerate_source`."
 msgstr ""
+"``source`` - :func:`plim.lexer.enumerate_source` 所返回的枚举对象实例。"
 
 #: ../extensions.rst:335
 msgid ""
 "``syntax`` - an instance of one of :class:`plim.syntax.BaseSyntax` children."
 msgstr ""
+"``syntax`` - :class:`plim.syntax.BaseSyntax` 子类的实例。"
 
 #: ../extensions.rst:337
 msgid "Every parser returns a 4-tuple of:"
-msgstr "并返回 4 位元组："
+msgstr "并返回包含以下元素的元组："
 
 #: ../extensions.rst:339
 msgid "parsed_data - a string of successfully parsed data"
-msgstr ""
+msgstr "parsed_data - 解释器处理后的字符串。"
 
 #: ../extensions.rst:340
 msgid "tail_indent - an indentation level of the ``tail line``"
-msgstr ""
+msgstr "tail_indent - ``tail line`` 的缩进等级。"
 
 #: ../extensions.rst:341
 msgid ""
 "tail_line - a line which indentation level (``tail_indent``) is lower or "
 "equal to the input ``indent_level``."
 msgstr ""
+"tail_line - 缩进等级（``tail_indent``）小于或等于 ``indent_level`` 的行。"
 
 #: ../extensions.rst:343
 msgid ""
@@ -203,6 +212,8 @@ msgid ""
 ":func:`plim.lexer.enumerate_source` which represents the remaining "
 "(untouched) plim markup."
 msgstr ""
+"``source`` - :func:`plim.lexer.enumerate_source` 返回的枚举对象。"
+"包含尚未处理的 plim 标记。"
 
 #: ../extensions.rst:347
 msgid ""

@@ -1,4 +1,4 @@
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Plim 0.9\n"
@@ -10,10 +10,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../related.rst:2
-msgid "相关项目"
-msgstr ""
 
 #: ../related.rst:4
 msgid "There is a number of similar projects that you might be interested in."
@@ -52,5 +48,10 @@ msgid ""
 "See also `a list of Slim related projects <https://github.com/stonean/slim"
 "#slim-related-projects>`_."
 msgstr ""
-"这里还有 `一系列与 Slim 相似的项目 "
-"<https://github.com/stonean/slim#slim-related-projects>`_ 。"
+"这里还有 `一系列与 Slim 相似的项目 <https://github.com/stonean/slim#slim-related-"
+"projects>`_ 。"
+
+#: ../related.rst:2
+msgid "Related projects"
+msgstr "相关项目"
+
