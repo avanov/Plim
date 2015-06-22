@@ -96,7 +96,7 @@ msgid ""
 "Plim uses `Docutils <http://docutils.sourceforge.net/>`_ package for both "
 "supporting the ``-rest`` (or ``-rst``) extension and project documenting."
 msgstr ""
-"Plim 使用 `python-markdown2 <https://github.com/trentm/python-markdown2>`_ "
+"Plim 使用 `Docutils <http://docutils.sourceforge.net/>`_ 包 "
 "来处理 ``-rest`` （或者 ``-rst``）扩展以及项目文档。"
 
 #: ../extensions.rst:251
