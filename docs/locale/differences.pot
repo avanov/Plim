@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../differences.rst:2
+# fd63c5dd82d847c6b6217c990db2c401
+msgid "Syntactic Differences"
+msgstr ""
+
+#: ../differences.rst:4
+# 6543dce23d0a49dd84aa3e8392d3f573
+msgid "Plim is *not the exact* port of Slim. Here is the full list of differences."
+msgstr ""
+
+#: ../differences.rst:7
+# f3f2929b131f45ba84f8ce2e3cfcee08
+msgid "Slim has the ( ``'`` ), ( ``='`` ), and ( ``=='`` ) `line indicators <https://github.com/slim-template/slim#line-indicators>`_. In Plim, single quote has been replaced by the comma char ( ``,`` ):"
+msgstr ""
+
+#: ../differences.rst:17
+# 7826b242449f48dca65f39d4ee1970f0
+msgid "The change was made in order to get rid of the syntactic ambiguities like these:"
+msgstr ""
+
+#: ../differences.rst:28
+# 1b608163774543c78d47de11dde0d784
+msgid "Meanwhile, the comma char is not allowed at the beginning of python expression, therefore the following code samples are consistent:"
+msgstr ""
+
+#: ../differences.rst:41
+# cdce2fe7525d46cd9f60329336fd2485
+msgid "In addition, the comma syntax seems more natural, since in formal writing we also add a whitespace between a comma and the following word (in contrast to apostrophes, which may be written together with some parts of words - \"I'm\", \"it's\" etc)."
+msgstr ""
+
+#: ../differences.rst:47
+# 47c4d22c877e40f9ae9cc32446a8d435
+msgid "Unlike Slim, Plim does not support square or curly braces for wrapping tag attributes. You can use only parentheses ``()``:"
+msgstr ""
+
+#: ../differences.rst:61
+# 29992bcf5c9e4a36a01da0e0225866ac
+msgid "In Plim, all html tags **MUST** be written in lowercase."
+msgstr ""
+
+#: ../differences.rst:63
+# 2a470b5d41b548dda64bed052f282a56
+msgid "This restriction was introduced to support :ref:`Implicit Litaral Blocks <implicit-literals>` feature."
+msgstr ""
+
+#: ../differences.rst:79
+# 8a859a687ea444b89adfacaf4fc8f338
+msgid "You do not have to use the ``|`` (pipe) indicator in ``style`` and ``script`` tags."
+msgstr ""
+
+#: ../differences.rst:81
+# 1637fde6f5aa4a9db414ba1d51fd88bb
+msgid "Plim does not make distinctions between control structures and embedded filters."
+msgstr ""
+
+#: ../differences.rst:83
+# a2f0ef6306e04b62aeddb1bcaebab475
+msgid "For example, in Slim you would write ``-if``, ``-for``, and ``coffee:`` (without preceding dash, but with the colon sign at the tail). But in Plim, you must write ``-if``, ``-for``, and ``-coffee``."
+msgstr ""
+
+#: ../differences.rst:87
+# c57b1618796c49fc88ea5d710a71fa80
+msgid "In contrast to Slim, Plim does not support the ``/!`` line indicator `which is used as an HTML-comment <https://github.com/stonean/slim#-7>`_. You can use raw HTML-comments instead."
+msgstr ""
+

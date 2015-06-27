@@ -1,4 +1,4 @@
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Plim 0.9\n"
@@ -13,7 +13,7 @@ msgstr ""
 
 #: ../../CHANGES:2
 msgid "Changelog"
-msgstr ""
+msgstr "变更记录"
 
 #: ../../CHANGES:5
 msgid "Version 0.9"
@@ -27,8 +27,7 @@ msgstr ""
 msgid ""
 "Hotfix: Fix incorrect parsing of templates with windows-style newlines "
 "(CR+LF)."
-msgstr ""
-"Hotfix: Windows-样式换行（CR+LF）的错误解析修复"
+msgstr "Hotfix: Windows-样式换行（CR+LF）的错误解析修复"
 
 #: ../../CHANGES:11
 msgid "0.9.10"
@@ -38,8 +37,7 @@ msgstr ""
 msgid ""
 "Hotfix: Fix ``plimc``'s inability to find a custom preprocessors module in "
 "the current working dir."
-msgstr ""
-"Hotfix: 修复 ``plimc`` 无法使用当前目录下的预处理器模块问题。"
+msgstr "Hotfix: 修复 ``plimc`` 无法使用当前目录下的预处理器模块问题。"
 
 #: ../../CHANGES:15
 msgid "0.9.9"
@@ -49,7 +47,7 @@ msgstr ""
 msgid ""
 "Hotfix: Fix UnicodeEncodeError in ``-def`` blocks with unicode strings as "
 "default argument values."
-msgstr ""
+msgstr "Hotfix: 修复 ``-def`` 代码块中使用 unicode 字符引起的 UnicodeEncodeError 问题。"
 
 #: ../../CHANGES:19
 msgid "0.9.8"
@@ -57,7 +55,7 @@ msgstr ""
 
 #: ../../CHANGES:21
 msgid "Change: Stylus extension no longer depends on the ``nib`` package."
-msgstr ""
+msgstr "Change: Stylus 扩展不再依赖于 ``nib`` 包。"
 
 #: ../../CHANGES:23
 msgid "0.9.7"
@@ -65,7 +63,7 @@ msgstr ""
 
 #: ../../CHANGES:25
 msgid "Hotfix: Include requirements.txt into the distribution."
-msgstr ""
+msgstr "Hotfix: 将 requirements.txt 包含进发行版中。"
 
 #: ../../CHANGES:27
 msgid "0.9.6"
@@ -76,6 +74,8 @@ msgid ""
 "Hotfix: Conditional statements parser now can handle strings containing "
 "inline tag separator sequences (#27)."
 msgstr ""
+"Hotfix: Conditional statements parser now can handle strings containing "
+"inline tag separator sequences (#27)."
 
 #: ../../CHANGES:31
 msgid "0.9.5"
@@ -85,7 +85,7 @@ msgstr ""
 msgid ""
 "Hotfix: Fix ``plimc`` unicode decoding regression introduced by the previous"
 " hotfix."
-msgstr ""
+msgstr "Hotfix: 修复在上一个 Hotfix 中引入的 ``plimc`` 解码 Unicode 正则表达式的问题。"
 
 #: ../../CHANGES:36
 msgid "0.9.4"
@@ -94,11 +94,11 @@ msgstr ""
 #: ../../CHANGES:39
 msgid ""
 "Hotfix: ``plimc`` no longer crashes with TypeError in Python3 environments"
-msgstr ""
+msgstr "Hotfix: ``plimc`` 在 Python 3 环境下不会因 TypeError 而崩溃了。"
 
 #: ../../CHANGES:39
 msgid "when it writes bytes to sys.stdout."
-msgstr ""
+msgstr "将输出指向 sys.stdout 。"
 
 #: ../../CHANGES:41
 msgid "0.9.3"
@@ -106,7 +106,7 @@ msgstr ""
 
 #: ../../CHANGES:43
 msgid "Hotfix: Fix UnicodeEncodeError in ``plimc`` when it writes to STDOUT."
-msgstr ""
+msgstr "Hotfix: 修复 ``plimc`` 将输出指向 STDOUT 时的 UnicodeEncodeError。"
 
 #: ../../CHANGES:45
 msgid "0.9.2"
@@ -118,6 +118,9 @@ msgid ""
 "<http://plim.readthedocs.org/en/latest/en/extensions.html#extending-plim-"
 "with-custom-parsers>`_."
 msgstr ""
+"Feature: 添加 `自定义解释器 "
+"<http://plim.readthedocs.org/en/latest/en/extensions.html#extending-plim-"
+"with-custom-parsers>`_ 特性。"
 
 #: ../../CHANGES:49
 msgid "0.9.1"
@@ -128,13 +131,8 @@ msgid ""
 "New Syntax: `New-style Python Blocks "
 "<http://plim.readthedocs.org/en/latest/en/syntax.html#new-style-blocks>`_."
 msgstr ""
-
-#: ../../CHANGES:52
-msgid ""
-"New Syntax: `New-style Module-level Blocks "
-"<http://plim.readthedocs.org/en/latest/en/syntax.html#module-level-"
-"blocks>`_."
-msgstr ""
+"新语法： `新式 Python 代码块 <http://plim.readthedocs.org/en/latest/en/syntax.html"
+"#new-style-blocks>`_."
 
 #: ../../CHANGES:55
 msgid "0.9.0"
@@ -144,27 +142,29 @@ msgstr ""
 msgid ""
 "Change: Pyramid adapter now relies on Pyramid>=1.5a2 and "
 "pyramid_mako>=0.3.1."
-msgstr ""
+msgstr "变动：Pyramid 适配器现在依赖于 Pyramid>=1.5a2 以及 pyramid_mako>=0.3.1 。"
 
 #: ../../CHANGES:58
 msgid "Change: The package now depends on Mako>=0.9.0."
-msgstr ""
+msgstr "变动：Plim 现在需要 Mako>=0.9.0 支持。"
 
 #: ../../CHANGES:59
 msgid "Change: Sass/Scss extension now requires PyScss>=1.2.0.post3."
-msgstr ""
+msgstr "变动： Sass/Scss 扩展现在需要 PyScss>=1.2.0.post3 。"
 
 #: ../../CHANGES:61
 msgid ""
 "Change: Pyramid adapter's ``plim.file_extension`` configuration option is "
 "deprecated."
-msgstr ""
+msgstr "变动：Pyramid 适配器的 ``plim.file_extension`` 设置选项已被标记为不推荐使用。"
 
 #: ../../CHANGES:61
 msgid ""
 "The ``config.add_plim_renderer()`` `directive is provided instead "
 "<http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_."
 msgstr ""
+"``config.add_plim_renderer()`` 已 `被替换 "
+"<http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_ 。"
 
 #: ../../CHANGES:64
 msgid "Version 0.8"
@@ -382,3 +382,13 @@ msgstr ""
 #: ../../CHANGES:160
 msgid "0.7.0 Initial public release."
 msgstr ""
+
+#: ../../CHANGES:52
+msgid ""
+"New Syntax: `New-style Module-level Blocks "
+"<http://plim.readthedocs.org/en/latest/en/syntax.html#module-level-"
+"blocks>`_."
+msgstr ""
+"新语法： `模块级代码块的新式写法 <http://plim.readthedocs.org/en/latest/en/syntax.html"
+"#module-level-blocks>`_ 。"
+

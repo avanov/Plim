@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../authors.rst:2
+# 52c1f7c01fa742ab9fa4a5e1daf1c8ec
+msgid "Authors"
+msgstr ""
+
+#: ../../AUTHORS:1
+# 9982f035b7ae4f3e87975ca0b835230e
+msgid "Plim was created by `Maxim Avanov <https://maximavanov.com/>`_."
+msgstr ""
+
+#: ../../AUTHORS:5
+# 5d2cccd2e02e47b594e8b38732ab5927
+msgid "Contributors (in chronological order of the first contribution)"
+msgstr ""
+
+#: ../../AUTHORS:7
+# f77c06131c1445d1917ca52581d8ffc9
+msgid "Keith Yang - https://github.com/keitheis"
+msgstr ""
+
+#: ../../AUTHORS:8
+# e842dda9d49f404ea92f4039d10ae3f3
+msgid "iMom0 - https://github.com/imom0"
+msgstr ""
+
+#: ../../AUTHORS:9
+# 893fb76fafdb44ef863bef98d1e455b0
+msgid "dongweiming - https://github.com/dongweiming"
+msgstr ""
+
+#: ../authors.rst:6
+# 0d87284253454eeb9b177dc29a204ebc
+msgid "See also `a list of Slim authors <https://github.com/slim-template/slim#authors>`_."
+msgstr ""
+

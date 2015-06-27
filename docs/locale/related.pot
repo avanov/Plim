@@ -1,9 +1,14 @@
-# 
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Plim 0.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 16:42+0800\n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,47 +16,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../related.rst:2
+# 7a14d207d98846a19842d032f2c9b0d8
+msgid "Related projects"
+msgstr ""
+
 #: ../related.rst:4
+# 60149bc6ea094872829fc6a6961e9917
 msgid "There is a number of similar projects that you might be interested in."
-msgstr "这里列举了一系列与 Plim 相似的项目，你可能会感兴趣："
+msgstr ""
 
 #: ../related.rst:6
+# 4093e94ac0c74e7e8d3cb0c5bec43fa9
 msgid "`slimish-jinja2 <https://github.com/thoughtnirvana/slimish-jinja2>`_"
 msgstr ""
 
 #: ../related.rst:7
+# 30bc1c4f11df4afaad7ca82be09a5750
 msgid "`PyJade <https://github.com/syrusakbary/pyjade>`_"
 msgstr ""
 
 #: ../related.rst:8
+# ef35f525f8dd434a9e60865b34776dea
 msgid "`mint <https://github.com/riffm/mint>`_"
 msgstr ""
 
 #: ../related.rst:9
+# 49d1cb3f5d3b432dae4155d46a18207b
 msgid "`SHPAML <http://shpaml.webfactional.com/>`_"
 msgstr ""
 
 #: ../related.rst:10
+# d517eba85f194b308e8660700da31c0e
 msgid "`Yammy <https://bitbucket.org/quasinerd/yammy>`_"
 msgstr ""
 
 #: ../related.rst:11
+# 35e39aecb1ad47a8878c76840216c0a9
 msgid "`PyHAML <https://github.com/mikeboers/PyHAML>`_"
 msgstr ""
 
 #: ../related.rst:12
+# f85fba0a1d124672a9353ba796d1a5dd
 msgid "`HamlPy <https://github.com/jessemiller/HamlPy>`_"
 msgstr ""
 
 #: ../related.rst:14
-msgid ""
-"See also `a list of Slim related projects <https://github.com/stonean/slim"
-"#slim-related-projects>`_."
+# 9af79d54bd124cf497c33fb1e0a4be74
+msgid "See also `a list of Slim related projects <https://github.com/stonean/slim#slim-related-projects>`_."
 msgstr ""
-"这里还有 `一系列与 Slim 相似的项目 <https://github.com/stonean/slim#slim-related-"
-"projects>`_ 。"
-
-#: ../related.rst:2
-msgid "Related projects"
-msgstr "相关项目"
 
