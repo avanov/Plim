@@ -44,7 +44,7 @@ BOOLEAN_ATTRIBUTE_MARKER = '?'
 LINE_BREAK = '\\'
 
 # Please note that in Plim all tag names are intentionally lower-cased
-TAG_RULE = '(?P<html_tag>[a-z][a-z0-9]*)'
+TAG_RULE = '(?P<html_tag>[a-z][a-z0-9-]*)'
 TAG_RE = re.compile(TAG_RULE)
 LINE_PARTS_RE = re.compile('(?P<indent>\s*)(?P<line>.*)\s*')
 MAKO_FILTERS_TAIL_RE = re.compile('\|\s*(?P<filters>[a-zA-Z][_.a-zA-Z0-9]*(?:,\s*[a-zA-Z][_.a-zA-Z0-9]*)*)\s*$')

@@ -1,0 +1,413 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../CHANGES:2
+# 405e69e4dca44c47ad3d9a3ece387f08
+msgid "Changelog"
+msgstr ""
+
+#: ../../CHANGES:5
+# 18791ca719b046269478b94795b9335f
+msgid "Version 0.9"
+msgstr ""
+
+#: ../../CHANGES:7
+# 2bf0e406e6234f2ab1db310ee3141d17
+msgid "0.9.11"
+msgstr ""
+
+#: ../../CHANGES:9
+# 47a221af11ed4050b6f3f93fe0bab533
+msgid "Hotfix: Fix incorrect parsing of templates with windows-style newlines (CR+LF)."
+msgstr ""
+
+#: ../../CHANGES:11
+# b68df681eea7421da037afaf11559e6b
+msgid "0.9.10"
+msgstr ""
+
+#: ../../CHANGES:13
+# 8237675f123b4a8dbd998bacee875e2c
+msgid "Hotfix: Fix ``plimc``'s inability to find a custom preprocessors module in the current working dir."
+msgstr ""
+
+#: ../../CHANGES:15
+# 7e68d3ea5d8243818bbae65b230d1c3b
+msgid "0.9.9"
+msgstr ""
+
+#: ../../CHANGES:17
+# 49448822ef56435cbaf39d695f41d241
+msgid "Hotfix: Fix UnicodeEncodeError in ``-def`` blocks with unicode strings as default argument values."
+msgstr ""
+
+#: ../../CHANGES:19
+# 761c614ebff74e1585d163ac2756ee9f
+msgid "0.9.8"
+msgstr ""
+
+#: ../../CHANGES:21
+# f75441e78f5648e1b1d841a991c3db04
+msgid "Change: Stylus extension no longer depends on the ``nib`` package."
+msgstr ""
+
+#: ../../CHANGES:23
+# 90ff8801ab414ee4938430035407fd45
+msgid "0.9.7"
+msgstr ""
+
+#: ../../CHANGES:25
+# 60a7b6fbb8bd4b67b0ebe372b4030281
+msgid "Hotfix: Include requirements.txt into the distribution."
+msgstr ""
+
+#: ../../CHANGES:27
+# f56fd42871d64de8835d0e7073149247
+msgid "0.9.6"
+msgstr ""
+
+#: ../../CHANGES:29
+# 4849327746a34090b754444a9d62292a
+msgid "Hotfix: Conditional statements parser now can handle strings containing inline tag separator sequences (#27)."
+msgstr ""
+
+#: ../../CHANGES:31
+# 29085fcf3e5b4f31895b7da523ccdb3c
+msgid "0.9.5"
+msgstr ""
+
+#: ../../CHANGES:33
+# ae8a1fe89c60479fa2bfb3f2fb259ae0
+msgid "Hotfix: Fix ``plimc`` unicode decoding regression introduced by the previous hotfix."
+msgstr ""
+
+#: ../../CHANGES:36
+# c8abee1d489845e2ac3689841b43418c
+msgid "0.9.4"
+msgstr ""
+
+#: ../../CHANGES:39
+# bb3f81aa24944eb484bc6975c9dd7908
+msgid "Hotfix: ``plimc`` no longer crashes with TypeError in Python3 environments"
+msgstr ""
+
+#: ../../CHANGES:39
+# 9a8756b3dbb94915b36b03fd479d87fe
+msgid "when it writes bytes to sys.stdout."
+msgstr ""
+
+#: ../../CHANGES:41
+# be91ff15625d46429d48bab67aad43f3
+msgid "0.9.3"
+msgstr ""
+
+#: ../../CHANGES:43
+# c4086e1dda1a493ca2edbfa28457c6cd
+msgid "Hotfix: Fix UnicodeEncodeError in ``plimc`` when it writes to STDOUT."
+msgstr ""
+
+#: ../../CHANGES:45
+# 107633c84d3c4a2c96ed0905c60beb9c
+msgid "0.9.2"
+msgstr ""
+
+#: ../../CHANGES:47
+# b2d3c45a4ad243a4aa1e8c1f6738c644
+msgid "Feature: added support for `Custom Parsers <http://plim.readthedocs.org/en/latest/en/extensions.html#extending-plim-with-custom-parsers>`_."
+msgstr ""
+
+#: ../../CHANGES:49
+# f251b74adb0847f1a60c1c383b43db11
+msgid "0.9.1"
+msgstr ""
+
+#: ../../CHANGES:51
+# 759c717729d94c52a659e237e66668a4
+msgid "New Syntax: `New-style Python Blocks <http://plim.readthedocs.org/en/latest/en/syntax.html#new-style-blocks>`_."
+msgstr ""
+
+#: ../../CHANGES:52
+# f54f0236befd4f7da749629365ca992b
+msgid "New Syntax: `New-style Module-level Blocks <http://plim.readthedocs.org/en/latest/en/syntax.html#module-level-blocks>`_."
+msgstr ""
+
+#: ../../CHANGES:55
+# d09ba42b47c44ead87ac07a76c50435b
+msgid "0.9.0"
+msgstr ""
+
+#: ../../CHANGES:57
+# 1bd34af1b6374543a5036cdd2955e443
+msgid "Change: Pyramid adapter now relies on Pyramid>=1.5a2 and pyramid_mako>=0.3.1."
+msgstr ""
+
+#: ../../CHANGES:58
+# d3faf8c4342740b3bb65a710a502004a
+msgid "Change: The package now depends on Mako>=0.9.0."
+msgstr ""
+
+#: ../../CHANGES:59
+# 6450211c44d54afa97e1053f97da88a4
+msgid "Change: Sass/Scss extension now requires PyScss>=1.2.0.post3."
+msgstr ""
+
+#: ../../CHANGES:61
+# 65937435444b4764ba92a00978b3cef1
+msgid "Change: Pyramid adapter's ``plim.file_extension`` configuration option is deprecated."
+msgstr ""
+
+#: ../../CHANGES:61
+# 9587571d270c4395b43cd1e551062061
+msgid "The ``config.add_plim_renderer()`` `directive is provided instead <http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_."
+msgstr ""
+
+#: ../../CHANGES:64
+# eb5b35e47aa14dd5bf5b1105f583437a
+msgid "Version 0.8"
+msgstr ""
+
+#: ../../CHANGES:66
+# 1548398201ba4ecead5951fdd3c8389f
+msgid "0.8.9"
+msgstr ""
+
+#: ../../CHANGES:68
+# ed6300cffc5f498492e9334b9df0c75a
+msgid "Bugfix: Use sys.maxsize instead of unavailable sys.maxint on Python 3."
+msgstr ""
+
+#: ../../CHANGES:70
+# e555f9bc2c144f498fe057c8aaee6a68
+msgid "0.8.8"
+msgstr ""
+
+#: ../../CHANGES:72
+# 9c13df7fb16c4038a91e08cab30eaad8
+msgid "Hotfix: Make Plim working with a development version of pyScss for Python-3.x setups."
+msgstr ""
+
+#: ../../CHANGES:74
+# 3dcb47f33ffa4c1eae88f5f7ccc68cb0
+msgid "0.8.7"
+msgstr ""
+
+#: ../../CHANGES:76
+# 70c767d2c48f40cc8984670480eb539b
+msgid "Bugfix: Pyramid adapter is now compatible with the 1.5a2+ version of the framework."
+msgstr ""
+
+#: ../../CHANGES:78
+# b5688ef4dbdc47628699672c4bdaa7d7
+msgid "Change: `default template file extension <http://plim.readthedocs.org/en/latest/en/frameworks.html#pyramid>`_"
+msgstr ""
+
+#: ../../CHANGES:78
+# 308678513b3b461da29750a1849230f5
+msgid "used in pyramid bindings is changed from \".plm\" to \".plim\"."
+msgstr ""
+
+#: ../../CHANGES:80
+# e68fa20099cc42fba3c424f0698e0c76
+msgid "0.8.6"
+msgstr ""
+
+#: ../../CHANGES:82
+# ec6b93743a0f4e28aa91906d52843859
+msgid "Hotfix: fixed assertion error in handlebars parser."
+msgstr ""
+
+#: ../../CHANGES:84
+# e3f60b61b32c4ffa9890742ccdbf64b5
+msgid "0.8.5"
+msgstr ""
+
+#: ../../CHANGES:86
+# f2f351083f3b40c79c3d8f5aeca86417
+msgid "Feature: added support for `Handlebars blocks <http://plim.readthedocs.org/en/latest/en/extensions.html#handlebars>`_."
+msgstr ""
+
+#: ../../CHANGES:88
+# 5c4bb2298d634f899101c36a154b5449
+msgid "0.8.4"
+msgstr ""
+
+#: ../../CHANGES:90
+# 5b8713857b144127b42ae76eb71aafff
+msgid "Hotfix: updated links to github."
+msgstr ""
+
+#: ../../CHANGES:92
+# 7e4274da77914482acf7fd4c8b46a913
+msgid "0.8.3"
+msgstr ""
+
+#: ../../CHANGES:94
+# 49a25baec0094aa2a019d05a34d2f85d
+msgid "Hotfix: prevent lexer from parsing embedded markup inside ``style`` and ``script`` blocks."
+msgstr ""
+
+#: ../../CHANGES:96
+# 94480f9b84d9481290bed756a80c94bf
+msgid "0.8.2"
+msgstr ""
+
+#: ../../CHANGES:98
+# 3e7c5e8e06fd44bb95e564ad89e93ad2
+msgid "Feature: added support for `Embedded Markup <http://plim.readthedocs.org/en/latest/en/syntax.html#embedded-markup>`_."
+msgstr ""
+
+#: ../../CHANGES:99
+# 56806c50cda64dc6b5a7bfab72f932b0
+msgid "Feature: plimc utility is now able to output plain HTML."
+msgstr ""
+
+#: ../../CHANGES:101
+# d8d2941495d7466b8eb1ca63d0b8fd16
+msgid "0.8.1"
+msgstr ""
+
+#: ../../CHANGES:103
+# 6d5a42a60e9f42b4a0330182d13283b1
+msgid "Feature: added support for `Inline Statements <http://plim.readthedocs.org/en/latest/en/syntax.html#inline-statements>`_."
+msgstr ""
+
+#: ../../CHANGES:105
+# 4e92bbaa7dc447baabd2f5f2d532484c
+msgid "0.8.0"
+msgstr ""
+
+#: ../../CHANGES:107
+# 72f3b91ad1824889b9ba9ba3451dac7c
+msgid "Feature: added support for dynamic attributes unpacker (an equivalent to Slim's splat attributes)."
+msgstr ""
+
+#: ../../CHANGES:111
+# 98d3a11b11af4cfda26175b3c2fc665b
+msgid "Version 0.7"
+msgstr ""
+
+#: ../../CHANGES:113
+# 12ed82447bc4451a98d532ed214a6659
+msgid "0.7.14"
+msgstr ""
+
+#: ../../CHANGES:115
+# 0990d54b0b684f54ae4806e97d29ada1
+msgid "Hotfix: fixed bug with unicode handling."
+msgstr ""
+
+#: ../../CHANGES:117
+# 0ef0a445215349c384f5d9e06d48d247
+msgid "0.7.13"
+msgstr ""
+
+#: ../../CHANGES:119
+# 374c8fd5163e4fc3b809fee6250cade2
+msgid "Hotfix: fixed bug with static unicode attributes."
+msgstr ""
+
+#: ../../CHANGES:121
+# b32cffa1f51541a4963ce393a32b56f5
+msgid "0.7.12"
+msgstr ""
+
+#: ../../CHANGES:123
+# f7d9f1a852694cd799fa89d89cdec00c
+msgid "Unnecessary newline characters at the end of literal blocks have been removed."
+msgstr ""
+
+#: ../../CHANGES:124
+# c813e7205c364c4e8223dc7ca6258474
+msgid "Added the command-line tool ``plimc``."
+msgstr ""
+
+#: ../../CHANGES:126
+# 62ff7aca6ae64ddd8a075161f4cac478
+msgid "0.7.11"
+msgstr ""
+
+#: ../../CHANGES:128
+# f3f685f2fff64711942a34bcf50e306e
+msgid "Fixed bug that had to do with incorrect parsing of multi-line dynamic class attributes."
+msgstr ""
+
+#: ../../CHANGES:129
+# 3f7fa02b30f04ce1a6484843d33bb1c4
+msgid "Fixed bug that had to do with passing incorrect data to plim parser in babel adapter."
+msgstr ""
+
+#: ../../CHANGES:131
+# 86619c2663e343f0bf9687bceb7d0207
+msgid "0.7.10 Fixed bug with unicode error in python block. Thanks to sqrabs@github!"
+msgstr ""
+
+#: ../../CHANGES:134
+# 7f34aef900444fe69b5d1188c53b65f5
+msgid "0.7.9 Added babel message extraction plugin."
+msgstr ""
+
+#: ../../CHANGES:137
+# 5a9dacc2d7554ac8912ad06c74d274f4
+msgid "0.7.8 Expanded range of possible numeric values that don't require double-quoting."
+msgstr ""
+
+#: ../../CHANGES:140
+# 423c20aa8f9744d2b90fc5d524dbc2ab
+msgid "0.7.7"
+msgstr ""
+
+#: ../../CHANGES:142
+# f5ed7b13529946bcb19bdaf830f0f900
+msgid "Fixed bug with linebreaks without trailing newline character."
+msgstr ""
+
+#: ../../CHANGES:143
+# 54282822160c4989b6e1fef484bb115e
+msgid "Fixed bug with missing explicit whitespace after ``=,`` and ``==,`` line indicators."
+msgstr ""
+
+#: ../../CHANGES:145
+# 309a34950d3f43f280704eb8268cb3a2
+msgid "0.7.6 Fixed bug with incorrect parsing of static boolean attributes."
+msgstr ""
+
+#: ../../CHANGES:148
+# 153e0947846b49c48270234109113242
+msgid "0.7.5 Fixed bug with comment and content blocks separated by empty lines."
+msgstr ""
+
+#: ../../CHANGES:151
+# 085c8ff2b7e44618b460e0ce3ea870be
+msgid "0.7.4 Added -stylus extension."
+msgstr ""
+
+#: ../../CHANGES:154
+# 97ef0878ec0f4aa6b2b923c4dbdb7a6b
+msgid "0.7.3 Fix bug with literal one-liners."
+msgstr ""
+
+#: ../../CHANGES:157
+# 68f272604dfc438dbb78407fadf8f109
+msgid "0.7.1 Fixed installation error caused by missing README.rst."
+msgstr ""
+
+#: ../../CHANGES:160
+# 813cb6acd2f24af98e5da086d7e6c2d0
+msgid "0.7.0 Initial public release."
+msgstr ""
+

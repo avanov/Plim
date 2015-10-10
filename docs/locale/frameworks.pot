@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014, Maxim Avanov
+# This file is distributed under the same license as the Plim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Plim 0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 20:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../frameworks.rst:3
+# 00313155ff97436badcd2acbba3a3229
+msgid "Framework Integration"
+msgstr ""
+
+#: ../frameworks.rst:7
+# e436b01dc25c4d3082e8bd47943fe185
+msgid "Pyramid"
+msgstr ""
+
+#: ../frameworks.rst:9
+# 9c718edf15a1413bae23f8719ce47ca4
+msgid "Add ``plim.adapters.pyramid_renderer`` into the ``pyramid.includes`` list of your .ini configuration file"
+msgstr ""
+
+#: ../frameworks.rst:18
+# 9910e3441c8a40dfbaa3934ab80e68e7
+msgid "The adapter will add the ``.plim`` renderer for use in Pyramid. This can be overridden and more may be added via the ``config.add_plim_renderer()`` directive:"
+msgstr ""
+
+#: ../frameworks.rst:25
+# 9b282d6b9545428eafb1f8e79ddcad0c
+msgid "The renderer will load its configuration from a provided mako prefix in the Pyramid settings dictionary. The default prefix is 'mako.'."
+msgstr ""
+
+#: ../frameworks.rst:29
+# 87678022521b47ccb3eecfa028d3579c
+msgid "Flask"
+msgstr ""
+
+#: ../frameworks.rst:31
+# 160957593df242d1ae5c3111ff97899a
+msgid "The following code snippet would get Flask working with plim:"
+msgstr ""
+
+#: ../frameworks.rst:50
+# 7d39b344fc1c4219b38debbf82035cf7
+msgid "With hello.html in templates dir:"
+msgstr ""
+
+#: ../frameworks.rst:64
+# ea1efa5e20144350b6e99a984d7c0d85
+msgid "Syntax Highlighters"
+msgstr ""
+
+#: ../frameworks.rst:66
+# 5387495ebd9146f28e1dd5320860ec25
+msgid "At this moment, Plim doesn't have syntax highlighters."
+msgstr ""
+
+#: ../frameworks.rst:68
+# 89436053f97943a2a13bf14ce51c5ca9
+msgid "But, at a starting point you can use `Slim syntax highlighters <https://github.com/slim-template/slim#syntax-highlighters>`_, since most of Plim syntax is the same as of Slim."
+msgstr ""
+
+#: ../frameworks.rst:73
+# 71ff4864470944f8875790447d3e5b07
+msgid "Editors support"
+msgstr ""
+
+#: ../frameworks.rst:76
+# a8e9f4ff68764694b4fc369c4a4e76bf
+msgid "`vim-plim <https://github.com/keitheis/vim-plim>`_ - a Plim port of `vim-slim <https://github.com/slim-template/vim-slim>`_ plugin."
+msgstr ""
+
