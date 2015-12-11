@@ -65,10 +65,10 @@ msgstr "Plim 中，所有 HTML 标签 **必须** 完全小写："
 
 #: ../differences.rst:63
 msgid ""
-"This restriction was introduced to support :ref:`Implicit Litaral Blocks "
+"This restriction was introduced to support :ref:`Implicit Literal Blocks "
 "<implicit-literals>` feature."
 msgstr ""
-"该限制是为了提供 :ref:`隐式纯文本块（Implicit Litaral Blocks） <implicit-literals>` 功能。"
+"该限制是为了提供 :ref:`隐式纯文本块（Implicit Literal Blocks） <implicit-literals>` 功能。"
 
 #: ../differences.rst:79
 msgid ""

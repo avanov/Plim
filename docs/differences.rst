@@ -61,7 +61,7 @@ Plim is *not the exact* port of Slim. Here is the full list of differences.
 #.  In Plim, all html tags **MUST** be written in lowercase.
 
     This restriction was introduced to support
-    :ref:`Implicit Litaral Blocks <implicit-literals>` feature.
+    :ref:`Implicit Literal Blocks <implicit-literals>` feature.
 
     .. code-block:: slim
 
