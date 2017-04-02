@@ -54,7 +54,7 @@ def plimc(args=None, stdout=None):
         template_file = os.path.basename(args.source)
         lookup = TemplateLookup(directories=[root_dir],
                                 input_encoding=args.encoding,
-                                output_encoding=args.encoding,
+                                default_filters=['decode.utf8'],
                                 preprocessor=preprocessor)
         content = lookup.get_template(template_file).render_unicode()
     else:
