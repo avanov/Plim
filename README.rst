@@ -1,10 +1,10 @@
 Plim
 ==============
 
-.. image:: https://pypip.in/v/Plim/badge.png
+.. image:: https://img.shields.io/pypi/v/Plim.svg
         :target: https://crate.io/packages/Plim
 
-.. image:: https://pypip.in/d/Plim/badge.png
+.. image:: https://img.shields.io/pypi/dm/Plim.svg
         :target: https://crate.io/packages/Plim
 
 .. image:: https://api.travis-ci.org/avanov/Plim.png
