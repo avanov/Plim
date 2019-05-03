@@ -4,7 +4,8 @@ Command-line Interface
 .. versionadded:: 0.7.12
 
 The package provides the command-line tool ``plimc`` to compile plim
-source files into Mako templates.
+source files into Mako templates. It is usually installed in ``~/.local/bin/plimc``,
+so make sure that is included in your PATH.
 
 .. code-block:: shell
 
