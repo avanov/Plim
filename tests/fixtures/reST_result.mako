@@ -4,7 +4,7 @@
 <col class="docinfo-name" />
 <col class="docinfo-content" />
 <tbody valign="top">
-<tr class="field"><th class="docinfo-name">Info:</th><td class="field-body">See &lt;<a class="reference external" href="http://docutils.sf.net/rst.html">http://docutils.sf.net/rst.html</a>&gt; for introductory docs.</td>
+<tr class="info field"><th class="docinfo-name">Info:</th><td class="field-body">See &lt;<a class="reference external" href="http://docutils.sf.net/rst.html">http://docutils.sf.net/rst.html</a>&gt; for introductory docs.</td>
 </tr>
 <tr><th class="docinfo-name">Author:</th>
 <td>David Goodger &lt;<a class="reference external" href="mailto:goodger&#64;python.org">goodger&#64;python.org</a>&gt;</td></tr>
@@ -12,7 +12,7 @@
 <td>2011-06-17</td></tr>
 <tr><th class="docinfo-name">Revision:</th>
 <td>7056</td></tr>
-<tr class="field"><th class="docinfo-name">Description:</th><td class="field-body">This is a &quot;docinfo block&quot;, or bibliographic field list</td>
+<tr class="description field"><th class="docinfo-name">Description:</th><td class="field-body">This is a &quot;docinfo block&quot;, or bibliographic field list</td>
 </tr>
 </tbody>
 </table>

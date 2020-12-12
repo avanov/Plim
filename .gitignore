@@ -7,6 +7,11 @@
 build/
 dist/
 *.egg-info/
+*.eggs/
+*.local/
+__pycache__/
+# npm package lock, we don't need it as the 'stylus' dependency is optional
+package-lock.json
 
 docs/_build
 
