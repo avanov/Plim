@@ -54,6 +54,10 @@ devEnv = pkgs.mkShellNoCC {
              $VENV_DIR/bin/python -m pip install -e $PWD
              $VENV_DIR/bin/python -m pip install -r $PWD/requirements.txt
          fi
+
+         if [ ! -d $PWD/node_modules ]; then
+             npm install stylus
+         fi
      '';
 };
 
