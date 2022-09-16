@@ -23,6 +23,7 @@ devEnv = pkgs.mkShellNoCC {
          pythonPkgs.twine
          pythonPkgs.coveralls
 
+         gnumake
          nodejs
          nodePackages.npm
          taglib
