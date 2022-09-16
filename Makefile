@@ -17,7 +17,7 @@ test:
 
 .PHONY: typecheck
 typecheck:
-	mypy --config-file setup.cfg --package $(PROJECT_NAME)
+	mypy --config-file setup.cfg --strict --package $(PROJECT_NAME)
 
 .PHONY: prepare-dist
 prepare-dist:

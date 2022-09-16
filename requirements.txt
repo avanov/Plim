@@ -1,4 +1,5 @@
 Mako>=0.9.0
+pyrsistent>=0.18.1
 babel>=1.3
 # We use reStructuredText (docutils component) for both supporting
 # the "-rest" extension and project documenting. So, ensure that the docutils

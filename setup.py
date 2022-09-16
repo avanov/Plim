@@ -37,7 +37,7 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='1.0.0',
+    version='1.1.0',
     packages=find_packages(exclude=['tests', 'nixpkgs', 'node_modules']),
     install_requires=requires,
     setup_requires=[],

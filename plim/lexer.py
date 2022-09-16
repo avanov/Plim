@@ -2,8 +2,10 @@
 """Plim lexer"""
 import functools
 import re
+from typing import Optional, Tuple, Any, Mapping, Callable, Iterator, Sequence
 
 import markdown2
+from pyrsistent import v
 
 from . import errors
 from .util import StringIO, MAXSIZE, joined, space_separated, u
@@ -61,21 +63,21 @@ STATEMENT_CONVERT = {
 
 INLINE_PYTHON_TERMINATOR = '---'
 
-CSS_ID_SHORTCUT_TERMINATORS = (
+CSS_ID_SHORTCUT_TERMINATORS = v(
     CSS_CLASS_SHORTCUT_DELIMITER,
     WHITESPACE,
     OPEN_BRACE,
     INLINE_TAG_SEPARATOR
 )
 
-CSS_CLASS_SHORTCUT_TERMINATORS = (
+CSS_CLASS_SHORTCUT_TERMINATORS = v(
     CSS_CLASS_SHORTCUT_DELIMITER,
     WHITESPACE,
     OPEN_BRACE,
     INLINE_TAG_SEPARATOR
 )
 
-ATTRIBUTE_TERMINATORS = (
+ATTRIBUTE_TERMINATORS = v(
     ATTRIBUTE_VALUE_DELIMITER,
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
@@ -83,13 +85,13 @@ ATTRIBUTE_TERMINATORS = (
     LITERAL_CONTENT_SPACE_PREFIX
 )
 
-ATTRIBUTE_TERMINATORS_WITH_PARENTHESES = (
+ATTRIBUTE_TERMINATORS_WITH_PARENTHESES = v(
     ATTRIBUTE_VALUE_DELIMITER,
     ATTRIBUTES_DELIMITER,
     CLOSE_BRACE
 )
 
-ATTRIBUTE_VALUE_TERMINATORS = (
+ATTRIBUTE_VALUE_TERMINATORS = v(
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
     LITERAL_CONTENT_PREFIX,
@@ -98,7 +100,7 @@ ATTRIBUTE_VALUE_TERMINATORS = (
     BOOLEAN_ATTRIBUTE_MARKER
 )
 
-ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES = (
+ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES = v(
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
     LITERAL_CONTENT_PREFIX,
@@ -173,11 +175,12 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 
 # Searchers
 # ==================================================================================
-def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
-    """
+SourceIter = Iterator[tuple[int, str]]
+Parsed = Tuple[str, int, str, str]
 
+def search_quotes(line: str, escape_char: str = '\\', quotes_re = QUOTES_RE) -> Optional[int]:
+    """
     :param line: may be empty
-    :type line: str
     :param escape_char:
     """
     match = quotes_re.match(line)
@@ -198,7 +201,7 @@ def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
     return None
 
 
-def search_parser(lineno, line, syntax):
+def search_parser(lineno, line, syntax) -> Tuple[Any, Any]:
     """Finds a proper parser function for a given line or raises an error
 
     :param lineno:
@@ -214,7 +217,7 @@ def search_parser(lineno, line, syntax):
 
 # Extractors
 # ==================================================================================
-def extract_embedding_quotes(content):
+def extract_embedding_quotes(content) -> Optional[Tuple[Any, Any, Any]]:
     """
     ``content`` may be empty
 
@@ -239,28 +242,28 @@ def extract_embedding_quotes(content):
         if tail.startswith(EMBEDDING_QUOTE):
             append_seq = EMBEDDING_QUOTE_END if tail.startswith(EMBEDDING_QUOTE_END) else EMBEDDING_QUOTE
             original_string.append(append_seq)
-            original_string = joined(original_string)
-            content = content[len(original_string):]
-            embedded_string = joined(embedded_string)
-            return embedded_string, original_string, content
+            original_string_str = joined(original_string)
+            content = content[len(original_string_str):]
+            embedded_string_str = joined(embedded_string)
+            return embedded_string_str, original_string_str, content
 
         current_char = tail[0]
         original_string.append(current_char)
         embedded_string.append(current_char)
         tail = tail[1:]
 
-    original_string = joined(original_string)
-    pos = len(original_string)
-    raise errors.PlimSyntaxError(u('Embedding quote is not closed: "{}"').format(original_string), pos)
+    original_string_str = joined(original_string)
+    pos = len(original_string_str)
+    raise errors.PlimSyntaxError(u('Embedding quote is not closed: "{}"').format(original_string_str), pos)
 
 
-def _extract_braces_expression(line, source, starting_braces_re, open_braces_re, closing_braces_re):
+def _extract_braces_expression(
+    line: str, source: SourceIter, starting_braces_re, open_braces_re, closing_braces_re
+) -> Optional[Tuple[Any, Any, Any]]:
     """
 
     :param line: may be empty
-    :type line: str
     :param source:
-    :type source: str
     :param starting_braces_re:
     :param open_braces_re:
     :param closing_braces_re:
@@ -323,16 +326,16 @@ extract_mako_expression = lambda line, source: _extract_braces_expression(line, 
 )
 
 
-def extract_identifier(line, source, identifier_start='#', terminators=('.', ' ', CLOSE_BRACE, INLINE_TAG_SEPARATOR)):
+def extract_identifier(line: str, source, identifier_start: str = '#',
+                       terminators: Sequence[str] = v('.', ' ', CLOSE_BRACE, INLINE_TAG_SEPARATOR)
+                       ) -> Optional[Tuple[str, str, Any]]:
     """
 
     :param line: Current line. It may be empty.
     :type line: str or unicode
     :param source:
-    :type source: str
     :param identifier_start:
     :param terminators:
-    :type terminators: tuple or set
     """
     if not line or not line.startswith(identifier_start):
         return None
@@ -353,10 +356,10 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
             continue
 
         # Check for a string object
-        result = search_quotes(tail)
-        if result is not None:
-            buf.append(tail[:result])
-            tail = tail[result:]
+        result_pos = search_quotes(tail)
+        if result_pos is not None:
+            buf.append(tail[:result_pos])
+            tail = tail[result_pos:]
             continue
 
         # Try to search braces of function calls etc
@@ -420,7 +423,7 @@ def extract_dynamic_attr_value(line, source, terminators, syntax):
     return value, tail, source
 
 
-def extract_dynamic_tag_attributes(line, source, syntax, inside_parentheses=False):
+def extract_dynamic_tag_attributes(line: str, source: str, syntax, inside_parentheses=False) -> Optional[Tuple[Any, Any, Any]]:
     """
     Extract one occurrence of ``**dynamic_attributes``
     :param line:
@@ -463,8 +466,7 @@ def extract_dynamic_tag_attributes(line, source, syntax, inside_parentheses=Fals
     return attributes, tail, source
 
 
-
-def extract_tag_attribute(line, source, syntax, inside_parentheses=False):
+def extract_tag_attribute(line: str, source: str, syntax, inside_parentheses=False):
     """
 
     :param line:
@@ -537,7 +539,7 @@ def extract_tag_attribute(line, source, syntax, inside_parentheses=False):
     return None
 
 
-def extract_line_break(tail, source):
+def extract_line_break(tail, source: SourceIter):
     """
     Checks the first character of the tail.
 
@@ -559,7 +561,7 @@ def extract_line_break(tail, source):
     return found, tail, source
 
 
-def extract_statement_expression(tail, source):
+def extract_statement_expression(tail: str, source: SourceIter) -> Tuple[str, str]:
     """
 
     :param tail:
@@ -676,13 +678,13 @@ def extract_tag_line(line, source, syntax):
                 if css_id:
                     attributes.append(u('id="{ids}"').format(ids=css_id))
                 if class_identifiers:
-                    class_identifiers = space_separated(class_identifiers)
-                    attributes.append(u('class="{classes}"').format(classes=class_identifiers))
+                    class_identifiers_str = space_separated(class_identifiers)
+                    attributes.append(u('class="{classes}"').format(classes=class_identifiers_str))
             break
-        attributes = space_separated(attributes)
-        components['attributes'] = attributes
-        if attributes:
-            tag_composer.extend([' ', attributes])
+        attributes_str = space_separated(attributes)
+        components['attributes'] = attributes_str
+        if attributes_str:
+            tag_composer.extend([' ', attributes_str])
 
         # 3.2 syntax check
         if inside_parentheses:
@@ -807,7 +809,7 @@ def parse_doctype(indent_level, current_line, ___, source, syntax):
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
-def parse_handlebars(indent_level, current_line, ___, source, syntax):
+def parse_handlebars(indent_level: int, current_line, ___, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -830,7 +832,7 @@ def parse_handlebars(indent_level, current_line, ___, source, syntax):
     return processed_tag, tail_indent, tail_line, source
 
 
-def parse_tag_tree(indent_level, current_line, ___, source, syntax):
+def parse_tag_tree(indent_level: int, current_line: str, ___: Any, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -962,7 +964,7 @@ def parse_python_new_style(indent_level, __, matched, source, syntax):
 
 
 
-def parse_mako_text(indent, __, matched, source, syntax):
+def parse_mako_text(indent, __, matched, source, syntax) -> Parsed:
     """
 
     :param indent:
@@ -1061,7 +1063,7 @@ def parse_comment(indent_level, __, ___, source, syntax):
     return '', 0, '', source
 
 
-def parse_statements(indent_level, __, matched, source, syntax):
+def parse_statements(indent_level: int, __: Any, matched, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1096,7 +1098,9 @@ def parse_statements(indent_level, __, matched, source, syntax):
         else:
             tail_indent, tail_line = scan_line(tail_line)
 
-    def complete_statement(buf, tail_indent, tail_line, source, statement, syntax):
+    def complete_statement(
+        buf: list[str], tail_indent: int, tail_line: str, source, statement: str, syntax
+    ) -> Parsed:
         buf.extend([
             '\n',
             syntax.STATEMENT_END_START_SEQUENCE,
@@ -1217,7 +1221,7 @@ def parse_statements(indent_level, __, matched, source, syntax):
 
 
 
-def parse_foreign_statements(indent_level, __, matched, source, syntax):
+def parse_foreign_statements(indent_level: int, __: Any, matched, source: SourceIter, syntax):
     """
 
     :param indent_level:
@@ -1238,7 +1242,7 @@ def parse_foreign_statements(indent_level, __, matched, source, syntax):
     return parse_statements(indent_level, __, matched, source, syntax)
 
 
-def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded):
+def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded) -> Parsed:
     """
     Parses lines and blocks started with the "|" (pipe) or "," (comma) character.
 
@@ -1255,7 +1259,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
     trailing_space_required = current_line[0] == LITERAL_CONTENT_SPACE_PREFIX
 
     # ---------------------------------
-    def prepare_result(buf):
+    def prepare_result(buf: Sequence[str]) -> str:
         result = joined(buf).rstrip()
         if trailing_space_required:
             result = u("{} ").format(result)
@@ -1276,7 +1280,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
         except StopIteration:
             break
         indent, line = scan_line(current_line)
-        if not line:
+        if not line or indent is None:
             buf.append('\n')
             continue
         if indent <= indent_level:
@@ -1287,8 +1291,8 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
         if align > new_align:
             align = new_align
         # remove preceding spaces
-        line = current_line[align:].rstrip()
-        buf.extend([line.rstrip(), "\n"])
+        ne_line = current_line[align:].rstrip()
+        buf.extend([ne_line.rstrip(), "\n"])
 
     result = prepare_result(buf)
     return result, 0, '', source
@@ -1297,14 +1301,13 @@ parse_explicit_literal_with_embedded_markup = functools.partial(parse_explicit_l
 parse_explicit_literal_no_embedded = functools.partial(parse_explicit_literal, parse_embedded=False)
 
 
-def _parse_embedded_markup(content, syntax):
+def _parse_embedded_markup(content: str, syntax) -> str:
     """
 
     :param content:
     :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
     :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
-    :rtype: str
     """
     buf = []
     tail = content
@@ -1333,7 +1336,7 @@ def _parse_embedded_markup(content, syntax):
     return joined(buf)
 
 
-def _inject_n_filter(line):
+def _inject_n_filter(line: str) -> str:
     """
     This is a helper function for :func:parse_variable
 
@@ -1352,7 +1355,7 @@ def _inject_n_filter(line):
     return line
 
 
-def parse_variable(indent_level, __, matched, source, syntax):
+def parse_variable(indent_level: int, __, matched, source: SourceIter, syntax) -> Parsed:
     """ = variable or == variable
 
     :param indent_level:
@@ -1375,22 +1378,22 @@ def parse_variable(indent_level, __, matched, source, syntax):
         if not line:
             continue
         if indent <= indent_level:
-            buf = joined(buf)
+            buf_str = joined(buf)
             if prevent_escape:
-                buf = _inject_n_filter(buf)
+                buf_str = _inject_n_filter(buf_str)
             # add a closing brace to complete variable expression syntax ("${}" in case of mako).
-            buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
-            return buf, indent, line, source
+            buf_str += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
+            return buf_str, indent, line, source
         buf.append(line.strip())
 
-    buf = joined(buf)
+    buf_str = joined(buf)
     if prevent_escape:
-        buf = _inject_n_filter(buf)
-    buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
-    return buf, 0, '', source
+        buf_str = _inject_n_filter(buf_str)
+    buf_str += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
+    return buf_str, 0, '', source
 
 
-def parse_early_return(indent_level, __, matched, source, syntax):
+def parse_early_return(indent_level, __, matched, source, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1404,7 +1407,7 @@ def parse_early_return(indent_level, __, matched, source, syntax):
     return u('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
 
 
-def parse_implicit_literal(indent_level, __, matched, source, syntax):
+def parse_implicit_literal(indent_level, __, matched, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1424,7 +1427,7 @@ def parse_implicit_literal(indent_level, __, matched, source, syntax):
     )
 
 
-def parse_raw_html(indent_level, current_line, ___, source, syntax):
+def parse_raw_html(indent_level, current_line, ___, source, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1458,7 +1461,7 @@ def parse_raw_html(indent_level, current_line, ___, source, syntax):
     return joined(buf), 0, '', source
 
 
-def parse_mako_one_liners(indent_level, __, matched, source, syntax):
+def parse_mako_one_liners(indent_level, __, matched, source, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1479,7 +1482,7 @@ def parse_mako_one_liners(indent_level, __, matched, source, syntax):
     return joined(buf), indent_level, '', source
 
 
-def parse_def_block(indent_level, __, matched, source, syntax):
+def parse_def_block(indent_level: int, __, matched, source: str, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1505,7 +1508,7 @@ def parse_def_block(indent_level, __, matched, source, syntax):
         except StopIteration:
             break
         tail_indent, tail_line = scan_line(tail_line)
-        if not tail_line:
+        if not tail_line or tail_indent is None:
             continue
         # Parse a tree
         # --------------------------------------------------------
@@ -1523,7 +1526,7 @@ def parse_def_block(indent_level, __, matched, source, syntax):
     return joined(buf), 0, '', source
 
 
-def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
+def parse_plim_tail(lineno: int, indent_level, tail_line, source: SourceIter, syntax) -> Parsed:
     """
 
     :param lineno:
@@ -1547,7 +1550,7 @@ def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
 
 # Miscellaneous utilities
 # ==================================================================================
-def enumerate_source(source):
+def enumerate_source(source: str) -> SourceIter:
     """
 
     :param source:
@@ -1556,17 +1559,16 @@ def enumerate_source(source):
     return enumerate(StringIO(source), start=1)
 
 
-def scan_line(line):
+def scan_line(line: str) -> Tuple[Optional[int], Optional[str]]:
     """ Returns a 2-tuple of (length_of_the_indentation, line_without_preceding_indentation)
-
-    :param line:
-    :type line: str
     """
     match = LINE_PARTS_RE.match(line)
-    return len(match.group('indent')), match.group('line')
+    if match:
+        return len(match.group('indent')), match.group('line')
+    return None, None
 
 
-def compile_plim_source(source, syntax, strip=True):
+def compile_plim_source(source: str, syntax: Any, strip=True) -> str:
     """
 
     :param source:
@@ -1595,10 +1597,10 @@ def compile_plim_source(source, syntax, strip=True):
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             result.append(parsed_data)
 
-    result = joined(result)
+    result_str = joined(result)
     if strip:
-        result = result.strip()
-    return result
+        result_str = result_str.strip()
+    return result_str
 
 
 # Acknowledgements
@@ -1606,7 +1608,7 @@ def compile_plim_source(source, syntax, strip=True):
 
 EMPTY_TAGS = {'meta', 'img', 'link', 'input', 'area', 'base', 'col', 'br', 'hr'}
 
-MARKUP_LANGUAGES = {
+MARKUP_LANGUAGES: Mapping[str, Callable[[Any], str]] = {
     'md': markdown2.markdown,
     'markdown': markdown2.markdown,
     'rst': rst_to_html,
@@ -1617,8 +1619,8 @@ MARKUP_LANGUAGES = {
     'stylus': stylus_to_css
 }
 
-DOCTYPES = {
-    'html':'<!DOCTYPE html>',
+DOCTYPES: Mapping[str, str] = {
+    'html': '<!DOCTYPE html>',
     '5': '<!DOCTYPE html>',
     '1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
     'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',

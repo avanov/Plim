@@ -1,29 +1,23 @@
-# -*- coding: utf-8 -*-
-from .util import u
-
-
-
 class PlimError(Exception):
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
+    pass
 
 
 class PlimSyntaxError(PlimError):
-    def __init__(self, msg, line):
+    def __init__(self, msg: str, line: str):
         super(PlimSyntaxError, self).__init__()
         self.msg = msg
         self.line = line
 
-    def __unicode__(self):
-        return u('{msg} | at line(pos) "{line}"').format(msg=self.msg, line=self.line)
+    def __str__(self) -> str:
+        return '{msg} | at line(pos) "{line}"'.format(msg=self.msg, line=self.line)
 
 
 class ParserNotFound(PlimError):
-    def __init__(self, lineno, line):
+    def __init__(self, lineno: int, line: str):
         super(ParserNotFound, self).__init__()
         self.lineno = lineno
         self.line = line
 
-    def __unicode__(self):
-        return u("Invalid syntax at line {lineno}: {line}").format(
+    def __str__(self) -> str:
+        return "Invalid syntax at line {lineno}: {line}".format(
             lineno=self.lineno, line=self.line)
