@@ -1,8 +1,12 @@
 # https://nixos.wiki/wiki/Development_environment_with_nix-shell
 {   pkgs            ? (import ./nixpkgs).pkgs
+,   pyVersion       ? "310"
 }:
 
 let
+
+python = pkgs."python${pyVersion}Full";
+pythonPkgs = pkgs."python${pyVersion}Packages";
 
 devEnv = pkgs.mkShellNoCC {
      name = "plim-devenv";
@@ -13,10 +17,12 @@ devEnv = pkgs.mkShellNoCC {
      nativeBuildInputs = with pkgs; [
          # see https://nixos.org/nixos/packages.html
          # Python distribution
-         python310Full
-         python310Packages.virtualenv
-         python310Packages.wheel
-         python310Packages.twine
+         python
+         pythonPkgs.virtualenv
+         pythonPkgs.wheel
+         pythonPkgs.twine
+         pythonPkgs.coveralls
+
          nodejs
          nodePackages.npm
          taglib
@@ -40,11 +46,13 @@ devEnv = pkgs.mkShellNoCC {
          export LANG=en_GB.UTF-8
 
          # https://python-poetry.org/docs/configuration/
-         export PIP_CACHE_DIR=$PWD/.local/pip-cache
+         export PIP_CACHE_DIR="$PWD/.local/pip-cache${pyVersion}"
 
          # Setup virtualenv
          if [ ! -d $VENV_DIR ]; then
              virtualenv $PWD/.venv
+             $VENV_DIR/bin/python -m pip install -e $PWD
+             $VENV_DIR/bin/python -m pip install -r $PWD/requirements.txt
          fi
      '';
 };

@@ -1,0 +1,31 @@
+name: "CI"
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        python-version: [ 39, 310 ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+      - uses: cachix/install-nix-action@v12
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.11.1/install
+          extra_nix_config: "system-features = benchmark kvm"
+      - name: Run tests on Python${{ matrix.python-version }}
+        run: |
+          nix-shell --argstr pyVersion ${{ matrix.python-version }} --run \
+          "pip install -e . && pip install -r requirements.txt && python setup.py nosetests"
+
+      - name: Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nix-shell --argstr pyVersion ${{ matrix.python-version }} --arg isDevEnv false --run "coveralls"

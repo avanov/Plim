@@ -7,14 +7,11 @@ Plim
 .. image:: https://img.shields.io/pypi/dm/Plim.svg
         :target: https://crate.io/packages/Plim
 
-.. image:: https://api.travis-ci.org/avanov/Plim.png
-        :target: https://travis-ci.org/avanov/Plim
+.. image:: https://github.com/avanov/Plim/workflows/CI/badge.svg?branch=develop
+    :target: https://github.com/avanov/Plim/actions?query=branch%3Adevelop
 
-.. image:: https://coveralls.io/repos/avanov/Plim/badge.png?branch=develop
-        :target: https://coveralls.io/r/avanov/Plim?branch=develop
-
-.. image:: https://gemnasium.com/avanov/Plim.svg
-        :target: https://gemnasium.com/avanov/Plim
+.. image:: https://coveralls.io/repos/github/avanov/Plim/badge.svg?branch=develop
+    :target: https://coveralls.io/github/avanov/Plim?branch=develop
 
 
 Plim is a Python port of `Ruby's Slim template language <http://slim-lang.com/>`_
