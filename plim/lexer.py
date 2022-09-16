@@ -2,7 +2,7 @@
 """Plim lexer"""
 import functools
 import re
-from typing import Optional, Tuple, Any, Mapping, Callable, Iterator
+from typing import Optional, Tuple, Any, Mapping, Callable, Iterator, Sequence
 
 import markdown2
 from pyrsistent import v
@@ -175,6 +175,9 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 
 # Searchers
 # ==================================================================================
+SourceIter = Iterator[tuple[int, str]]
+Parsed = Tuple[str, int, str, str]
+
 def search_quotes(line: str, escape_char: str = '\\', quotes_re = QUOTES_RE) -> Optional[int]:
     """
     :param line: may be empty
@@ -255,7 +258,7 @@ def extract_embedding_quotes(content) -> Optional[Tuple[Any, Any, Any]]:
 
 
 def _extract_braces_expression(
-    line: str, source: Iterator[Tuple[Any, str]], starting_braces_re, open_braces_re, closing_braces_re
+    line: str, source: SourceIter, starting_braces_re, open_braces_re, closing_braces_re
 ) -> Optional[Tuple[Any, Any, Any]]:
     """
 
@@ -323,16 +326,16 @@ extract_mako_expression = lambda line, source: _extract_braces_expression(line, 
 )
 
 
-def extract_identifier(line, source, identifier_start='#', terminators=('.', ' ', CLOSE_BRACE, INLINE_TAG_SEPARATOR)):
+def extract_identifier(line: str, source, identifier_start: str = '#',
+                       terminators: Sequence[str] = v('.', ' ', CLOSE_BRACE, INLINE_TAG_SEPARATOR)
+                       ) -> Optional[Tuple[str, str, Any]]:
     """
 
     :param line: Current line. It may be empty.
     :type line: str or unicode
     :param source:
-    :type source: str
     :param identifier_start:
     :param terminators:
-    :type terminators: tuple or set
     """
     if not line or not line.startswith(identifier_start):
         return None
@@ -536,7 +539,7 @@ def extract_tag_attribute(line: str, source: str, syntax, inside_parentheses=Fal
     return None
 
 
-def extract_line_break(tail, source):
+def extract_line_break(tail, source: SourceIter):
     """
     Checks the first character of the tail.
 
@@ -558,7 +561,7 @@ def extract_line_break(tail, source):
     return found, tail, source
 
 
-def extract_statement_expression(tail: str, source: str) -> Tuple[str, str]:
+def extract_statement_expression(tail: str, source: SourceIter) -> Tuple[str, str]:
     """
 
     :param tail:
@@ -806,7 +809,7 @@ def parse_doctype(indent_level, current_line, ___, source, syntax):
     return DOCTYPES.get(doctype, DOCTYPES['5']), indent_level, '', source
 
 
-def parse_handlebars(indent_level, current_line, ___, source, syntax):
+def parse_handlebars(indent_level: int, current_line, ___, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -829,7 +832,7 @@ def parse_handlebars(indent_level, current_line, ___, source, syntax):
     return processed_tag, tail_indent, tail_line, source
 
 
-def parse_tag_tree(indent_level, current_line, ___, source, syntax):
+def parse_tag_tree(indent_level: int, current_line: str, ___: Any, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -961,7 +964,7 @@ def parse_python_new_style(indent_level, __, matched, source, syntax):
 
 
 
-def parse_mako_text(indent, __, matched, source, syntax) -> Tuple[str, int, str, str]:
+def parse_mako_text(indent, __, matched, source, syntax) -> Parsed:
     """
 
     :param indent:
@@ -1060,7 +1063,7 @@ def parse_comment(indent_level, __, ___, source, syntax):
     return '', 0, '', source
 
 
-def parse_statements(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
+def parse_statements(indent_level: int, __: Any, matched, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1095,7 +1098,9 @@ def parse_statements(indent_level, __, matched, source, syntax) -> Tuple[str, in
         else:
             tail_indent, tail_line = scan_line(tail_line)
 
-    def complete_statement(buf, tail_indent, tail_line, source, statement, syntax):
+    def complete_statement(
+        buf: list[str], tail_indent: int, tail_line: str, source, statement: str, syntax
+    ) -> Parsed:
         buf.extend([
             '\n',
             syntax.STATEMENT_END_START_SEQUENCE,
@@ -1216,7 +1221,7 @@ def parse_statements(indent_level, __, matched, source, syntax) -> Tuple[str, in
 
 
 
-def parse_foreign_statements(indent_level, __, matched, source, syntax):
+def parse_foreign_statements(indent_level: int, __: Any, matched, source: SourceIter, syntax):
     """
 
     :param indent_level:
@@ -1237,7 +1242,7 @@ def parse_foreign_statements(indent_level, __, matched, source, syntax):
     return parse_statements(indent_level, __, matched, source, syntax)
 
 
-def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded) -> Tuple[str, int, str, str]:
+def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded) -> Parsed:
     """
     Parses lines and blocks started with the "|" (pipe) or "," (comma) character.
 
@@ -1254,7 +1259,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
     trailing_space_required = current_line[0] == LITERAL_CONTENT_SPACE_PREFIX
 
     # ---------------------------------
-    def prepare_result(buf):
+    def prepare_result(buf: Sequence[str]) -> str:
         result = joined(buf).rstrip()
         if trailing_space_required:
             result = u("{} ").format(result)
@@ -1296,14 +1301,13 @@ parse_explicit_literal_with_embedded_markup = functools.partial(parse_explicit_l
 parse_explicit_literal_no_embedded = functools.partial(parse_explicit_literal, parse_embedded=False)
 
 
-def _parse_embedded_markup(content, syntax):
+def _parse_embedded_markup(content: str, syntax) -> str:
     """
 
     :param content:
     :param syntax: an instance of one of :class:`plim.syntax.BaseSyntax` children.
     :type syntax: :class:`plim.syntax.BaseSyntax`
     :return:
-    :rtype: str
     """
     buf = []
     tail = content
@@ -1351,7 +1355,7 @@ def _inject_n_filter(line: str) -> str:
     return line
 
 
-def parse_variable(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
+def parse_variable(indent_level: int, __, matched, source: SourceIter, syntax) -> Parsed:
     """ = variable or == variable
 
     :param indent_level:
@@ -1389,7 +1393,7 @@ def parse_variable(indent_level, __, matched, source, syntax) -> Tuple[str, int,
     return buf_str, 0, '', source
 
 
-def parse_early_return(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
+def parse_early_return(indent_level, __, matched, source, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1403,7 +1407,7 @@ def parse_early_return(indent_level, __, matched, source, syntax) -> Tuple[str, 
     return u('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
 
 
-def parse_implicit_literal(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
+def parse_implicit_literal(indent_level, __, matched, source: SourceIter, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1423,7 +1427,7 @@ def parse_implicit_literal(indent_level, __, matched, source, syntax) -> Tuple[s
     )
 
 
-def parse_raw_html(indent_level, current_line, ___, source, syntax) -> Tuple[str, int, str, str]:
+def parse_raw_html(indent_level, current_line, ___, source, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1457,7 +1461,7 @@ def parse_raw_html(indent_level, current_line, ___, source, syntax) -> Tuple[str
     return joined(buf), 0, '', source
 
 
-def parse_mako_one_liners(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
+def parse_mako_one_liners(indent_level, __, matched, source, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1478,7 +1482,7 @@ def parse_mako_one_liners(indent_level, __, matched, source, syntax) -> Tuple[st
     return joined(buf), indent_level, '', source
 
 
-def parse_def_block(indent_level: int, __, matched, source: str, syntax) -> Tuple[str, int, str, str]:
+def parse_def_block(indent_level: int, __, matched, source: str, syntax) -> Parsed:
     """
 
     :param indent_level:
@@ -1522,7 +1526,7 @@ def parse_def_block(indent_level: int, __, matched, source: str, syntax) -> Tupl
     return joined(buf), 0, '', source
 
 
-def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
+def parse_plim_tail(lineno: int, indent_level, tail_line, source: SourceIter, syntax) -> Parsed:
     """
 
     :param lineno:
@@ -1546,7 +1550,7 @@ def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
 
 # Miscellaneous utilities
 # ==================================================================================
-def enumerate_source(source: str) -> Iterator[Tuple[int, str]]:
+def enumerate_source(source: str) -> SourceIter:
     """
 
     :param source:
