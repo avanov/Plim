@@ -37,14 +37,14 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.10.0',
+    version='1.0.0',
     packages=find_packages(exclude=['tests', 'nixpkgs', 'node_modules']),
     install_requires=requires,
     setup_requires=[],
     tests_require=['pytest', 'coverage'],
     package_data={
         # If any package contains *.txt or *.rst files, include them
-        '':['*.txt', '*.rst',]
+        '': ['*.txt', '*.rst']
     },
     include_package_data=True,
 
