@@ -11,8 +11,6 @@ from pkg_resources import EntryPoint
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
-from .util import PY3K
-
 
 def plimc(args=None, stdout=None):
     """This is the `plimc` command line utility
@@ -65,7 +63,7 @@ def plimc(args=None, stdout=None):
     # ------------------------------------
     if args.output is None:
         if stdout is None:
-            stdout = PY3K and sys.stdout.buffer or sys.stdout
+            stdout = sys.stdout.buffer
         fd = stdout
         content = codecs.encode(content, 'utf-8')
     else:

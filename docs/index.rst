@@ -38,12 +38,12 @@ Tests
 =======
 
 Plim provides an extensive test suite based on
-`nosetests <http://nose.readthedocs.org/en/latest/>`_.
+`pytest <https://pytest.org/>`_.
 You can run the tests with the following command
 
 .. code-block:: bash
 
-    python setup.py nosetests
+    python -m pytest
 
 Coverage statistics are `available online <https://coveralls.io/r/avanov/Plim?branch=develop>`_.
 

@@ -1,6 +1,6 @@
 Mako>=0.9.0
 babel>=1.3
-# We use reStructuredText (docutils' component) for both supporting
+# We use reStructuredText (docutils component) for both supporting
 # the "-rest" extension and project documenting. So, ensure that the docutils
 # get installed or upgraded on the target machine
 docutils>=0.3

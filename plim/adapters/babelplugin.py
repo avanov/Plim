@@ -2,7 +2,7 @@
 from mako.ext.babelplugin import extract as _extract_mako
 
 from .. import preprocessor_factory
-from ..util import StringIO, PY3K
+from ..util import StringIO
 
 
 def extractor_factory(preprocessor=None):
@@ -22,9 +22,6 @@ def extractor_factory(preprocessor=None):
         :rtype: ``iterator``
         """
         raw_data = fileobj.read()
-        if not PY3K:
-            encoding = options.get('input_encoding', options.get('encoding', 'utf-8'))
-            raw_data = raw_data.decode(encoding)
         data = preprocessor(raw_data)
         for extracted in _extract_mako(StringIO(data), keywords, comment_tags, options):
             yield extracted
