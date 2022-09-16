@@ -22,7 +22,7 @@ jobs:
       - name: Run tests on Python${{ matrix.python-version }}
         run: |
           nix-shell --argstr pyVersion ${{ matrix.python-version }} --run \
-          "pip install -e . && pip install -r requirements.txt && pip install -r requirements-test.txt && python -m pytest"
+          "pip install -e . && pip install -r requirements.txt && pip install -r requirements-test.txt && make test"
 
       - name: Coveralls
         env:

@@ -1,19 +1,19 @@
 import functools
+from typing import Mapping, Type
 
 from .lexer import compile_plim_source
 from . import syntax as available_syntax
 
 
-def preprocessor_factory(custom_parsers=None, syntax='mako'):
+def preprocessor_factory(custom_parsers=None, syntax: str = 'mako'):
     """
 
     :param custom_parsers: a list of 2-tuples of (parser_regex, parser_callable) or None
     :type custom_parsers: list or None
     :param syntax: name of the target template engine ('mako' by default)
-    :type syntax: str or None
     :return: preprocessor instance
     """
-    syntax_choices = {
+    syntax_choices: Mapping[str, Type[available_syntax.BaseSyntax]] = {
         'mako': available_syntax.Mako,
         'django': available_syntax.Django,
     }

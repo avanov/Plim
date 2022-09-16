@@ -2,6 +2,7 @@
 """Plim lexer"""
 import functools
 import re
+from typing import Optional, Tuple, Any, Mapping, Callable
 
 import markdown2
 
@@ -173,11 +174,9 @@ EMBEDDING_QUOTES_RE = re.compile('(?P<quote_type>{quote_symbol}).*'.format(quote
 
 # Searchers
 # ==================================================================================
-def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
+def search_quotes(line: str, escape_char: str = '\\', quotes_re = QUOTES_RE) -> Optional[int]:
     """
-
     :param line: may be empty
-    :type line: str
     :param escape_char:
     """
     match = quotes_re.match(line)
@@ -198,7 +197,7 @@ def search_quotes(line, escape_char='\\', quotes_re=QUOTES_RE):
     return None
 
 
-def search_parser(lineno, line, syntax):
+def search_parser(lineno, line, syntax) -> Tuple[Any, Any]:
     """Finds a proper parser function for a given line or raises an error
 
     :param lineno:
@@ -214,7 +213,7 @@ def search_parser(lineno, line, syntax):
 
 # Extractors
 # ==================================================================================
-def extract_embedding_quotes(content):
+def extract_embedding_quotes(content) -> Optional[Tuple[Any, Any, Any]]:
     """
     ``content`` may be empty
 
@@ -254,13 +253,13 @@ def extract_embedding_quotes(content):
     raise errors.PlimSyntaxError(u('Embedding quote is not closed: "{}"').format(original_string), pos)
 
 
-def _extract_braces_expression(line, source, starting_braces_re, open_braces_re, closing_braces_re):
+def _extract_braces_expression(
+    line: str, source: str, starting_braces_re, open_braces_re, closing_braces_re
+) -> Tuple[Any, Any, Any]:
     """
 
     :param line: may be empty
-    :type line: str
     :param source:
-    :type source: str
     :param starting_braces_re:
     :param open_braces_re:
     :param closing_braces_re:
@@ -420,7 +419,7 @@ def extract_dynamic_attr_value(line, source, terminators, syntax):
     return value, tail, source
 
 
-def extract_dynamic_tag_attributes(line, source, syntax, inside_parentheses=False):
+def extract_dynamic_tag_attributes(line: str, source: str, syntax, inside_parentheses=False) -> Optional[Tuple[Any, Any, Any]]:
     """
     Extract one occurrence of ``**dynamic_attributes``
     :param line:
@@ -463,8 +462,7 @@ def extract_dynamic_tag_attributes(line, source, syntax, inside_parentheses=Fals
     return attributes, tail, source
 
 
-
-def extract_tag_attribute(line, source, syntax, inside_parentheses=False):
+def extract_tag_attribute(line: str, source: str, syntax, inside_parentheses=False):
     """
 
     :param line:
@@ -1606,7 +1604,7 @@ def compile_plim_source(source, syntax, strip=True):
 
 EMPTY_TAGS = {'meta', 'img', 'link', 'input', 'area', 'base', 'col', 'br', 'hr'}
 
-MARKUP_LANGUAGES = {
+MARKUP_LANGUAGES: Mapping[str, Callable[[Any], str]] = {
     'md': markdown2.markdown,
     'markdown': markdown2.markdown,
     'rst': rst_to_html,
@@ -1617,8 +1615,8 @@ MARKUP_LANGUAGES = {
     'stylus': stylus_to_css
 }
 
-DOCTYPES = {
-    'html':'<!DOCTYPE html>',
+DOCTYPES: Mapping[str, str] = {
+    'html': '<!DOCTYPE html>',
     '5': '<!DOCTYPE html>',
     '1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
     'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
