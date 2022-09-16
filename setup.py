@@ -38,7 +38,7 @@ long_description = read(
 setup(
     name='Plim',
     version='0.10.0',
-    packages=find_packages(exclude=['tests', 'nixpkgs']),
+    packages=find_packages(exclude=['tests', 'nixpkgs', 'node_modules']),
     install_requires=requires,
     setup_requires=[],
     tests_require=['pytest', 'coverage'],
