@@ -12,7 +12,7 @@ DIST_DIR                  := $(PROJECT_ROOT)/dist
 PROJECT=plim
 
 .PHONY: test
-test:
+test: typecheck
 	pytest -s  --cov=plim --cov-report xml $(PROJECT_ROOT)/tests
 
 .PHONY: typecheck

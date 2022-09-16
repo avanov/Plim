@@ -104,8 +104,8 @@ class Django(BaseSyntax):
     STATEMENT_END_START_SEQUENCE = STATEMENT_START_START_SEQUENCE
     STATEMENT_END_END_SEQUENCE = STATEMENT_START_END_SEQUENCE
 
-    PARSE_MAKO_ONE_LINERS_RE = None
-    PARSE_MAKO_TEXT_RE = None
+    PARSE_MAKO_ONE_LINERS_RE = None  # type: ignore
+    PARSE_MAKO_TEXT_RE = None  # type: ignore
 
     def __str__(self):
         return 'Django Syntax'

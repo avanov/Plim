@@ -5,6 +5,7 @@ import re
 from typing import Optional, Tuple, Any, Mapping, Callable, Iterator
 
 import markdown2
+from pyrsistent import v
 
 from . import errors
 from .util import StringIO, MAXSIZE, joined, space_separated, u
@@ -62,21 +63,21 @@ STATEMENT_CONVERT = {
 
 INLINE_PYTHON_TERMINATOR = '---'
 
-CSS_ID_SHORTCUT_TERMINATORS = (
+CSS_ID_SHORTCUT_TERMINATORS = v(
     CSS_CLASS_SHORTCUT_DELIMITER,
     WHITESPACE,
     OPEN_BRACE,
     INLINE_TAG_SEPARATOR
 )
 
-CSS_CLASS_SHORTCUT_TERMINATORS = (
+CSS_CLASS_SHORTCUT_TERMINATORS = v(
     CSS_CLASS_SHORTCUT_DELIMITER,
     WHITESPACE,
     OPEN_BRACE,
     INLINE_TAG_SEPARATOR
 )
 
-ATTRIBUTE_TERMINATORS = (
+ATTRIBUTE_TERMINATORS = v(
     ATTRIBUTE_VALUE_DELIMITER,
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
@@ -84,13 +85,13 @@ ATTRIBUTE_TERMINATORS = (
     LITERAL_CONTENT_SPACE_PREFIX
 )
 
-ATTRIBUTE_TERMINATORS_WITH_PARENTHESES = (
+ATTRIBUTE_TERMINATORS_WITH_PARENTHESES = v(
     ATTRIBUTE_VALUE_DELIMITER,
     ATTRIBUTES_DELIMITER,
     CLOSE_BRACE
 )
 
-ATTRIBUTE_VALUE_TERMINATORS = (
+ATTRIBUTE_VALUE_TERMINATORS = v(
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
     LITERAL_CONTENT_PREFIX,
@@ -99,7 +100,7 @@ ATTRIBUTE_VALUE_TERMINATORS = (
     BOOLEAN_ATTRIBUTE_MARKER
 )
 
-ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES = (
+ATTRIBUTE_VALUE_TERMINATORS_WITH_PARENTHESES = v(
     ATTRIBUTES_DELIMITER,
     INLINE_TAG_SEPARATOR,
     LITERAL_CONTENT_PREFIX,
@@ -674,13 +675,13 @@ def extract_tag_line(line, source, syntax):
                 if css_id:
                     attributes.append(u('id="{ids}"').format(ids=css_id))
                 if class_identifiers:
-                    class_identifiers = space_separated(class_identifiers)
-                    attributes.append(u('class="{classes}"').format(classes=class_identifiers))
+                    class_identifiers_str = space_separated(class_identifiers)
+                    attributes.append(u('class="{classes}"').format(classes=class_identifiers_str))
             break
-        attributes = space_separated(attributes)
-        components['attributes'] = attributes
-        if attributes:
-            tag_composer.extend([' ', attributes])
+        attributes_str = space_separated(attributes)
+        components['attributes'] = attributes_str
+        if attributes_str:
+            tag_composer.extend([' ', attributes_str])
 
         # 3.2 syntax check
         if inside_parentheses:
@@ -1285,8 +1286,8 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
         if align > new_align:
             align = new_align
         # remove preceding spaces
-        line = current_line[align:].rstrip()
-        buf.extend([line.rstrip(), "\n"])
+        ne_line = current_line[align:].rstrip()
+        buf.extend([ne_line.rstrip(), "\n"])
 
     result = prepare_result(buf)
     return result, 0, '', source
@@ -1331,7 +1332,7 @@ def _parse_embedded_markup(content, syntax):
     return joined(buf)
 
 
-def _inject_n_filter(line):
+def _inject_n_filter(line: str) -> str:
     """
     This is a helper function for :func:parse_variable
 
@@ -1373,19 +1374,19 @@ def parse_variable(indent_level, __, matched, source, syntax):
         if not line:
             continue
         if indent <= indent_level:
-            buf = joined(buf)
+            buf_str = joined(buf)
             if prevent_escape:
-                buf = _inject_n_filter(buf)
+                buf_str = _inject_n_filter(buf_str)
             # add a closing brace to complete variable expression syntax ("${}" in case of mako).
-            buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
-            return buf, indent, line, source
+            buf_str += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
+            return buf_str, indent, line, source
         buf.append(line.strip())
 
-    buf = joined(buf)
+    buf_str = joined(buf)
     if prevent_escape:
-        buf = _inject_n_filter(buf)
-    buf += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
-    return buf, 0, '', source
+        buf_str = _inject_n_filter(buf_str)
+    buf_str += syntax.VARIABLE_PLACEHOLDER_END_SEQUENCE + explicit_space
+    return buf_str, 0, '', source
 
 
 def parse_early_return(indent_level, __, matched, source, syntax):
@@ -1554,14 +1555,13 @@ def enumerate_source(source):
     return enumerate(StringIO(source), start=1)
 
 
-def scan_line(line):
+def scan_line(line: str) -> Tuple[Optional[int], Optional[str]]:
     """ Returns a 2-tuple of (length_of_the_indentation, line_without_preceding_indentation)
-
-    :param line:
-    :type line: str
     """
     match = LINE_PARTS_RE.match(line)
-    return len(match.group('indent')), match.group('line')
+    if match:
+        return len(match.group('indent')), match.group('line')
+    return None, None
 
 
 def compile_plim_source(source, syntax, strip=True):
@@ -1593,10 +1593,10 @@ def compile_plim_source(source, syntax, strip=True):
             parsed_data, tail_indent, tail_line, source = parse(tail_indent, tail_line, matched_obj, source, syntax)
             result.append(parsed_data)
 
-    result = joined(result)
+    result_str = joined(result)
     if strip:
-        result = result.strip()
-    return result
+        result_str = result_str.strip()
+    return result_str
 
 
 # Acknowledgements
