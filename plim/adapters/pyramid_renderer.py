@@ -33,7 +33,7 @@ def add_plim_renderer(config, extension, mako_settings_prefix='mako.', preproces
     renderer_factory = MakoRendererFactory()
     config.add_renderer(extension, renderer_factory)
 
-    def register():
+    def register() -> None:
         settings = copy.copy(config.registry.settings)
         settings['{prefix}preprocessor'.format(prefix=mako_settings_prefix)] = preprocessor
 

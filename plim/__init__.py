@@ -1,11 +1,13 @@
 import functools
-from typing import Mapping, Type
+from typing import Mapping, Type, Sequence, Any, Callable
+
+from pyrsistent import v
 
 from .lexer import compile_plim_source
 from . import syntax as available_syntax
 
 
-def preprocessor_factory(custom_parsers=None, syntax: str = 'mako'):
+def preprocessor_factory(custom_parsers: Sequence[Any] = v(), syntax: str = 'mako') -> Callable[[str, bool], str]:
     """
 
     :param custom_parsers: a list of 2-tuples of (parser_regex, parser_callable) or None
@@ -17,7 +19,7 @@ def preprocessor_factory(custom_parsers=None, syntax: str = 'mako'):
         'mako': available_syntax.Mako,
         'django': available_syntax.Django,
     }
-    selected_syntax = syntax_choices[syntax](custom_parsers)
+    selected_syntax = syntax_choices[syntax](custom_parsers or v())
     return functools.partial(compile_plim_source, syntax=selected_syntax)
 
 

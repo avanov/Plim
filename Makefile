@@ -12,12 +12,12 @@ DIST_DIR                  := $(PROJECT_ROOT)/dist
 PROJECT=plim
 
 .PHONY: test
-test: typecheck
+test:
 	pytest -s  --cov=plim --cov-report xml $(PROJECT_ROOT)/tests
 
 .PHONY: typecheck
 typecheck:
-	mypy --config-file setup.cfg --package $(PROJECT_NAME)
+	mypy --config-file setup.cfg --strict --package $(PROJECT_NAME)
 
 .PHONY: prepare-dist
 prepare-dist:

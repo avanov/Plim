@@ -558,7 +558,7 @@ def extract_line_break(tail, source):
     return found, tail, source
 
 
-def extract_statement_expression(tail, source):
+def extract_statement_expression(tail: str, source: str) -> Tuple[str, str]:
     """
 
     :param tail:
@@ -961,7 +961,7 @@ def parse_python_new_style(indent_level, __, matched, source, syntax):
 
 
 
-def parse_mako_text(indent, __, matched, source, syntax):
+def parse_mako_text(indent, __, matched, source, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent:
@@ -1060,7 +1060,7 @@ def parse_comment(indent_level, __, ___, source, syntax):
     return '', 0, '', source
 
 
-def parse_statements(indent_level, __, matched, source, syntax):
+def parse_statements(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent_level:
@@ -1237,7 +1237,7 @@ def parse_foreign_statements(indent_level, __, matched, source, syntax):
     return parse_statements(indent_level, __, matched, source, syntax)
 
 
-def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded):
+def parse_explicit_literal(indent_level, current_line, ___, source, syntax, parse_embedded) -> Tuple[str, int, str, str]:
     """
     Parses lines and blocks started with the "|" (pipe) or "," (comma) character.
 
@@ -1275,7 +1275,7 @@ def parse_explicit_literal(indent_level, current_line, ___, source, syntax, pars
         except StopIteration:
             break
         indent, line = scan_line(current_line)
-        if not line:
+        if not line or indent is None:
             buf.append('\n')
             continue
         if indent <= indent_level:
@@ -1351,7 +1351,7 @@ def _inject_n_filter(line: str) -> str:
     return line
 
 
-def parse_variable(indent_level, __, matched, source, syntax):
+def parse_variable(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
     """ = variable or == variable
 
     :param indent_level:
@@ -1389,7 +1389,7 @@ def parse_variable(indent_level, __, matched, source, syntax):
     return buf_str, 0, '', source
 
 
-def parse_early_return(indent_level, __, matched, source, syntax):
+def parse_early_return(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent_level:
@@ -1403,7 +1403,7 @@ def parse_early_return(indent_level, __, matched, source, syntax):
     return u('\n<% {keyword} %>\n').format(keyword=matched.group('keyword')), indent_level, '', source
 
 
-def parse_implicit_literal(indent_level, __, matched, source, syntax):
+def parse_implicit_literal(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent_level:
@@ -1423,7 +1423,7 @@ def parse_implicit_literal(indent_level, __, matched, source, syntax):
     )
 
 
-def parse_raw_html(indent_level, current_line, ___, source, syntax):
+def parse_raw_html(indent_level, current_line, ___, source, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent_level:
@@ -1457,7 +1457,7 @@ def parse_raw_html(indent_level, current_line, ___, source, syntax):
     return joined(buf), 0, '', source
 
 
-def parse_mako_one_liners(indent_level, __, matched, source, syntax):
+def parse_mako_one_liners(indent_level, __, matched, source, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent_level:
@@ -1478,7 +1478,7 @@ def parse_mako_one_liners(indent_level, __, matched, source, syntax):
     return joined(buf), indent_level, '', source
 
 
-def parse_def_block(indent_level, __, matched, source, syntax):
+def parse_def_block(indent_level: int, __, matched, source: str, syntax) -> Tuple[str, int, str, str]:
     """
 
     :param indent_level:
@@ -1504,7 +1504,7 @@ def parse_def_block(indent_level, __, matched, source, syntax):
         except StopIteration:
             break
         tail_indent, tail_line = scan_line(tail_line)
-        if not tail_line:
+        if not tail_line or tail_indent is None:
             continue
         # Parse a tree
         # --------------------------------------------------------
@@ -1546,7 +1546,7 @@ def parse_plim_tail(lineno, indent_level, tail_line, source, syntax):
 
 # Miscellaneous utilities
 # ==================================================================================
-def enumerate_source(source):
+def enumerate_source(source: str) -> Iterator[Tuple[int, str]]:
     """
 
     :param source:
@@ -1564,7 +1564,7 @@ def scan_line(line: str) -> Tuple[Optional[int], Optional[str]]:
     return None, None
 
 
-def compile_plim_source(source, syntax, strip=True):
+def compile_plim_source(source: str, syntax: Any, strip=True) -> str:
     """
 
     :param source:
