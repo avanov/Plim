@@ -2,7 +2,7 @@
 """Plim lexer"""
 import functools
 import re
-from typing import Optional, Tuple, Any, Mapping, Callable
+from typing import Optional, Tuple, Any, Mapping, Callable, Iterator
 
 import markdown2
 
@@ -238,24 +238,24 @@ def extract_embedding_quotes(content) -> Optional[Tuple[Any, Any, Any]]:
         if tail.startswith(EMBEDDING_QUOTE):
             append_seq = EMBEDDING_QUOTE_END if tail.startswith(EMBEDDING_QUOTE_END) else EMBEDDING_QUOTE
             original_string.append(append_seq)
-            original_string = joined(original_string)
-            content = content[len(original_string):]
-            embedded_string = joined(embedded_string)
-            return embedded_string, original_string, content
+            original_string_str = joined(original_string)
+            content = content[len(original_string_str):]
+            embedded_string_str = joined(embedded_string)
+            return embedded_string_str, original_string_str, content
 
         current_char = tail[0]
         original_string.append(current_char)
         embedded_string.append(current_char)
         tail = tail[1:]
 
-    original_string = joined(original_string)
-    pos = len(original_string)
-    raise errors.PlimSyntaxError(u('Embedding quote is not closed: "{}"').format(original_string), pos)
+    original_string_str = joined(original_string)
+    pos = len(original_string_str)
+    raise errors.PlimSyntaxError(u('Embedding quote is not closed: "{}"').format(original_string_str), pos)
 
 
 def _extract_braces_expression(
-    line: str, source: str, starting_braces_re, open_braces_re, closing_braces_re
-) -> Tuple[Any, Any, Any]:
+    line: str, source: Iterator[Tuple[Any, str]], starting_braces_re, open_braces_re, closing_braces_re
+) -> Optional[Tuple[Any, Any, Any]]:
     """
 
     :param line: may be empty
@@ -352,10 +352,10 @@ def extract_identifier(line, source, identifier_start='#', terminators=('.', ' '
             continue
 
         # Check for a string object
-        result = search_quotes(tail)
-        if result is not None:
-            buf.append(tail[:result])
-            tail = tail[result:]
+        result_pos = search_quotes(tail)
+        if result_pos is not None:
+            buf.append(tail[:result_pos])
+            tail = tail[result_pos:]
             continue
 
         # Try to search braces of function calls etc
