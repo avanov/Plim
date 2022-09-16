@@ -130,10 +130,10 @@ lines can be wrapped with continuation lines.</div>
 </thead>
 <tbody valign="top">
 <tr><td>Footnote</td>
-<td><table class="first last docutils footnote" frame="void" id="id1" rules="none">
+<td><table class="first last docutils footnote" frame="void" id="footnote-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>Manually numbered or [#] auto-numbered
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-1">[1]</a></td><td>Manually numbered or [#] auto-numbered
 (even [#labelled]) or [*] auto-symbol</td></tr>
 </tbody>
 </table>
@@ -143,7 +143,7 @@ lines can be wrapped with continuation lines.</div>
 <td><table class="first last docutils citation" frame="void" id="cit2002" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[CIT2002]</a></td><td>A citation.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#citation-reference-1">[CIT2002]</a></td><td>A citation.</td></tr>
 </tbody>
 </table>
 </td>
@@ -177,8 +177,8 @@ used to separate indentation contexts)</td>
 <p><em>emphasis</em>; <strong>strong emphasis</strong>; <cite>interpreted text</cite>; <em>interpreted text
 with role</em>; <tt class="docutils literal">inline literal text</tt>; standalone hyperlink,
 <a class="reference external" href="http://docutils.sourceforge.net">http://docutils.sourceforge.net</a>; named reference, <a class="reference external" href="http://docutils.sf.net/rst.html">reStructuredText</a>;
-<a class="reference external" href="http://docutils.sf.net/docs/ref/rst/restructuredtext.html">anonymous reference</a>; footnote reference, <a class="footnote-reference" href="#id1" id="id3">[1]</a>; citation reference,
-<a class="citation-reference" href="#cit2002" id="id4">[CIT2002]</a>; like an inline directive; <span class="target" id="inline-internal-target">inline internal target</span>.</p>
+<a class="reference external" href="http://docutils.sf.net/docs/ref/rst/restructuredtext.html">anonymous reference</a>; footnote reference, <a class="footnote-reference" href="#footnote-1" id="footnote-reference-1">[1]</a>; citation reference,
+<a class="citation-reference" href="#cit2002" id="citation-reference-1">[CIT2002]</a>; like an inline directive; <span class="target" id="inline-internal-target">inline internal target</span>.</p>
 </div>
 <div class="section" id="directive-quick-reference">
 <h1>Directive Quick Reference</h1>
