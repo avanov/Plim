@@ -6,8 +6,8 @@ before_install:
 install:
   - pip install coveralls
 python:
-  - "2.7"
-  - "3.5"
+  - "3.9"
+  - "3.10"
 
 # command to run tests
 script: python setup.py nosetests
