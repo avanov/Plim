@@ -4,6 +4,10 @@ Plim
 .. image:: https://img.shields.io/pypi/v/Plim.svg
         :target: https://crate.io/packages/Plim
 
+.. image:: https://requires.io/github/avanov/Plim/requirements.svg?branch=master
+    :target: https://requires.io/github/avanov/Plim/requirements/?branch=master
+    :alt: Requirements Status
+
 .. image:: https://img.shields.io/pypi/dm/Plim.svg
         :target: https://crate.io/packages/Plim
 
