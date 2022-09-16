@@ -28,15 +28,15 @@ settings dictionary. The default prefix is 'mako.'.
 Flask
 ======
 
-The following code snippet would get Flask working with plim:
+First install the flask_mako package. The following code snippet would get Flask working with plim:
 
 .. code-block:: python
 
     from flask import Flask
-    from flask.ext.mako import MakoTemplates, render_template
+    from flask_mako import MakoTemplates, render_template
     from plim import preprocessor
 
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='.')
     mako = MakoTemplates(app)
     app.config['MAKO_PREPROCESSOR'] = preprocessor
 
@@ -46,6 +46,7 @@ The following code snippet would get Flask working with plim:
 
     if __name__ == "__main__":
         app.run(debug=True)
+
 
 With hello.html in templates dir:
 

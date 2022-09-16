@@ -58,7 +58,7 @@ msgstr ""
 
 #: ../differences.rst:63
 # 2a470b5d41b548dda64bed052f282a56
-msgid "This restriction was introduced to support :ref:`Implicit Litaral Blocks <implicit-literals>` feature."
+msgid "This restriction was introduced to support :ref:`Implicit Literal Blocks <implicit-literals>` feature."
 msgstr ""
 
 #: ../differences.rst:79

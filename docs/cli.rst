@@ -9,15 +9,22 @@ source files into Mako templates.
 .. code-block:: shell
 
     $ plimc -h
-    usage: plimc [-h] [--encoding ENCODING] source target
+    usage: plimc [-h] [-o OUTPUT] [-e ENCODING] [-p PREPROCESSOR] [-H] [-V] source
 
     Compile plim source files into mako files.
 
     positional arguments:
       source               path to source plim template
-      target               path to target mako template
 
     optional arguments:
       -h, --help           show this help message and exit
-      --encoding ENCODING  source file encoding
+      -o OUTPUT, --output OUTPUT
+                           write result to FILE.
+      -e ENCODING, --encoding ENCODING
+                           content encoding
+      -p PREPROCESSOR, --preprocessor PREPROCESSOR
+                           Preprocessor instance that will be used for parsing
+                           the template
+      -H, --html           Render HTML output instead of Mako template
+      -V, --version        show program's version number and exit
 

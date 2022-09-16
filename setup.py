@@ -6,7 +6,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-PY3K = sys.version_info >= (3,0)
+PY3K = sys.version_info >= (3, 0)
 here = lambda path: os.path.join(os.path.abspath(os.path.dirname(__file__)), path)
 
 
@@ -37,14 +37,14 @@ long_description = read(
 
 setup(
     name='Plim',
-    version='0.9.12',
-    packages=find_packages(exclude=['tests']),
+    version='1.0.0',
+    packages=find_packages(exclude=['tests', 'nixpkgs', 'node_modules']),
     install_requires=requires,
-    setup_requires=['nose>=1.1.2'],
-    tests_require=['coverage'],
+    setup_requires=[],
+    tests_require=['pytest', 'coverage'],
     package_data={
         # If any package contains *.txt or *.rst files, include them
-        '':['*.txt', '*.rst',]
+        '': ['*.txt', '*.rst']
     },
     include_package_data=True,
 
@@ -67,7 +67,7 @@ setup(
     download_url="https://github.com/avanov/Plim",
     keywords="mako templates ruby slim jade pyjade pyramid flask haml pyhaml",
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Pylons',
         'Framework :: Pyramid',
@@ -79,7 +79,6 @@ setup(
         'Operating System :: Microsoft',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
